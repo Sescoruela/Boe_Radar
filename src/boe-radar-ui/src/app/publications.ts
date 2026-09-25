@@ -51,6 +51,12 @@ export interface PublicationSearchResult {
   totalPages: number;
 }
 
+export interface CatalogStatus {
+  latestPublicationDate: string | null;
+  totalPublications: number;
+  emailAlertsEnabled: boolean;
+}
+
 export interface PublicationDetail extends PublicationListItem {
   issueNumber: string;
   departmentCode: string;
@@ -67,16 +73,25 @@ export interface PublicationFilters {
   dateTo: string;
   page: number;
   pageSize: number;
+  businessSignalsOnly: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
 export class PublicationsApi {
   private readonly http = inject(HttpClient);
 
+  getStatus(): Observable<CatalogStatus> {
+    return this.http.get<CatalogStatus>('/api/v1/catalog/status');
+  }
+
   search(filters: PublicationFilters): Observable<PublicationSearchResult> {
     let params = new HttpParams()
       .set('page', filters.page)
       .set('pageSize', filters.pageSize);
+
+    if (filters.businessSignalsOnly) {
+      params = params.set('businessSignalsOnly', true);
+    }
 
     for (const [key, value] of Object.entries({
       query: filters.query,

@@ -6,6 +6,7 @@ import {
   PublicationFilters,
   PublicationDetail,
   PublicationSearchResult,
+  CatalogStatus,
   PublicationsApi,
 } from './publications';
 import { SubscriptionsApi, SubscriptionView } from './subscriptions';
@@ -21,6 +22,7 @@ export class App implements OnInit {
   private readonly subscriptions = inject(SubscriptionsApi);
 
   readonly result = signal<PublicationSearchResult | null>(null);
+  readonly catalogStatus = signal<CatalogStatus | null>(null);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly selected = signal<PublicationDetail | null>(null);
@@ -51,11 +53,22 @@ export class App implements OnInit {
     dateTo: '',
     page: 1,
     pageSize: 12,
+    businessSignalsOnly: true,
   };
 
   ngOnInit(): void {
     this.search();
+    this.api.getStatus().subscribe({
+      next: (status) => this.catalogStatus.set(status),
+      error: () => this.catalogStatus.set(null),
+    });
     this.handleSubscriptionLink();
+  }
+
+  selectView(businessSignalsOnly: boolean): void {
+    if (this.filters.businessSignalsOnly === businessSignalsOnly) return;
+    this.filters.businessSignalsOnly = businessSignalsOnly;
+    this.search();
   }
 
   @HostListener('window:hashchange')
@@ -181,6 +194,7 @@ export class App implements OnInit {
       dateTo: '',
       page: 1,
       pageSize: 12,
+      businessSignalsOnly: this.filters.businessSignalsOnly,
     };
     this.search();
   }

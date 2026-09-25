@@ -5,6 +5,7 @@ using BoeRadar.Application;
 using BoeRadar.Domain;
 using BoeRadar.Infrastructure;
 using BoeRadar.Infrastructure.Persistence;
+using BoeRadar.Web;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,10 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(
         new JsonStringEnumConverter<RadarCategory>(allowIntegerValues: false)));
 builder.Services.AddBoeRadarInfrastructure(builder.Configuration);
+if (builder.Configuration.GetValue<bool>("Ingestion:RefreshEnabled"))
+{
+    builder.Services.AddHostedService<CatalogRefreshService>();
+}
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -89,12 +94,21 @@ if (app.Environment.IsDevelopment())
 
 var api = app.MapGroup("/api/v1");
 
+api.MapGet("/catalog/status", async (
+        IPublicationCatalog catalog,
+        CancellationToken cancellationToken) =>
+    Results.Ok(await catalog.GetStatusAsync(
+        builder.Configuration.GetValue<bool>("Features:EmailAlertsEnabled"), cancellationToken)))
+    .WithName("GetCatalogStatus")
+    .WithSummary("Indica la cobertura del catálogo y las funciones disponibles.");
+
 api.MapGet("/publications", async (
         IPublicationCatalog catalog,
         string? query,
         DateOnly? dateFrom,
         DateOnly? dateTo,
         string? section,
+        bool businessSignalsOnly = false,
         int page = 1,
         int pageSize = 20,
         CancellationToken cancellationToken = default) =>
@@ -108,7 +122,7 @@ api.MapGet("/publications", async (
         }
 
         var result = await catalog.SearchAsync(
-            new PublicationSearch(query, dateFrom, dateTo, section, page, pageSize),
+            new PublicationSearch(query, dateFrom, dateTo, section, page, pageSize, businessSignalsOnly),
             cancellationToken);
         return Results.Ok(result);
     })
@@ -134,6 +148,10 @@ var publicBaseUrl = new Uri(builder.Configuration["RENDER_EXTERNAL_URL"]
 subscriptions.MapPost("", async (RegisterSubscriptionRequest request,
     SubscriptionService service, CancellationToken cancellationToken) =>
 {
+    if (!builder.Configuration.GetValue<bool>("Features:EmailAlertsEnabled"))
+        return Results.Problem(statusCode: StatusCodes.Status503ServiceUnavailable,
+            title: "Las alertas por correo aún no están disponibles.");
+
     if (!request.Consent)
         return Results.ValidationProblem(new Dictionary<string, string[]>
         {

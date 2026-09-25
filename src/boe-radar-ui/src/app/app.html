@@ -3,24 +3,33 @@
     <span class="brand-mark" aria-hidden="true">BR</span>
     <span>BOE Radar <em>IA</em></span>
   </a>
-  <span class="source-status"><i></i> Datos de fuente oficial</span>
+  <span class="source-status"><i></i> Catálogo de fuente oficial</span>
 </header>
 
 <main>
   <section class="hero">
-    <div class="eyebrow">Radar diario para autónomos y pymes</div>
-    <h1>Lo relevante del BOE,<br /><span>sin perder la fuente.</span></h1>
+    <div class="eyebrow">Explorador para autónomos y pymes</div>
+    <h1>Encuentra señales en el BOE,<br /><span>sin perder la fuente.</span></h1>
     <p>
-      Detecta ayudas, cambios fiscales y obligaciones con análisis trazables hasta
-      el texto oficial.
+      Empieza por posibles ayudas y cambios para negocios. La selección es automática:
+      comprueba siempre destinatarios, requisitos y plazos en el texto oficial.
     </p>
+    @if (catalogStatus()?.latestPublicationDate; as latestDate) {
+      <p class="coverage-status">
+        Último BOE en el catálogo:
+        <strong>{{ (latestDate + 'T00:00:00Z') | date: 'd MMMM yyyy' : 'UTC' }}</strong>
+        · {{ catalogStatus()?.totalPublications }} publicaciones
+      </p>
+    } @else {
+      <p class="coverage-status">Comprobando la cobertura del catálogo…</p>
+    }
   </section>
 
   <section class="search-panel" aria-labelledby="search-title">
     <div class="panel-heading">
       <div>
         <span class="step">01</span>
-        <h2 id="search-title">Buscar publicaciones</h2>
+        <h2 id="search-title">Buscar en el catálogo</h2>
       </div>
       <button class="text-button" type="button" (click)="clear()">Limpiar filtros</button>
     </div>
@@ -75,13 +84,29 @@
           <span class="step">02</span>
           <h2>Publicaciones</h2>
         </div>
-        <p><strong>{{ data.totalItems }}</strong> resultados oficiales</p>
+        <p><strong>{{ data.totalItems }}</strong> resultados</p>
       </div>
+
+      <div class="view-switch" role="group" aria-label="Vista del catálogo">
+        <button type="button" [attr.aria-pressed]="filters.businessSignalsOnly"
+          (click)="selectView(true)">Señales para negocios</button>
+        <button type="button" [attr.aria-pressed]="!filters.businessSignalsOnly"
+          (click)="selectView(false)">Todo el BOE</button>
+      </div>
+      @if (filters.businessSignalsOnly) {
+        <p class="view-explanation">
+          Selección por términos del título y sección. Puede incluir publicaciones que no
+          te apliquen y omitir otras relevantes; no confirma beneficiarios ni plazos.
+        </p>
+      }
 
       @if (loading()) {
         <div class="state">Consultando el catálogo…</div>
       } @else if (data.items.length === 0) {
-        <div class="state">No hay publicaciones para estos filtros.</div>
+        <div class="state">
+          No hay publicaciones para estos filtros.
+          @if (filters.businessSignalsOnly) { Prueba «Todo el BOE» para ampliar la búsqueda. }
+        </div>
       } @else {
         <div class="publication-grid">
           @for (item of data.items; track item.id) {
@@ -141,11 +166,17 @@
     <div class="subscription-intro">
       <span class="step">03</span>
       <h2 id="subscription-title">Alertas a tu medida</h2>
-      <p>Recibe un resumen de publicaciones relevantes. Confirma tu correo antes de activar los envíos.</p>
+      @if (catalogStatus()?.emailAlertsEnabled) {
+        <p>Recibe un resumen de publicaciones relevantes. Confirma tu correo antes de activar los envíos.</p>
+      } @else {
+        <p>Las alertas por correo todavía no están activas en esta versión de pruebas.
+          Puedes explorar el catálogo sin dejar tus datos.</p>
+      }
     </div>
     @if (managedSubscription(); as managed) {
       <p class="subscription-account">Gestionando alertas para <strong>{{ managed.email }}</strong></p>
     }
+    @if (managedSubscription() || catalogStatus()?.emailAlertsEnabled) {
     <form class="subscription-form" (ngSubmit)="managedSubscription() ? savePreferences() : submitSubscription()">
       @if (!managedSubscription()) {
         <label class="subscription-email">
@@ -189,6 +220,7 @@
         {{ managedSubscription() ? 'Guardar preferencias' : 'Solicitar alertas' }}
       </button>
     </form>
+    }
     @if (managedSubscription()) {
       <button class="unsubscribe-button" type="button" (click)="leaveSubscription()">Dar de baja</button>
     }
@@ -278,6 +310,16 @@
             Método: {{ analysis.method === 'gemini' ? analysis.modelName : 'heurística local' }} ·
             contrato {{ analysis.promptVersion }}
           </p>
+        </section>
+      } @else {
+        <section class="review-guide" aria-label="Qué comprobar en la fuente">
+          <h3>Antes de tomar una decisión</h3>
+          <p>Esta publicación todavía no tiene una ficha analizada. Abre el texto oficial y comprueba:</p>
+          <ul>
+            <li>Quiénes pueden solicitarla o a quién afecta.</li>
+            <li>Requisitos, importe y posibles exclusiones.</li>
+            <li>Fecha de apertura y cierre del plazo.</li>
+          </ul>
         </section>
       }
       <div class="official-links">

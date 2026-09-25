@@ -6,7 +6,10 @@ public sealed record PublicationSearch(
     DateOnly? DateTo,
     string? Section,
     int Page = 1,
-    int PageSize = 20);
+    int PageSize = 20,
+    bool BusinessSignalsOnly = false);
+
+public sealed record CatalogStatus(DateOnly? LatestPublicationDate, int TotalPublications, bool EmailAlertsEnabled);
 
 public sealed record PagedResult<T>(
     IReadOnlyList<T> Items,
@@ -66,6 +69,8 @@ public sealed record PublicationDetail(
 
 public interface IPublicationCatalog
 {
+    Task<CatalogStatus> GetStatusAsync(bool emailAlertsEnabled, CancellationToken cancellationToken = default);
+
     Task<PagedResult<PublicationListItem>> SearchAsync(
         PublicationSearch search,
         CancellationToken cancellationToken = default);

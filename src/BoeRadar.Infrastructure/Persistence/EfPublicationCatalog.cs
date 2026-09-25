@@ -9,6 +9,16 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext)
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
+    public async Task<CatalogStatus> GetStatusAsync(
+        bool emailAlertsEnabled,
+        CancellationToken cancellationToken = default)
+    {
+        var latestDate = await dbContext.SourceDocuments.AsNoTracking()
+            .MaxAsync(document => (DateOnly?)document.PublicationDate, cancellationToken);
+        var total = await dbContext.SourceDocuments.AsNoTracking().CountAsync(cancellationToken);
+        return new CatalogStatus(latestDate, total, emailAlertsEnabled);
+    }
+
     public async Task<PagedResult<PublicationListItem>> SearchAsync(
         PublicationSearch search,
         CancellationToken cancellationToken = default)
@@ -16,6 +26,25 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext)
         var page = Math.Max(search.Page, 1);
         var pageSize = Math.Clamp(search.PageSize, 1, 100);
         var query = dbContext.SourceDocuments.AsNoTracking();
+
+        if (search.BusinessSignalsOnly)
+        {
+            query = query.Where(document =>
+                (document.SectionCode == "5B" &&
+                 (EF.Functions.ILike(document.Title, "%ayuda%") ||
+                  EF.Functions.ILike(document.Title, "%subvenci%") ||
+                  EF.Functions.ILike(document.Title, "%bonificaci%") ||
+                  EF.Functions.ILike(document.Title, "%financiaci%") ||
+                  EF.Functions.ILike(document.Title, "%préstamo%")) &&
+                 !EF.Functions.ILike(document.Title, "%ayuda al estudio%") &&
+                 !EF.Functions.ILike(document.Title, "%beca%")) ||
+                (document.SectionCode == "1" &&
+                 (EF.Functions.ILike(document.Title, "%tribut%") ||
+                  EF.Functions.ILike(document.Title, "%impuesto%") ||
+                  EF.Functions.ILike(document.Title, "%cotizaci%") ||
+                  EF.Functions.ILike(document.Title, "%autónom%") ||
+                  EF.Functions.ILike(document.Title, "%empresa%"))));
+        }
 
         if (!string.IsNullOrWhiteSpace(search.Query))
         {

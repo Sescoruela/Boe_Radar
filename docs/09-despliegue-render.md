@@ -38,8 +38,11 @@ configura `PublicBaseUrl` y ajusta la aplicación para darle preferencia sobre
 
 ## Ingesta, análisis y correo (opcional, con coste)
 
-La web gratuita hace solo la carga inicial; **no ejecuta periódicamente** la
-ingesta, el análisis, la preparación de digests ni la entrega de correo. Para probar el flujo completo
+La web gratuita intenta poner al día el catálogo al arrancar y cada seis horas
+mientras esté despierta. Revisa los últimos siete días y evita duplicados. **No
+garantiza una ejecución diaria** porque la instancia puede dormirse; la fecha
+visible en la portada indica la cobertura real. El análisis, la preparación de
+digests y la entrega de correo no se ejecutan en esta web. Para probar el flujo completo
 hay que crear tareas Cron Docker en Render con el mismo repositorio y
 `src/BoeRadar.Worker/Dockerfile`. Cada tarea Cron tiene un cargo mínimo mensual
 de 1 USD, además del uso; créalas solo si aceptas ese coste.
@@ -72,6 +75,9 @@ la conectividad real desde el cron y usa un puerto alternativo soportado por
 tu proveedor si procede. No uses Mailpit ni `radar@localhost` en Render. Si
 registras una suscripción y no recibes el enlace, revisa la ejecución y los
 logs de la tarea de entrega; la API solo encola el mensaje.
+El alta pública permanece desactivada hasta establecer
+`Features__EmailAlertsEnabled=true` en el servicio web. Activa esa variable
+solo después de comprobar un envío y una confirmación reales.
 
 ## Comprobación y pendientes
 

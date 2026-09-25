@@ -22,6 +22,8 @@ services:
         value: "true"
       - key: Bootstrap__InitialIssueDate
         value: "2026-09-24"
+      - key: Ingestion__RefreshEnabled
+        value: "true"
       - key: Analysis__Provider
         value: heuristic
 
