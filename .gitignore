@@ -5,7 +5,7 @@ obj/
 .idea/
 TestResults/
 artifacts/
-sources/
+/sources/
 AGENTS.md
 .agents/
 .codex/
