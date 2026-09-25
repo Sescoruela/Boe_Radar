@@ -1,0 +1,312 @@
+<header class="topbar">
+  <a class="brand" href="/" aria-label="BOE Radar IA, inicio">
+    <span class="brand-mark" aria-hidden="true">BR</span>
+    <span>BOE Radar <em>IA</em></span>
+  </a>
+  <span class="source-status"><i></i> Datos de fuente oficial</span>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow">Radar diario para autónomos y pymes</div>
+    <h1>Lo relevante del BOE,<br /><span>sin perder la fuente.</span></h1>
+    <p>
+      Detecta ayudas, cambios fiscales y obligaciones con análisis trazables hasta
+      el texto oficial.
+    </p>
+  </section>
+
+  <section class="search-panel" aria-labelledby="search-title">
+    <div class="panel-heading">
+      <div>
+        <span class="step">01</span>
+        <h2 id="search-title">Buscar publicaciones</h2>
+      </div>
+      <button class="text-button" type="button" (click)="clear()">Limpiar filtros</button>
+    </div>
+
+    <form (ngSubmit)="search()">
+      <label class="query-field">
+        <span>Palabra clave</span>
+        <input
+          name="query"
+          type="search"
+          [(ngModel)]="filters.query"
+          placeholder="Ej. ayudas, digitalización, autónomos…"
+        />
+      </label>
+
+      <label>
+        <span>Sección</span>
+        <select name="section" [(ngModel)]="filters.section">
+          <option value="">Todas</option>
+          <option value="1">I · Disposiciones generales</option>
+          <option value="2A">II.A · Nombramientos</option>
+          <option value="2B">II.B · Oposiciones</option>
+          <option value="3">III · Otras disposiciones</option>
+          <option value="4">IV · Administración de Justicia</option>
+          <option value="5A">V.A · Contratación pública</option>
+          <option value="5B">V.B · Otros anuncios oficiales</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Desde</span>
+        <input name="dateFrom" type="date" [(ngModel)]="filters.dateFrom" />
+      </label>
+
+      <label>
+        <span>Hasta</span>
+        <input name="dateTo" type="date" [(ngModel)]="filters.dateTo" />
+      </label>
+
+      <button class="primary-button" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Buscando…' : 'Explorar radar' }}
+      </button>
+    </form>
+  </section>
+
+  <section class="results" aria-live="polite">
+    @if (error()) {
+      <div class="state error-state">{{ error() }}</div>
+    } @else if (result(); as data) {
+      <div class="results-heading">
+        <div>
+          <span class="step">02</span>
+          <h2>Publicaciones</h2>
+        </div>
+        <p><strong>{{ data.totalItems }}</strong> resultados oficiales</p>
+      </div>
+
+      @if (loading()) {
+        <div class="state">Consultando el catálogo…</div>
+      } @else if (data.items.length === 0) {
+        <div class="state">No hay publicaciones para estos filtros.</div>
+      } @else {
+        <div class="publication-grid">
+          @for (item of data.items; track item.id) {
+            <article class="publication-card">
+              <div class="card-meta">
+                <span class="section-badge">{{ item.sectionCode }}</span>
+                <time [attr.datetime]="item.publicationDate">
+                  {{ item.publicationDate | date: 'd MMM yyyy' : 'UTC' }}
+                </time>
+              </div>
+              <p class="department">{{ item.department }}</p>
+              @if (item.analysis?.isRelevant) {
+                <div class="radar-label">
+                  {{ categoryLabel(item.analysis!.category) }} ·
+                  {{ confidencePercent(item.analysis!.confidence) }}% confianza
+                </div>
+              }
+              <h3>{{ item.title }}</h3>
+              @if (item.analysis?.isRelevant) {
+                <p class="radar-summary">{{ item.analysis!.summary }}</p>
+              }
+              @if (item.epigraph) {
+                <p class="epigraph">{{ item.epigraph }}</p>
+              }
+              <div class="card-footer">
+                <code>{{ item.externalId }}</code>
+                <button type="button" (click)="openDetails(item.id)">Ver ficha →</button>
+              </div>
+            </article>
+          }
+        </div>
+
+        @if (data.totalPages > 1) {
+          <nav class="pagination" aria-label="Paginación">
+            <button
+              type="button"
+              [disabled]="data.page === 1 || loading()"
+              (click)="search(data.page - 1)"
+            >
+              ← Anterior
+            </button>
+            <span>Página {{ data.page }} de {{ data.totalPages }}</span>
+            <button
+              type="button"
+              [disabled]="data.page === data.totalPages || loading()"
+              (click)="search(data.page + 1)"
+            >
+              Siguiente →
+            </button>
+          </nav>
+        }
+      }
+    }
+  </section>
+
+  <section class="subscription-panel" id="alertas" aria-labelledby="subscription-title">
+    <div class="subscription-intro">
+      <span class="step">03</span>
+      <h2 id="subscription-title">Alertas a tu medida</h2>
+      <p>Recibe un resumen de publicaciones relevantes. Confirma tu correo antes de activar los envíos.</p>
+    </div>
+    @if (managedSubscription(); as managed) {
+      <p class="subscription-account">Gestionando alertas para <strong>{{ managed.email }}</strong></p>
+    }
+    <form class="subscription-form" (ngSubmit)="managedSubscription() ? savePreferences() : submitSubscription()">
+      @if (!managedSubscription()) {
+        <label class="subscription-email">
+          <span>Correo electrónico</span>
+          <input type="email" name="subscriptionEmail" [(ngModel)]="subscriptionEmail" required
+            autocomplete="email" placeholder="tu@empresa.es" />
+        </label>
+      }
+      <fieldset>
+        <legend>Temas (vacío = todos)</legend>
+        <div class="category-choices">
+          @for (category of categoryOptions; track category.value) {
+            <label>
+              <input type="checkbox" [checked]="subscriptionCategories.includes(category.value)"
+                (change)="toggleCategory(category.value, $any($event.target).checked)" />
+              {{ category.label }}
+            </label>
+          }
+        </div>
+      </fieldset>
+      <label class="subscription-keywords">
+        <span>Palabras clave (separadas por comas; vacío = todas)</span>
+        <input type="text" name="subscriptionKeywords" [(ngModel)]="subscriptionKeywords"
+          placeholder="digitalización, autónomos…" />
+      </label>
+      <label class="subscription-hour">
+        <span>Hora preferida (Madrid)</span>
+        <select name="digestHour" [(ngModel)]="digestHour">
+          @for (hour of [7, 8, 9, 10, 12, 16, 20]; track hour) {
+            <option [ngValue]="hour">{{ hour }}:00</option>
+          }
+        </select>
+      </label>
+      @if (!managedSubscription()) {
+        <label class="subscription-consent">
+          <input type="checkbox" name="consent" [(ngModel)]="consent" required />
+          Acepto recibir correos de BOE Radar IA. Podré darme de baja desde cada alerta.
+        </label>
+      }
+      <button class="primary-button" type="submit" [disabled]="subscriptionBusy()">
+        {{ managedSubscription() ? 'Guardar preferencias' : 'Solicitar alertas' }}
+      </button>
+    </form>
+    @if (managedSubscription()) {
+      <button class="unsubscribe-button" type="button" (click)="leaveSubscription()">Dar de baja</button>
+    }
+    @if (subscriptionMessage()) {
+      <p class="subscription-message" role="status">{{ subscriptionMessage() }}</p>
+    }
+    <p class="subscription-note">Los análisis son orientativos. Las alertas automáticas requieren revisión de la fuente oficial.</p>
+  </section>
+</main>
+
+@if (detailLoading()) {
+  <div class="detail-backdrop">
+    <div class="detail-loading">Cargando ficha oficial…</div>
+  </div>
+} @else if (selected(); as publication) {
+  <div class="detail-backdrop" (click)="closeDetails()">
+    <article
+      class="detail-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="detail-title"
+      (click)="$event.stopPropagation()"
+    >
+      <button class="close-button" type="button" (click)="closeDetails()" aria-label="Cerrar">
+        ×
+      </button>
+      <div class="eyebrow">{{ publication.externalId }} · BOE {{ publication.issueNumber }}</div>
+      <h2 id="detail-title">{{ publication.title }}</h2>
+      <dl>
+        <div>
+          <dt>Publicación</dt>
+          <dd>{{ publication.publicationDate | date: 'd MMMM yyyy' : 'UTC' }}</dd>
+        </div>
+        <div>
+          <dt>Sección</dt>
+          <dd>{{ publication.sectionName }}</dd>
+        </div>
+        <div>
+          <dt>Organismo</dt>
+          <dd>{{ publication.department }}</dd>
+        </div>
+        @if (publication.epigraph) {
+          <div>
+            <dt>Epígrafe</dt>
+            <dd>{{ publication.epigraph }}</dd>
+          </div>
+        }
+      </dl>
+      @if (publication.analysis; as analysis) {
+        <section class="analysis-block" aria-labelledby="analysis-title">
+          <div class="analysis-heading">
+            <span>Radar {{ categoryLabel(analysis.category) }}</span>
+            <span>{{ confidencePercent(analysis.confidence) }}% confianza</span>
+          </div>
+          <h3 id="analysis-title">Por qué puede importarte</h3>
+          <p class="analysis-summary">{{ analysis.summary }}</p>
+
+          @if (analysis.requirements.length) {
+            <h4>Requisitos detectados</h4>
+            <ul>
+              @for (requirement of analysis.requirements; track requirement) {
+                <li>{{ requirement }}</li>
+              }
+            </ul>
+          }
+
+          @if (analysis.deadlines.length) {
+            <h4>Plazos</h4>
+            <ul>
+              @for (deadline of analysis.deadlines; track deadline.description) {
+                <li>
+                  @if (deadline.date) { <strong>{{ deadline.date }}</strong> · }
+                  {{ deadline.description }}
+                </li>
+              }
+            </ul>
+          }
+
+          @if (analysis.evidence.length) {
+            <h4>Evidencia en la fuente</h4>
+            @for (evidence of analysis.evidence; track evidence.quote) {
+              <blockquote>“{{ evidence.quote }}”</blockquote>
+            }
+          }
+
+          <p class="analysis-meta">
+            Método: {{ analysis.method === 'gemini' ? analysis.modelName : 'heurística local' }} ·
+            contrato {{ analysis.promptVersion }}
+          </p>
+        </section>
+      }
+      <div class="official-links">
+        @if (publication.officialHtmlUrl) {
+          <a [href]="publication.officialHtmlUrl" target="_blank" rel="noopener">HTML oficial ↗</a>
+        }
+        @if (publication.officialXmlUrl) {
+          <a [href]="publication.officialXmlUrl" target="_blank" rel="noopener">XML oficial ↗</a>
+        }
+        @if (publication.officialPdfUrl) {
+          <a class="primary-link" [href]="publication.officialPdfUrl" target="_blank" rel="noopener">
+            PDF oficial ↗
+          </a>
+        }
+      </div>
+      <p class="detail-note">
+        Información orientativa. Comprueba siempre el texto oficial; no sustituye
+        asesoramiento jurídico, fiscal o laboral.
+      </p>
+    </article>
+  </div>
+}
+
+<footer>
+  <p>
+    Basado en datos de la
+    <a href="https://www.boe.es" target="_blank" rel="noopener">
+      Agencia Estatal Boletín Oficial del Estado
+    </a>.
+  </p>
+  <p>BOE Radar IA · {{ currentYear }} · Información no oficial</p>
+</footer>

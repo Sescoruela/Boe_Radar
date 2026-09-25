@@ -1,0 +1,58 @@
+[
+  {
+    "externalId": "GOLD-001",
+    "title": "Extracto de la convocatoria de ayudas a redes de investigación",
+    "department": "Agencia Estatal de Investigación",
+    "sectionCode": "5B",
+    "expectedCandidate": true
+  },
+  {
+    "externalId": "GOLD-002",
+    "title": "Bases reguladoras para la concesión de subvenciones a pequeñas empresas",
+    "department": "Ministerio de Industria",
+    "sectionCode": "3",
+    "expectedCandidate": true
+  },
+  {
+    "externalId": "GOLD-003",
+    "title": "Modificación de determinadas obligaciones tributarias para trabajadores autónomos",
+    "department": "Ministerio de Hacienda",
+    "sectionCode": "1",
+    "expectedCandidate": true
+  },
+  {
+    "externalId": "GOLD-004",
+    "title": "Línea de financiación para la digitalización de pymes",
+    "department": "Ministerio de Economía",
+    "sectionCode": "3",
+    "expectedCandidate": true
+  },
+  {
+    "externalId": "GOLD-005",
+    "title": "Real Decreto por el que se designa Embajadora de España",
+    "department": "Ministerio de Asuntos Exteriores",
+    "sectionCode": "2A",
+    "expectedCandidate": false
+  },
+  {
+    "externalId": "GOLD-006",
+    "title": "Anuncio de formalización de contratos para auditar ayudas ya concedidas",
+    "department": "Entidad Pública Empresarial",
+    "sectionCode": "5A",
+    "expectedCandidate": false
+  },
+  {
+    "externalId": "GOLD-007",
+    "title": "Resolución de nombramiento de funcionarios de carrera",
+    "department": "Ministerio de Justicia",
+    "sectionCode": "2A",
+    "expectedCandidate": false
+  },
+  {
+    "externalId": "GOLD-008",
+    "title": "Edicto de la Administración de Justicia",
+    "department": "Juzgado de Primera Instancia",
+    "sectionCode": "4",
+    "expectedCandidate": false
+  }
+]

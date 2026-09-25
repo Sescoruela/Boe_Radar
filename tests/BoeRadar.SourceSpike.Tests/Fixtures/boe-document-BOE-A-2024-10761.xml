@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<documento fecha_actualizacion="20251220192601">
+  <metadatos>
+    <identificador>BOE-A-2024-10761</identificador>
+    <origen_legislativo codigo="1">Estatal</origen_legislativo>
+    <departamento codigo="9562">Ministerio de Asuntos Exteriores, Unión Europea y Cooperación</departamento>
+    <rango codigo="1180">Acuerdo Internacional</rango>
+    <fecha_disposicion>20211210</fecha_disposicion>
+    <numero_oficial/>
+    <titulo>Modificaciones de los anexos I, II y IV del Protocolo para la protección del Mar Mediterráneo contra la contaminación causada por fuentes y actividades situadas en tierra, adoptadas en Antalya el 10 de diciembre de 2021.</titulo>
+    <diario codigo="BOE">Boletín Oficial del Estado</diario>
+    <fecha_publicacion>20240529</fecha_publicacion>
+    <diario_numero>130</diario_numero>
+    <seccion>1</seccion>
+    <subseccion/>
+    <pagina_inicial>61912</pagina_inicial>
+    <pagina_final>61920</pagina_final>
+    <suplemento_pagina_inicial/>
+    <suplemento_pagina_final/>
+    <url_pdf>https://www.boe.es/boe/dias/2024/05/29/pdfs/BOE-A-2024-10761.pdf</url_pdf>
+    <url_epub>
+      <url_epub>https://www.boe.es/diario_boe/epub.php?id=BOE-A-2024-10761</url_epub>
+    </url_epub>
+    <url_pdf_catalan/>
+    <url_pdf_euskera/>
+    <url_pdf_gallego/>
+    <url_pdf_valenciano/>
+    <estatus_legislativo>L</estatus_legislativo>
+    <fecha_vigencia>20230121</fecha_vigencia>
+    <estatus_derogacion>N</estatus_derogacion>
+    <fecha_derogacion/>
+    <judicialmente_anulada>N</judicialmente_anulada>
+    <fecha_anulacion/>
+    <vigencia_agotada>N</vigencia_agotada>
+    <estado_consolidacion codigo="0"/>
+    <letra_imagen>A</letra_imagen>
+    <suplemento_letra_imagen/>
+    <url_eli>https://www.boe.es/eli/es/ai/2021/12/10/(1)</url_eli>
+  </metadatos>
+  <metadata-eli>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:eli="http://data.europa.eu/eli/ontology#">
+      <eli:LegalResource rdf:about="https://www.boe.es/eli/es/ai/2021/12/10/(1)">
+        <eli:jurisdiction rdf:resource="http://www.elidata.es/mdr/authority/jurisdiction/1/es"/>
+        <eli:type_document rdf:resource="http://www.elidata.es/mdr/authority/resource-type/1/ai"/>
+        <eli:id_local rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BOE-A-2024-10761</eli:id_local>
+        <eli:date_document rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2021-12-10</eli:date_document>
+        <eli:number rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(1)</eli:number>
+        <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/71"/>
+        <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/1631"/>
+        <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/4868"/>
+        <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/4920"/>
+        <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/5282"/>
+        <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/5651"/>
+        <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/6212"/>
+        <eli:has_member>
+          <eli:LegalResource rdf:about="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof">
+            <eli:jurisdiction rdf:resource="http://www.elidata.es/mdr/authority/jurisdiction/1/es"/>
+            <eli:type_document rdf:resource="http://www.elidata.es/mdr/authority/resource-type/1/ai"/>
+            <eli:id_local rdf:datatype="http://www.w3.org/2001/XMLSchema#string">BOE-A-2024-10761</eli:id_local>
+            <eli:date_document rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2021-12-10</eli:date_document>
+            <eli:number rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(1)</eli:number>
+            <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/71"/>
+            <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/1631"/>
+            <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/4868"/>
+            <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/4920"/>
+            <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/5282"/>
+            <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/5651"/>
+            <eli:is_about rdf:resource="https://www.boe.es/legislacion/eli/materias/6212"/>
+            <eli:version rdf:resource="http://www.elidata.es/mdr/authority/version/dof"/>
+            <eli:is_member_of rdf:resource="https://www.boe.es/eli/es/ai/2021/12/10/(1)"/>
+            <eli:is_realized_by>
+              <eli:LegalExpression rdf:about="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof/spa">
+                <eli:language rdf:resource="http://www.elidata.es/mdr/authority/language/spa"/>
+                <eli:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Modificaciones de los anexos I, II y IV del Protocolo para la protección del Mar Mediterráneo contra la contaminación causada por fuentes y actividades situadas en tierra, adoptadas en Antalya el 10 de diciembre de 2021.</eli:title>
+                <eli:publisher_agent rdf:resource="https://www.boe.es"/>
+                <eli:date_publication rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2024-05-29</eli:date_publication>
+                <eli:realizes rdf:resource="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof"/>
+                <eli:is_embodied_by>
+                  <eli:Format rdf:about="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof/spa/epub">
+                    <eli:format rdf:resource="http://www.iana.org/assignments/media-types/application/epub+zip"/>
+                    <eli:embodies rdf:resource="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof/spa"/>
+                  </eli:Format>
+                </eli:is_embodied_by>
+                <eli:is_embodied_by>
+                  <eli:Format rdf:about="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof/spa/html">
+                    <eli:format rdf:resource="http://www.iana.org/assignments/media-types/text/html"/>
+                    <eli:embodies rdf:resource="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof/spa"/>
+                  </eli:Format>
+                </eli:is_embodied_by>
+                <eli:is_embodied_by>
+                  <eli:Format rdf:about="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof/spa/pdf">
+                    <eli:format rdf:resource="http://www.iana.org/assignments/media-types/application/pdf"/>
+                    <eli:embodies rdf:resource="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof/spa"/>
+                  </eli:Format>
+                </eli:is_embodied_by>
+                <eli:is_embodied_by>
+                  <eli:Format rdf:about="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof/spa/xml">
+                    <eli:format rdf:resource="http://www.iana.org/assignments/media-types/application/xml"/>
+                    <eli:embodies rdf:resource="https://www.boe.es/eli/es/ai/2021/12/10/(1)/dof/spa"/>
+                  </eli:Format>
+                </eli:is_embodied_by>
+              </eli:LegalExpression>
+            </eli:is_realized_by>
+          </eli:LegalResource>
+        </eli:has_member>
+      </eli:LegalResource>
+    </rdf:RDF>
+  </metadata-eli>
+  <analisis>
+    <materias>
+      <materia codigo="71" orden="1">Acuerdos internacionales</materia>
+      <materia codigo="1631" orden="1">Contaminación de las aguas</materia>
+      <materia codigo="4868" orden="1">Mar</materia>
+      <materia codigo="4920" orden="1">Mediterráneo</materia>
+      <materia codigo="5282" orden="1">Organización de las Naciones Unidas</materia>
+      <materia codigo="5651" orden="1">Políticas de medio ambiente</materia>
+      <materia codigo="6212" orden="1">Residuos</materia>
+    </materias>
+    <notas>
+      <nota codigo="11" orden="360">Fecha Resolución Ministerio de Asuntos Exteriores: 20 de mayo de 2024.</nota>
+    </notas>
+    <referencias>
+      <anteriores>
+        <anterior referencia="BOE-A-1984-14336" orden="2015">
+          <palabra codigo="270">MODIFICA</palabra>
+          <texto>los anexos I, II y IV del Protocolo de 17 de mayo de 1980</texto>
+        </anterior>
+      </anteriores>
+      <posteriores/>
+    </referencias>
+    <alertas>
+      <alerta codigo="119" orden="1">Medio ambiente</alerta>
+      <alerta codigo="123" orden="1">Relaciones internacionales</alerta>
+    </alertas>
+  </analisis>
+  <texto>
+    <p class="centro_redonda">DECISIÓN IG.25/5</p>
+    <p class="centro_negrita">Modificaciones de los anexos I, II y IV del Protocolo para la Protección del Mar Mediterráneo contra la contaminación causada por fuentes y actividades situadas en tierra</p>
+    <p class="parrafo_2">
+      <em>Las Partes Contratantes del Convenio para la Protección del Medio Marino y de la Región Costera del Mediterráneo (Convenio de Barcelona) y sus Protocolos en su 22.ª reunión.</em>
+    </p>
+    <p class="parrafo"><em>Recordando</em> la Resolución 70/1 de la Asamblea General de Naciones Unidas, de 25 de septiembre de 2015, titulada «Transformar nuestro mundo: la Agenda 2030 para el Desarrollo Sostenible».</p>
+    <p class="parrafo"><em>Recordando además</em> la resolución del 15 de marzo de 2019 de la Asamblea de las Naciones Unidas sobre el Medio Ambiente UNEP/EA.4/Res.21, titulada «Hacia un planeta sin contaminación».</p>
+    <p class="parrafo"><em>Visto</em> el Convenio de Barcelona y, en particular, su artículo 23, que establece el procedimiento de modificación de los anexos del Convenio de Barcelona y sus Protocolos.</p>
+    <p class="parrafo"><em>Visto</em> también el Protocolo para la protección del Mar Mediterráneo contra la contaminación causada por fuentes y actividades terrestres, en adelante «Protocolo LBS» y, en particular, su artículo 14.2 (b), que establece que la función de las reuniones de las Partes del Protocolo será, entre otras, revisar y modificar según proceda cualquier anexo del Protocolo.</p>
+    <p class="parrafo"><em>Recordando</em> la Decisión IG.24/10 sobre los principales elementos de los seis planes regionales para reducir/prevenir la contaminación marina procedente de fuentes terrestres; actualización de los anexos de los protocolos relativos a la contaminación procedente de fuentes terrestres y de vertidos o <em>dumping </em>del Convenio de Barcelona, aprobada por las Partes Contratantes en su 21ª reunión (COP 21) (Nápoles, Italia, del 2 al 5 de diciembre de 2019).</p>
+    <p class="parrafo"><em>Conscientes</em> de la necesidad de actualizar los anexos del Protocolo LBS para reflejar los avances normativos, científicos y técnicos relacionados con las fuentes y actividades de origen terrestre producidos tanto a nivel mundial como regional, incluidos los avances pertinentes en el marco del sistema del Plan de Acción para el Mediterráneo (PAM)-Convenio de Barcelona, con especial atención a los avances relativos a la aplicación del enfoque ecosistémico para lograr el buen estado medioambiental (BEM) del mar Mediterráneo y su litoral y a la mejora de la integración de los enfoques de consumo y producción sostenibles y de economía circular.</p>
+    <p class="parrafo"><em>Con aprecio hacia</em> la labor realizada por el grupo de trabajo de expertos (videoconferencia del 10 de diciembre de 2020), al que se encomendó la actualización de los anexos del Protocolo LBS.</p>
+    <p class="parrafo"><em>Habiendo examinado</em> el informe de la reunión de los puntos focales de MED POL (videoconferencia del 27 al 28 de mayo de 2021).</p>
+    <p class="parrafo_2">1. <em>Aprueban</em> las modificaciones de los anexos I, II y IV del Protocolo LBS que figuran en el anexo de la presente decisión.</p>
+    <p class="parrafo">2. <em>Acuerdan,</em> de conformidad con el artículo 23 (2) (iv), establecer un período de sesenta días desde la adopción de la presente decisión, durante el cual cualquier Parte Contratante que no pueda aprobar las modificaciones lo notifique por escrito al Depositario.</p>
+    <p class="parrafo">3. <em>Solicitan</em> al Depositario que comunique sin demora a todas las Partes Contratantes las modificaciones aprobadas, de conformidad con el artículo 23 (2) (iii) del Convenio de Barcelona.</p>
+    <blockquote class="sangrado">
+      <p class="anexo_num">«ANEXO I</p>
+      <p class="anexo_tit">Elementos que se tendrán en cuenta en la preparación de planes de acción, programas y medidas para la eliminación de la contaminación causada por fuentes y actividades situadas en tierra</p>
+      <p class="parrafo_2">El presente anexo contiene los elementos que se tendrán en cuenta en la preparación de planes de acción, programas y medidas para la eliminación de la contaminación causada por fuentes y actividades situadas en tierra a que se hace referencia en los artículos 5, 7 y 15 del presente Protocolo.</p>
+      <p class="parrafo">Esos planes de acción, programas y medidas tendrán por finalidad abarcar los sectores de actividades enumerados en la sección A y también los grupos de sustancias que figuran en la sección C, elegidas tomando como base las características enumeradas en la sección B del presente anexo.</p>
+      <p class="parrafo">Las Partes establecerán prioridades de acción teniendo presente la importancia relativa de la repercusión en la salud pública, el medio ambiente y las condiciones socioeconómicas y culturales. Esos programas deben abarcar fuentes puntuales y difusas y la deposición atmosférica.</p>
+      <p class="parrafo">Al preparar planes de acción, programas y medidas, las Partes, de conformidad con el Programa de acción mundial para la protección del medio marino frente a las actividades situadas en tierra, adoptado en Washington, D.C., en 1995, darán prioridad a las sustancias que sean tóxicas, persistentes y bioacumulables, en particular a los contaminantes orgánicos persistentes (COP), así como al tratamiento y manejo de las aguas residuales.</p>
+      <p class="parrafo_2">10. SECTORES DE ACTIVIDADES.</p>
+      <p class="parrafo_2">Se tomarán principalmente en consideración los siguientes sectores de actividades, que no se enumeran por orden de prioridad, al establecer las prioridades para la preparación de planes de acción, programas y medidas destinados a la eliminación de la contaminación causada por fuentes y actividades situadas en tierra:</p>
+      <p class="parrafo_2">1. Producción de energía.</p>
+      <p class="parrafo">2. Producción de fertilizantes.</p>
+      <p class="parrafo">3. Producción y formulación de biocidas.</p>
+      <p class="parrafo">4. Industria farmacéutica.</p>
+      <p class="parrafo">5. Refinerías de petróleo.</p>
+      <p class="parrafo">6. Industria de producción y transformación de papel, pasta de papel y madera.</p>
+      <p class="parrafo">7. Producción de cemento.</p>
+      <p class="parrafo">8. Industria de preparación y curtido de pieles, teñido y acabado incluidos.</p>
+      <p class="parrafo">9. Industria del metal, incluidos los procesos térmicos de la industria metalúrgica.</p>
+      <p class="parrafo">10. Minas y canteras.</p>
+      <p class="parrafo">11. Industria de construcción y reparación de buques.</p>
+      <p class="parrafo">12. Actividades portuarias.</p>
+      <p class="parrafo">13. Industria textil, pretratamiento, teñido y acabado incluidos.</p>
+      <p class="parrafo">14. Industria electrónica.</p>
+      <p class="parrafo">15. Industria del reciclaje.</p>
+      <p class="parrafo">16. Otros sectores de la industria química orgánica.</p>
+      <p class="parrafo">17. Otros sectores de la industria química inorgánica.</p>
+      <p class="parrafo">18. Actividades e infraestructuras turísticas y de ocio, incluidos los cruceros y las embarcaciones de recreo.</p>
+      <p class="parrafo">19. Agricultura.</p>
+      <p class="parrafo">20. Cría de animales, incluidos los mataderos y las industrias de subproductos animales.</p>
+      <p class="parrafo">21. Elaboración de alimentos.</p>
+      <p class="parrafo">22. Acuicultura y pesca.</p>
+      <p class="parrafo">23. Tratamiento y eliminación de los residuos peligrosos.</p>
+      <p class="parrafo">24. Tratamiento y eliminación de las aguas residuales urbanas.</p>
+      <p class="parrafo">25. Gestión de los residuos sólidos urbanos, tratamiento y eliminación incluidos.</p>
+      <p class="parrafo">26. Evacuación de los fangos cloacales.</p>
+      <p class="parrafo">27. Industria de la gestión de residuos.</p>
+      <p class="parrafo">28. Incineración de residuos y su gestión.</p>
+      <p class="parrafo">29. Obras que causan una alteración física del estado natural de las costas, incluidos la reestructuración física de los ríos, el litoral o el fondo marino (ordenación de los recursos hídricos) y el dragado.</p>
+      <p class="parrafo">30. Transporte.</p>
+      <p class="parrafo">31. Construcción.</p>
+      <p class="parrafo">32. Captación y abastecimiento de agua, incluida la desalinización del agua de mar.</p>
+      <p class="parrafo">33. Zonas industriales mixtas con presencia de al menos uno de los anteriores sectores.</p>
+      <p class="centro_cursiva">B. Características de las sustancias que se encuentran en el medio ambiente</p>
+      <p class="parrafo_2">Para la preparación de planes de acción, programas y medidas, las Partes deben tener en cuenta las características enumeradas a continuación:</p>
+      <p class="parrafo_2">1. Persistencia.</p>
+      <p class="parrafo">2. Toxicidad y otras propiedades nocivas (por ejemplo, carcinogenicidad, mutagenicidad, teratogenicidad).</p>
+      <p class="parrafo">3. Bioacumulación.</p>
+      <p class="parrafo">4. Radiactividad.</p>
+      <p class="parrafo">5. Relación entre las concentraciones observadas y las concentraciones sin efectos observados (CSEO).</p>
+      <p class="parrafo">6. Riesgo de eutrofización por causas antropogénicas.</p>
+      <p class="parrafo">7. Riesgo de acidificación.</p>
+      <p class="parrafo">8. Efectos y riesgos para la salud.</p>
+      <p class="parrafo">9. Importancia transfronteriza.</p>
+      <p class="parrafo">10. Peligro de cambios no deseados en el ecosistema marino y el carácter irreversible y duradero de los efectos, en particular:</p>
+      <p class="parrafo_2">a) Impactos adversos en la composición de las especies y en la variación espaciotemporal de especies/poblaciones, incluidos la distribución, la abundancia y/o la biomasa, la fecundidad y los índices de supervivencia y mortalidad/lesión y el comportamiento.</p>
+      <p class="parrafo">b) Impactos adversos en las características de los hábitats.</p>
+      <p class="parrafo_2">11. Interferencia con la explotación sostenible de los recursos vivos o con otros usos legítimos del mar:</p>
+      <p class="parrafo_2">12. Efectos sobre el sabor y/o el olor de los productos destinados al consumo humano procedentes del mar.</p>
+      <p class="parrafo">13. Efectos sobre el olor, el color, la transparencia u otras características del agua de mar.</p>
+      <p class="parrafo">14. Pauta de distribución (es decir, cantidades implicadas, modalidades de uso y probabilidad de llegar al medio marino).</p>
+      <p class="parrafo">15. Potencial de transporte a larga distancia en el medio ambiente y cambio climático.</p>
+      <p class="centro_cursiva">C. Categorías de sustancias</p>
+      <p class="parrafo_2">Las categorías de sustancias y fuentes de contaminación siguientes servirán de orientación en la preparación de planes de acción, programas y medidas:</p>
+      <p class="parrafo_2">1. Compuestos organohalogenados y sustancias que pueden formar esos compuestos en el medio marino. Se dará prioridad a aldrina, clordano, DDT, dieldrina, dioxinas y furanos, endrina, heptacloro, hexaclorobenceno, mirex, PCB, toxafeno; bifenilos policlorados (PCB), dibenzodioxinas policloradas (PCDD), dibenzofuranos policlorados (PCDF), endosulfán y sus isómeros conexos, hexaclorociclohexano, dietilhexilftalato (DEHP), clordecona, hexabromobifenilo, éter de hexabromodifenilo y heptabromodifenilo, lindano, pentaclorobenceno, éter de tetrabromodifenilo y pentabromodifenilo, ácido sulfónico de perfluorooctano y sus sales; fluoruro de perfluorooctano sulfonilo, hexabromociclododecano hexaclorobutadieno, pentaclorofenol y sus sales y ésteres; naftalenos policlorados.</p>
+      <p class="parrafo">2. Materia en suspensión/partículas, compuestos orgánicos volátiles (COV) totales, óxidos de nitrógeno, NH3, óxido de azufre.</p>
+      <p class="parrafo">3. Compuestos organofosforados y sustancias de silicio que puedan formar esos compuestos en el medio marino.</p>
+      <p class="parrafo">4. Compuestos orgánicos del estaño y sustancias que pueden formar esos compuestos en el medio marino.</p>
+      <p class="parrafo">5. Hidrocarburos aromáticos policíclicos.</p>
+      <p class="parrafo">6. Metales pesados y sus compuestos. Se da prioridad a cromo, cadmio, plomo, mercurio, níquel, compuestos orgánicos del estaño, compuestos orgánicos de mercurio y compuestos orgánicos de plomo.</p>
+      <p class="parrafo">7. Aceites lubricantes usados.</p>
+      <p class="parrafo">8. Sustancias radiactivas, incluidos sus residuos, cuando sus vertidos no respeten los principios de protección contra las radiaciones definidos por las organizaciones internacionales competentes, teniendo en cuenta la protección del medio marino.</p>
+      <p class="parrafo">9. Biocidas y sus derivados.</p>
+      <p class="parrafo">10. Microorganismos patógenos.</p>
+      <p class="parrafo">11. Petróleo crudo e hidrocarburos procedentes del petróleo.</p>
+      <p class="parrafo">12. Cianuros y fluoruros.</p>
+      <p class="parrafo">13. Detergentes no biodegradables y otras sustancias tensoactivas no biodegradables.</p>
+      <p class="parrafo">14. Compuestos de nitrógeno y fósforo y otras sustancias que pueden causar eutrofización, incluidas las sustancias biodegradables que se expresan en forma de demanda biológica de oxígeno (DBO), demanda química de oxígeno (DQO) o carbono orgánico total (COT), nitrógeno total y fósforo total.</p>
+      <p class="parrafo">15. Basura (cualquier material sólido persistente fabricado o tratado que se descargue, evacue o abandone en el medio marino y costero), incluidos los plásticos, los microplásticos y la microbasura.</p>
+      <p class="parrafo">16. Descargas térmicas y aporte de otras formas de energía.</p>
+      <p class="parrafo">17. Compuestos ácidos o alcalinos que pueden deteriorar la calidad del agua.</p>
+      <p class="parrafo">18. Sustancias no tóxicas que tienen efectos perjudiciales en el contenido de oxígeno del medio marino.</p>
+      <p class="parrafo">19. Sustancias no tóxicas que pueden obstaculizar cualquier utilización legítima del mar.</p>
+      <p class="parrafo">20. Sustancias no tóxicas que pueden tener efectos perjudiciales en las características físicas o químicas del agua del mar.</p>
+      <p class="parrafo">21. Salmuera.</p>
+      <p class="parrafo">22. Compuestos fenólicos, material ignífugo bromado, hidrocarburos aromáticos policíclicos y parafinas doradas de cadena corta.</p>
+      <p class="parrafo">23. Productos químicos utilizados para la conservación y/o el tratamiento de la madera, la madera de construcción, la pulpa papelera, la celulosa, el papel, las pieles y los textiles.</p>
+      <p class="anexo_num">ANEXO II</p>
+      <p class="anexo_tit">Elementos que se han de tener en cuenta al emitir las autorizaciones de vertido de residuos</p>
+      <p class="parrafo_2">Cuando se vaya a emitir una autorización de vertido de residuos que contengan alguna de las sustancias a que se hace referencia en el artículo 6 del presente Protocolo, se tendrán particularmente en cuenta, en la forma que proceda, los factores siguientes:</p>
+      <p class="centro_cursiva">A. Características y composición de los vertidos</p>
+      <p class="parrafo_2">1. Tipo y dimensión de la fuente puntual o difusa (por ejemplo, proceso industrial).</p>
+      <p class="parrafo">2. Tipo de vertidos (por ejemplo, origen, composición media).</p>
+      <p class="parrafo">3. Estado de los residuos (por ejemplo, sólidos, líquidos, lodos, fangos).</p>
+      <p class="parrafo">4. Cantidad total (volumen vertido, por ejemplo, por año).</p>
+      <p class="parrafo">5. Pauta de descarga (continua, intermitente, variable según la estación, etc.).</p>
+      <p class="parrafo">6. Concentraciones con respecto a los componentes pertinentes de las sustancias enumeradas en el anexo I y de otras sustancias, según proceda.</p>
+      <p class="parrafo">7. Propiedades físicas, químicas y bioquímicas de los vertidos de residuos.</p>
+      <p class="centro_cursiva">B. Características de los componentes del vertido con respecto a su nocividad</p>
+      <p class="parrafo_2">1. Persistencia (física, química, biológica) en el medio marino.</p>
+      <p class="parrafo">2. Toxicidad y otros efectos nocivos.</p>
+      <p class="parrafo">3. Acumulación en materiales biológicos o sedimentos.</p>
+      <p class="parrafo">4. Transformación bioquímica que produce compuestos nocivos.</p>
+      <p class="parrafo">5. Efectos adversos sobre el contenido y el equilibrio del oxígeno.</p>
+      <p class="parrafo">6. Susceptibilidad a los cambios físicos, químicos y bioquímicos e interacción en el medio acuático con otros componentes del agua de mar que puedan producir efectos nocivos biológicos o de otro tipo en cualquiera de los usos enumerados en la siguiente sección E.</p>
+      <p class="parrafo">7. Todas las demás características enumeradas en el anexo I, sección B.</p>
+      <p class="centro_cursiva">C. Características del lugar de vertido y del medio ambiente receptor</p>
+      <p class="parrafo_2">1. Características hidrográficas, meteorológicas, geológicas y topográficas de la zona litoral.</p>
+      <p class="parrafo">2. Emplazamiento y tipo de vertido (emisario, salida de canal, etc.) y su relación con otras zonas (como zonas de recreo, de desove, de cría y de pesca, de marisqueo) y otros vertidos.</p>
+      <p class="parrafo">3. Dilución inicial conseguida en el punto de vertido en el medio receptor.</p>
+      <p class="parrafo">4. Características de dispersión, como los efectos de las corrientes, las mareas y el viento en el transporte horizontal y la mezcla vertical.</p>
+      <p class="parrafo">5. Características de las aguas receptoras con respecto a las condiciones físicas, químicas, biológicas y ecológicas en la zona de vertido, así como las funciones y procesos del ecosistema, en particular la temperatura, la hidrología, la batimetría, la turbidez, la transparencia, el sonido, la salinidad, los nutrientes, el carbono orgánico, la clorofila, los gases disueltos, la acidez (Ph), los vínculos existentes entre las especies de aves marinas, los mamíferos, los reptiles, los peces y los cefalópodos y los hábitats, los cambios de la comunidad pelágica-bentónica y la productividad.</p>
+      <p class="parrafo">6. Capacidad del medio marino receptor de absorber vertidos de residuos sin efectos desfavorables.</p>
+      <p class="centro_cursiva">D. Disponibilidad de tecnologías relacionadas con los residuos</p>
+      <p class="parrafo_2">Los métodos de reducción y vertido de residuos para los efluentes industriales, así como para las aguas residuales domésticas, deberán escogerse teniendo en cuenta la disponibilidad y la viabilidad de:</p>
+      <p class="parrafo_2">(a) Procesos de tratamiento alternativos.</p>
+      <p class="parrafo">(b) Métodos de reutilización o eliminación.</p>
+      <p class="parrafo">(c) Alternativas de eliminación en tierra.</p>
+      <p class="parrafo">(d) Tecnologías de bajos residuos apropiadas.</p>
+      <p class="centro_cursiva">E. Posible afectación a los ecosistemas marinos y los usos del agua de mar</p>
+      <p class="parrafo_2">1. Efectos sobre la salud humana a causa de las consecuencias de la contaminación en:</p>
+      <p class="parrafo_2">(a) La extracción de organismos marinos comestibles y cultivo de recursos vivos.</p>
+      <p class="parrafo">(b) Las aguas de baño.</p>
+      <p class="parrafo">(c) Los aspectos estéticos, entre ellos el color y el olor.</p>
+      <p class="parrafo_2">2. Efectos provocados en los ecosistemas marinos, incluidas las redes tróficas, en particular los recursos vivos, las especies en peligro y los hábitats críticos a causa de:</p>
+      <p class="parrafo_2">(a) Ruido.</p>
+      <p class="parrafo">(b) Luz artificial.</p>
+      <p class="parrafo">(c) Acidificación.</p>
+      <p class="parrafo">(d) Eutrofización.</p>
+      <p class="parrafo">(e) Cambios hidrográficos.</p>
+      <p class="parrafo_2">3. Reestructuración física de los ríos, el litoral o el fondo marino.</p>
+      <p class="parrafo">4. Efectos sobre otros usos legítimos del mar.</p>
+      <p class="anexo_num">ANEXO IV</p>
+      <p class="anexo_tit">Criterios para definir las mejores técnicas disponibles y la mejor práctica ambiental</p>
+      <p class="centro_cursiva">A. Mejores técnicas disponibles</p>
+      <p class="parrafo_2">1. El uso de las mejores técnicas disponibles tendrá por objeto prevenir o minimizar el impacto ambiental en todas las etapas del ciclo de vida de los productos y mantener el mayor tiempo posible el valor de los productos, materiales y recursos en la economía, reduciendo al mínimo la generación de residuos.</p>
+      <p class="parrafo">2. La expresión “mejores técnicas disponibles” significa los últimos adelantos (tecnología punta) en los procesos, las instalaciones o los métodos de explotación que indiquen la idoneidad práctica de una medida concreta para prevenir y, cuando no sea posible, reducir los vertidos, las emisiones y los residuos. A la hora de determinar si una serie de procesos, instalaciones y métodos de funcionamiento constituyen las mejores técnicas disponibles, en general o en casos concretos, se tendrán en cuenta, en especial:</p>
+      <p class="parrafo_2">(a) Los procesos, las instalaciones o los métodos de funcionamiento equiparables probados con éxito recientemente.</p>
+      <p class="parrafo">(b) Los avances tecnológicos y la evolución de los conocimientos científicos y la comprensión.</p>
+      <p class="parrafo">(c) La viabilidad económica de esas técnicas.</p>
+      <p class="parrafo">(d) Los plazos de instalación, tanto en las instalaciones nuevas como en las ya existentes.</p>
+      <p class="parrafo">(e) La naturaleza, los efectos y el volumen de los vertidos y las emisiones en cuestión.</p>
+      <p class="parrafo">(h) Las fechas de puesta en servicio de las instalaciones nuevas o ya existentes.</p>
+      <p class="parrafo">(i) El consumo y la naturaleza de las materias primas utilizadas en el proceso y su eficiencia energética.</p>
+      <p class="parrafo">(j) La necesidad de prevenir o reducir el impacto global de las emisiones en el medio ambiente y los riesgos que conlleva para este.</p>
+      <p class="parrafo">(k) La necesidad de prevenir accidentes y de minimizar sus consecuencias para el medio ambiente.</p>
+      <p class="parrafo">(l) La necesidad de garantizar la salud.y la seguridad laboral en los centros de trabajo.</p>
+      <p class="parrafo">(m) La necesidad de utilizar sustancias no tóxicas que hagan posibles flujos de residuos no tóxicos que faciliten la recuperación y el reciclaje.</p>
+      <p class="parrafo">(p) La necesidad de que el material y los productos sigan utilizándose el mayor tiempo posible.</p>
+      <p class="parrafo_2">3. De todo lo anterior se desprende que las que se consideran “mejores técnicas disponibles” para un proceso particular evolucionarán con el paso del tiempo en consonancia con los avances tecnológicos, los factores económicos y sociales, así como la evolución de los conocimientos científicos y la comprensión.</p>
+      <p class="parrafo">4. Si la reducción de los vertidos y las emisiones derivada de la utilización de las mejores técnicas disponibles no conlleva resultados aceptables desde el punto de vista ambiental, deberán adoptarse medidas adicionales.</p>
+      <p class="parrafo">5. Por “técnicas” se entiende tanto la tecnología utilizada como la forma en que se diseña, construye, mantiene, explota, desmantela y recicla la instalación.</p>
+      <p class="centro_cursiva">B. Mejor práctica ambiental</p>
+      <p class="parrafo_2">6. El término “mejor práctica ambiental” significa la aplicación de la combinación más adecuada de medidas y estrategias de control ambiental con el fin de prevenir y controlar la contaminación, prever los residuos y la contaminación, prolongar el uso de los productos y los materiales y regenerar los sistemas naturales. Al realizar una selección para casos particulares deberán tenerse en cuenta al menos las siguientes medidas escalonadas:</p>
+      <p class="parrafo_2">(a) Informar y concienciar al público y a los usuarios sobre las consecuencias ambientales de elegir determinadas actividades y productos, utilizarlos y desecharlos en última instancia.</p>
+      <p class="parrafo">(b) Desarrollar y aplicar códigos de buena práctica ambiental que abarquen todos los aspectos de la actividad en el ciclo de vida del producto.</p>
+      <p class="parrafo">(c) Utilizar obligatoriamente etiquetas que informen a los usuarios de los riesgos para el medio ambiente que implican un producto, su utilización y su eliminación final.</p>
+      <p class="parrafo">(d) Ahorrar recursos, entre ellos energía.</p>
+      <p class="parrafo">(e) Poner a disposición del público sistemas de recogida y eliminación, así como centros de reutilización.</p>
+      <p class="parrafo">(f) Evitar la utilización de sustancias o productos peligrosos y la generación de residuos peligrosos.</p>
+      <p class="parrafo">(g) Establecer procesos (es decir, simbiosis industrial) que permitan que los residuos o subproductos de un sector o proceso industrial se convierten en las materias primas de otro.</p>
+      <p class="parrafo">(h) Aplicar instrumentos económicos a actividades, productos o grupos de productos.</p>
+      <p class="parrafo">(i) Establecer un sistema de concesión de autorizaciones que prevea una serie de restricciones o prohibiciones.</p>
+      <p class="parrafo">(j) Utilizar etiquetas, diseños e innovaciones ecológicos que identifiquen los productos cuya racionalidad ambiental esté demostrada.</p>
+      <p class="parrafo">(k) Establecer colaboraciones a lo largo de la cadena de valor que garanticen la trazabilidad del origen y el valor de las materias primas al cerrar el ciclo.</p>
+      <p class="parrafo_2">7. Para determinar qué combinación de medidas constituye la mejor práctica ambiental, tanto en general como en casos particulares, deberá tenerse especialmente en cuenta:</p>
+      <p class="parrafo_2">(a) El riesgo que represente para el medio ambiente el producto y su producción, utilización y eliminación final.</p>
+      <p class="parrafo">(b) La sustitución por actividades o sustancias menos contaminantes.</p>
+      <p class="parrafo">(c) El grado de utilización.</p>
+      <p class="parrafo">(d) Las posibles ventajas o consecuencias que los materiales o las actividades sustitutivos puedan representar para el medio ambiente.</p>
+      <p class="parrafo">(e) Los avances y la evolución de los conocimientos científicos y la comprensión.</p>
+      <p class="parrafo">(f) Los plazos límite de aplicación.</p>
+      <p class="parrafo">(g) Las implicaciones sociales y económicas.</p>
+      <p class="parrafo">(h) El posible mantenimiento del uso de los materiales y recursos (por ejemplo, mediante sistemas de servicios de productos).</p>
+      <p class="parrafo_2">8. De todo lo anterior se desprende que la mejor práctica ambiental para una fuente determinada evolucionará con el paso del tiempo en consonancia con los avances tecnológicos, los factores económicos y sociales, así como la evolución de los conocimientos científicos y la comprensión.</p>
+      <p class="parrafo">9. Si la reducción de aportaciones derivada de la utilización de la mejor práctica ambiental no produce resultados aceptables desde el punto de vista ambiental, habrá que adoptar medidas complementarias y redefinir la mejor práctica ambiental.</p>
+      <p class="centro_cursiva">C. Medidas generales de prevención relativas a las mejores técnicas disponibles y las mejores prácticas medioambientales</p>
+      <p class="parrafo_2">10. Hay que priorizar la aplicación de las MTD y la implementación de las MP en los sectores y las categorías de sustancias que figuran en el anexo I.</p>
+      <table class="tabla" data-omitir-repetir-tfoot="true">
+        <caption>
+          <p class="centro_redonda">Estados parte</p>
+        </caption>
+        <colgroup>
+          <col width="30%"/>
+          <col width="25%"/>
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="cabeza_tabla">Estado</th>
+            <th class="cabeza_tabla">Entrada en vigor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cuerpo_tabla_izq">Albania.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Argelia.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Bosnia y Herzegovina.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Chipre.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Croacia.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Egipto.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Eslovenia.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">España.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Francia.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Grecia.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Israel.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Italia.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Libia.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Líbano.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Malta.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Marruecos.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Mónaco.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Montenegro.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">República Árabe Siria.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Serbia.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Túnez.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Turquía.</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+          <tr>
+            <td class="cuerpo_tabla_izq">Comunidad Europea (*).</td>
+            <td class="cuerpo_tabla_izq">21 de enero de 2023.</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">
+              <p class="cita">(*) Unión Europea a partir del 1 de diciembre de 2009, fecha de entrada en vigor del Tratado de Lisboa.»</p>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </blockquote>
+    <p class="centro_redonda">* * *</p>
+    <p class="parrafo_2">Las presentes Enmiendas entraron en vigor, con carácter general y para España, el 21 de enero de 2023, de conformidad con lo dispuesto en el artículo 23 vi) del Convenio para la Protección del medio marino y de la región costera del Mediterráneo, hecho en Barcelona el 16 de febrero de 1976 (Convenio de Barcelona).</p>
+    <p class="parrafo_2">Madrid, 20 de mayo de 2024. La Secretaria general Técnica, Rosa Velázquez Álvarez.</p>
+  </texto>
+</documento>

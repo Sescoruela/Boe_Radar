@@ -1,0 +1,24 @@
+FROM node:22.22-alpine AS ui
+WORKDIR /ui
+COPY src/boe-radar-ui/package*.json ./
+RUN npm ci
+COPY src/boe-radar-ui/ .
+RUN npm run build
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS api
+WORKDIR /src
+COPY . .
+RUN dotnet restore src/BoeRadar.Web/BoeRadar.Web.csproj
+RUN dotnet publish src/BoeRadar.Web/BoeRadar.Web.csproj \
+    --configuration Release \
+    --no-restore \
+    --output /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=api /app/publish .
+COPY --from=ui /ui/dist/boe-radar-ui/browser ./wwwroot
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+USER $APP_UID
+ENTRYPOINT ["dotnet", "BoeRadar.Web.dll"]

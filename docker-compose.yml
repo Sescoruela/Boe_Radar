@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: boeradar
+      POSTGRES_USER: boeradar
+      POSTGRES_PASSWORD: boeradar_dev
+    ports:
+      - "54329:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U boeradar -d boeradar"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - boeradar-postgres:/var/lib/postgresql/data
+
+  mailpit:
+    image: axllent/mailpit:v1.31.1
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+
+  api:
+    build:
+      context: .
+      dockerfile: src/BoeRadar.Web/Dockerfile
+    environment:
+      ConnectionStrings__BoeRadar: Host=postgres;Port=5432;Database=boeradar;Username=boeradar;Password=boeradar_dev
+      PublicBaseUrl: http://localhost:4200
+      Email__Host: mailpit
+      Email__Port: 1025
+      Email__From: radar@localhost
+    ports:
+      - "5080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    profiles: ["app"]
+
+  ui:
+    build:
+      context: .
+      dockerfile: src/boe-radar-ui/Dockerfile
+    ports:
+      - "4200:8080"
+    depends_on:
+      - api
+    profiles: ["app"]
+
+  worker:
+    build:
+      context: .
+      dockerfile: src/BoeRadar.Worker/Dockerfile
+    environment:
+      ConnectionStrings__BoeRadar: Host=postgres;Port=5432;Database=boeradar;Username=boeradar;Password=boeradar_dev
+      PublicBaseUrl: http://localhost:4200
+      Email__Host: mailpit
+      Email__Port: 1025
+      Email__From: radar@localhost
+      Analysis__Provider: ${ANALYSIS_PROVIDER:-heuristic}
+      Analysis__Gemini__Project: ${GOOGLE_CLOUD_PROJECT:-}
+      Analysis__Gemini__Location: ${GOOGLE_CLOUD_LOCATION:-europe-west1}
+      Analysis__Gemini__Model: ${GEMINI_MODEL:-gemini-3.5-flash}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    profiles: ["tools"]
+
+volumes:
+  boeradar-postgres:

@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: boe-radar-ia
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./src/BoeRadar.Web/Dockerfile.render
+    dockerContext: .
+    healthCheckPath: /health/ready
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_HTTP_PORTS
+        value: "8080"
+      - key: PORT
+        value: "8080"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: boe-radar-db
+          property: connectionString
+      - key: Database__MigrateOnStartup
+        value: "true"
+      - key: Analysis__Provider
+        value: heuristic
+
+databases:
+  - name: boe-radar-db
+    plan: free
+    region: frankfurt
+    databaseName: boeradar
+    user: boeradar
+    postgresMajorVersion: "17"
+    ipAllowList: []

@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="src/BoeRadar.Sources/BoeRadar.Sources.csproj" />
+  <Project Path="src/BoeRadar.Domain/BoeRadar.Domain.csproj" />
+  <Project Path="src/BoeRadar.Application/BoeRadar.Application.csproj" />
+  <Project Path="src/BoeRadar.Infrastructure/BoeRadar.Infrastructure.csproj" />
+  <Project Path="src/BoeRadar.Web/BoeRadar.Web.csproj" />
+  <Project Path="src/BoeRadar.Worker/BoeRadar.Worker.csproj" />
+  <Project Path="src/BoeRadar.SourceSpike/BoeRadar.SourceSpike.csproj" />
+  <Project Path="tests/BoeRadar.SourceSpike.Tests/BoeRadar.SourceSpike.Tests.csproj" />
+  <Project Path="tests/BoeRadar.UnitTests/BoeRadar.UnitTests.csproj" />
+</Solution>
