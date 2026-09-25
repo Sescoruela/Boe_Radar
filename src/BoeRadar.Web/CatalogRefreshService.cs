@@ -1,5 +1,6 @@
 using BoeRadar.Application;
 using BoeRadar.Infrastructure.Persistence;
+using BoeRadar.Sources;
 using Microsoft.EntityFrameworkCore;
 
 namespace BoeRadar.Web;
@@ -48,6 +49,11 @@ public sealed class CatalogRefreshService(
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
                     throw;
+                }
+                catch (BoeSourceUnavailableException exception)
+                    when (exception.Message.StartsWith("El BOE no dispone de información", StringComparison.Ordinal))
+                {
+                    logger.LogInformation("No hay sumario del BOE para el {Date}.", date);
                 }
                 catch (Exception exception)
                 {

@@ -35,11 +35,15 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext)
                   EF.Functions.ILike(document.Title, "%subvenci%") ||
                   EF.Functions.ILike(document.Title, "%bonificaci%") ||
                   EF.Functions.ILike(document.Title, "%financiaci%") ||
-                  EF.Functions.ILike(document.Title, "%préstamo%")) &&
+                  EF.Functions.ILike(document.Title, "%préstamo%") ||
+                  EF.Functions.ILike(document.Title, "%programa auto+%")) &&
                  !EF.Functions.ILike(document.Title, "%ayuda al estudio%") &&
-                 !EF.Functions.ILike(document.Title, "%beca%")) ||
+                 !EF.Functions.ILike(document.Title, "%beca%") &&
+                 !EF.Functions.ILike(document.Title, "%concesión directa%") &&
+                 !EF.Functions.ILike(document.Title, "%administraciones públicas%")) ||
                 (document.SectionCode == "1" &&
-                 (EF.Functions.ILike(document.Title, "%tribut%") ||
+                 (EF.Functions.ILike(document.Title, "%tributari%") ||
+                  EF.Functions.ILike(document.Title, "%fiscal%") ||
                   EF.Functions.ILike(document.Title, "%impuesto%") ||
                   EF.Functions.ILike(document.Title, "%cotizaci%") ||
                   EF.Functions.ILike(document.Title, "%autónom%") ||
