@@ -20,6 +20,8 @@ services:
           property: connectionString
       - key: Database__MigrateOnStartup
         value: "true"
+      - key: Bootstrap__InitialIssueDate
+        value: "2026-09-24"
       - key: Analysis__Provider
         value: heuristic
 

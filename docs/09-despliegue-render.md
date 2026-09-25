@@ -24,8 +24,10 @@ conservar ahí. Consulta las condiciones actuales de Render antes de crearlo.
    los recursos que propone `render.yaml` antes de confirmar. Comprueba que
    aparecen **una web Free** y **una base de datos Free** en Frankfurt.
 3. Espera a que termine el despliegue y abre la URL HTTPS asignada. Prueba
-   `/health/ready`, `/` y `/api/v1/publications`. Un catálogo vacío es normal
-   hasta que se ejecute la ingesta.
+   `/health/ready`, `/` y `/api/v1/publications`. La primera vez, la web
+   importa el sumario del 24 de septiembre de 2026 si el catálogo está vacío.
+   El ajuste `Bootstrap__InitialIssueDate` en `render.yaml` controla esa fecha;
+   reiniciar la web no repite la carga cuando ya hay documentos.
 4. No copies la URL interna de PostgreSQL a variables públicas o al navegador.
    El Blueprint la inyecta como `DATABASE_URL` solo en el servicio web.
 
@@ -36,8 +38,8 @@ configura `PublicBaseUrl` y ajusta la aplicación para darle preferencia sobre
 
 ## Ingesta, análisis y correo (opcional, con coste)
 
-La web gratuita **no ejecuta** la ingesta, el análisis, la preparación de
-digests ni la entrega de correo en segundo plano. Para probar el flujo completo
+La web gratuita hace solo la carga inicial; **no ejecuta periódicamente** la
+ingesta, el análisis, la preparación de digests ni la entrega de correo. Para probar el flujo completo
 hay que crear tareas Cron Docker en Render con el mismo repositorio y
 `src/BoeRadar.Worker/Dockerfile`. Cada tarea Cron tiene un cargo mínimo mensual
 de 1 USD, además del uso; créalas solo si aceptas ese coste.

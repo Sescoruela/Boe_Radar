@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using BoeRadar.Application;
@@ -42,6 +43,28 @@ if (builder.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
     await using var scope = app.Services.CreateAsyncScope();
     await scope.ServiceProvider.GetRequiredService<BoeRadarDbContext>()
         .Database.MigrateAsync();
+}
+
+var initialIssueDateText = builder.Configuration["Bootstrap:InitialIssueDate"];
+if (!string.IsNullOrWhiteSpace(initialIssueDateText))
+{
+    if (!DateOnly.TryParseExact(initialIssueDateText, "yyyy-MM-dd",
+            CultureInfo.InvariantCulture, DateTimeStyles.None, out var initialIssueDate))
+    {
+        throw new InvalidOperationException(
+            "Bootstrap:InitialIssueDate debe usar el formato AAAA-MM-DD.");
+    }
+
+    await using var scope = app.Services.CreateAsyncScope();
+    var database = scope.ServiceProvider.GetRequiredService<BoeRadarDbContext>();
+    if (!await database.SourceDocuments.AnyAsync())
+    {
+        var importer = scope.ServiceProvider.GetRequiredService<ImportOfficialIssue>();
+        var result = await importer.ExecuteAsync(initialIssueDate, "bootstrap");
+        app.Logger.LogInformation(
+            "Carga inicial del BOE {Date}: {Discovered} encontrados, {Created} creados.",
+            result.PublicationDate, result.Discovered, result.Created);
+    }
 }
 
 app.UseExceptionHandler();
