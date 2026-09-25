@@ -89,7 +89,7 @@
               <div class="card-meta">
                 <span class="section-badge">{{ item.sectionCode }}</span>
                 <time [attr.datetime]="item.publicationDate">
-                  {{ item.publicationDate | date: 'd MMM yyyy' : 'UTC' }}
+                  {{ (item.publicationDate + 'T00:00:00Z') | date: 'd MMM yyyy' : 'UTC' }}
                 </time>
               </div>
               <p class="department">{{ item.department }}</p>
@@ -220,7 +220,7 @@
       <dl>
         <div>
           <dt>Publicación</dt>
-          <dd>{{ publication.publicationDate | date: 'd MMMM yyyy' : 'UTC' }}</dd>
+          <dd>{{ (publication.publicationDate + 'T00:00:00Z') | date: 'd MMMM yyyy' : 'UTC' }}</dd>
         </div>
         <div>
           <dt>Sección</dt>
