@@ -14,7 +14,11 @@ public sealed record AnalysisCandidate(
     string? Epigraph,
     Uri? OfficialXmlUrl);
 
-public sealed record DocumentText(string Text, string Sha256, string Format);
+public sealed record DocumentText(
+    string Text,
+    string Sha256,
+    string Format,
+    IReadOnlyList<string>? Passages = null);
 
 public sealed record RadarDeadline(
     string? Date,

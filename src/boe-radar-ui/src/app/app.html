@@ -20,6 +20,8 @@
         <strong>{{ (latestDate + 'T00:00:00Z') | date: 'd MMMM yyyy' : 'UTC' }}</strong>
         · {{ catalogStatus()?.totalPublications }} publicaciones
       </p>
+    } @else if (catalogStatusError()) {
+      <p class="coverage-status">No se ha podido comprobar la fecha de actualización del catálogo.</p>
     } @else {
       <p class="coverage-status">Comprobando la cobertura del catálogo…</p>
     }
@@ -78,6 +80,8 @@
   <section class="results" aria-live="polite">
     @if (error()) {
       <div class="state error-state">{{ error() }}</div>
+    } @else if (loading()) {
+      <div class="state">Consultando el catálogo…</div>
     } @else if (result(); as data) {
       <div class="results-heading">
         <div>
@@ -95,14 +99,12 @@
       </div>
       @if (filters.businessSignalsOnly) {
         <p class="view-explanation">
-          Selección por términos del título y sección. Puede incluir publicaciones que no
-          te apliquen y omitir otras relevantes; no confirma beneficiarios ni plazos.
+          Selección de los últimos 30 días si no indicas fechas, basada en términos del título y sección.
+          Puede incluir publicaciones que no te apliquen y omitir otras relevantes; no confirma beneficiarios ni plazos.
         </p>
       }
 
-      @if (loading()) {
-        <div class="state">Consultando el catálogo…</div>
-      } @else if (data.items.length === 0) {
+      @if (data.items.length === 0) {
         <div class="state">
           No hay publicaciones para estos filtros.
           @if (filters.businessSignalsOnly) { Prueba «Todo el BOE» para ampliar la búsqueda. }
@@ -120,8 +122,7 @@
               <p class="department">{{ item.department }}</p>
               @if (item.analysis?.isRelevant) {
                 <div class="radar-label">
-                  {{ categoryLabel(item.analysis!.category) }} ·
-                  {{ confidencePercent(item.analysis!.confidence) }}% confianza
+                  {{ categoryLabel(item.analysis!.category) }} · análisis automático
                 </div>
               }
               <h3>{{ item.title }}</h3>
@@ -269,11 +270,43 @@
           </div>
         }
       </dl>
+      <section class="source-review" aria-labelledby="source-review-title">
+        <div class="source-review-heading">
+          <h3 id="source-review-title">Qué comprobar para actuar</h3>
+          <span>Texto oficial</span>
+        </div>
+        <p>Estos son fragmentos localizados automáticamente en el documento. No confirman que la convocatoria esté abierta ni que tu negocio cumpla los requisitos.</p>
+        @if (sourceReviewLoading()) {
+          <p class="source-review-state">Consultando el texto oficial…</p>
+        } @else if (sourceReview(); as review) {
+          <div class="source-facts">
+            @for (group of review.groups; track group.key) {
+              <div class="source-fact">
+                <h4>{{ group.label }}</h4>
+                @if (group.quotes.length) {
+                  @for (quote of group.quotes; track quote) {
+                    <blockquote>“{{ quote }}”</blockquote>
+                  }
+                } @else {
+                  @if (group.key === 'application') {
+                    <p class="unverified">El XML no indica cómo solicitarlo. Abre el HTML oficial y localiza la convocatoria completa o la sede del organismo antes de actuar.</p>
+                  } @else {
+                    <p class="unverified">No identificado automáticamente; revisa el documento oficial.</p>
+                  }
+                }
+              </div>
+            }
+          </div>
+          <p class="source-review-meta">Fragmentos obtenidos del XML oficial · {{ review.reviewedAt | date: 'd MMM yyyy, HH:mm' }}</p>
+        } @else if (sourceReviewError()) {
+          <p class="source-review-state">No se han podido obtener los fragmentos. Consulta los enlaces oficiales de abajo.</p>
+        }
+      </section>
       @if (publication.analysis; as analysis) {
         <section class="analysis-block" aria-labelledby="analysis-title">
           <div class="analysis-heading">
             <span>Radar {{ categoryLabel(analysis.category) }}</span>
-            <span>{{ confidencePercent(analysis.confidence) }}% confianza</span>
+            <span>{{ analysis.method === 'gemini' ? 'Análisis IA' : 'Heurística' }}</span>
           </div>
           <h3 id="analysis-title">Por qué puede importarte</h3>
           <p class="analysis-summary">{{ analysis.summary }}</p>
@@ -311,7 +344,7 @@
             contrato {{ analysis.promptVersion }}
           </p>
         </section>
-      } @else {
+      } @else if (!sourceReview()) {
         <section class="review-guide" aria-label="Qué comprobar en la fuente">
           <h3>Antes de tomar una decisión</h3>
           <p>Esta publicación todavía no tiene una ficha analizada. Abre el texto oficial y comprueba:</p>

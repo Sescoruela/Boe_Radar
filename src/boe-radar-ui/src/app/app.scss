@@ -503,6 +503,78 @@ select {
   }
 }
 
+.source-review {
+  background: #fff;
+  border: 1px solid var(--line);
+  margin-top: 34px;
+  padding: 24px;
+
+  > p {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+}
+
+.source-review-heading {
+  align-items: baseline;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+
+  h3 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  span {
+    color: var(--accent-dark);
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+
+.source-facts {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.source-fact {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+
+  h4 {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+  }
+
+  blockquote,
+  .unverified {
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.55;
+    margin: 8px 0;
+  }
+
+  blockquote {
+    border-left: 2px solid var(--accent);
+    padding-left: 12px;
+  }
+}
+
+.source-review .source-review-meta {
+  border-top: 1px solid var(--line);
+  font-size: 0.68rem;
+  margin-bottom: 0;
+  padding-top: 12px;
+}
+
 .review-guide {
   background: #fff;
   border-left: 3px solid var(--accent);

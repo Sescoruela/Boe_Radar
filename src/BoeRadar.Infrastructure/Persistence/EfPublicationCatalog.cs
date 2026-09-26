@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace BoeRadar.Infrastructure.Persistence;
 
-internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext)
+internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProvider timeProvider)
     : IPublicationCatalog
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
@@ -29,6 +29,12 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext)
 
         if (search.BusinessSignalsOnly)
         {
+            if (search.DateFrom is null && search.DateTo is null)
+            {
+                var recentFrom = DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime.AddDays(-30));
+                query = query.Where(document => document.PublicationDate >= recentFrom);
+            }
+
             query = query.Where(document =>
                 (document.SectionCode == "5B" &&
                  (EF.Functions.ILike(document.Title, "%ayuda%") ||
@@ -40,23 +46,54 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext)
                  !EF.Functions.ILike(document.Title, "%ayuda al estudio%") &&
                  !EF.Functions.ILike(document.Title, "%beca%") &&
                  !EF.Functions.ILike(document.Title, "%concesión directa%") &&
-                 !EF.Functions.ILike(document.Title, "%administraciones públicas%")) ||
+                 !EF.Functions.ILike(document.Title, "%administraciones públicas%") &&
+                 !EF.Functions.ILike(document.Title, "%Ramón y Cajal%") &&
+                 !EF.Functions.ILike(document.Title, "%Juan de la Cierva%") &&
+                 !EF.Functions.ILike(document.Title, "%profesorado universitario%") &&
+                 !EF.Functions.ILike(document.Title, "%línea de Deporte, del Programa Erasmus+%")) ||
                 (document.SectionCode == "1" &&
+                 !EF.Functions.ILike(document.Title, "%Acuerdo de convalidación%") &&
                  (EF.Functions.ILike(document.Title, "%tributari%") ||
                   EF.Functions.ILike(document.Title, "%fiscal%") ||
                   EF.Functions.ILike(document.Title, "%impuesto%") ||
                   EF.Functions.ILike(document.Title, "%cotizaci%") ||
-                  EF.Functions.ILike(document.Title, "%autónom%") ||
+                  (EF.Functions.ILike(document.Title, "%autónomos%") &&
+                   !EF.Functions.ILike(document.Title, "%organismos autónomos%")) ||
+                  EF.Functions.ILike(document.Title, "%trabajador autónom%") ||
+                  EF.Functions.ILike(document.Title, "%profesional autónom%") ||
                   EF.Functions.ILike(document.Title, "%empresa%"))));
         }
 
         if (!string.IsNullOrWhiteSpace(search.Query))
         {
-            var pattern = $"%{search.Query.Trim()}%";
-            query = query.Where(document =>
-                EF.Functions.ILike(document.Title, pattern) ||
-                EF.Functions.ILike(document.Department, pattern) ||
-                (document.Epigraph != null && EF.Functions.ILike(document.Epigraph, pattern)));
+            var term = search.Query.Trim();
+            var normalizedTerm = term.ToLowerInvariant().Replace('ó', 'o');
+            if (normalizedTerm is "autonom" or "autonomo" or "autonomos" or "autonoma" or "autonomas")
+            {
+                // The stem alone also matches autonomous regions, universities,
+                // agencies and equipment. Require self-employment context.
+                query = query.Where(document =>
+                    EF.Functions.ILike(document.Title, "%Programa Auto+%") ||
+                    (EF.Functions.ILike(document.Title, "%autónomos%") &&
+                     !EF.Functions.ILike(document.Title, "%organismos autónomos%")) ||
+                     EF.Functions.ILike(document.Title, "%trabajador autónom%") ||
+                     EF.Functions.ILike(document.Title, "%profesional autónom%") ||
+                     EF.Functions.ILike(document.Title, "%persona autónoma%") ||
+                     (document.Epigraph != null &&
+                      ((EF.Functions.ILike(document.Epigraph, "%autónomos%") &&
+                        !EF.Functions.ILike(document.Epigraph, "%organismos autónomos%")) ||
+                       EF.Functions.ILike(document.Epigraph, "%trabajador autónom%") ||
+                       EF.Functions.ILike(document.Epigraph, "%profesional autónom%") ||
+                       EF.Functions.ILike(document.Epigraph, "%persona autónoma%"))));
+            }
+            else
+            {
+                var pattern = $"%{term}%";
+                query = query.Where(document =>
+                    EF.Functions.ILike(document.Title, pattern) ||
+                    EF.Functions.ILike(document.Department, pattern) ||
+                    (document.Epigraph != null && EF.Functions.ILike(document.Epigraph, pattern)));
+            }
         }
 
         if (search.DateFrom is { } dateFrom)

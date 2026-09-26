@@ -42,6 +42,30 @@ public sealed partial class OfficialDocumentContentExtractor
         return Convert.ToHexStringLower(SHA256.HashData(bytes));
     }
 
+    public IReadOnlyList<string> ExtractPassages(string rawContent)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(rawContent);
+        try
+        {
+            var document = XDocument.Parse(rawContent, LoadOptions.PreserveWhitespace);
+            var contentElement = document.Root?.Elements()
+                .FirstOrDefault(element => XmlContentElementNames.Contains(element.Name.LocalName));
+            if (contentElement is null)
+                throw new BoeSourceFormatException("El XML del BOE no contiene un nodo de texto conocido.");
+
+            return contentElement.Descendants()
+                .Where(element => element.Name.LocalName.Equals("p", StringComparison.OrdinalIgnoreCase))
+                .Select(element => Normalize(string.Join(" ", element.DescendantNodes().OfType<XText>()
+                    .Select(node => node.Value))))
+                .Where(value => value.Length > 0)
+                .ToArray();
+        }
+        catch (System.Xml.XmlException exception)
+        {
+            throw new BoeSourceFormatException("El documento del BOE no es XML válido.", exception);
+        }
+    }
+
     private static string ExtractXml(string rawContent)
     {
         try
@@ -99,4 +123,3 @@ public sealed partial class OfficialDocumentContentExtractor
     [GeneratedRegex(@"\s+", RegexOptions.CultureInvariant)]
     private static partial Regex WhitespaceRegex();
 }
-

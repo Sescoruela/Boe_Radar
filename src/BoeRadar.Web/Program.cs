@@ -1,17 +1,23 @@
 using System.Globalization;
+using System.Net;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.RateLimiting;
 using BoeRadar.Application;
 using BoeRadar.Domain;
 using BoeRadar.Infrastructure;
 using BoeRadar.Infrastructure.Persistence;
+using BoeRadar.Sources;
 using BoeRadar.Web;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<ActionableSourceReviewBuilder>();
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(
         new JsonStringEnumConverter<RadarCategory>(allowIntegerValues: false)));
@@ -29,6 +35,15 @@ builder.Services.AddRateLimiter(options =>
             _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 100,
+                Window = TimeSpan.FromHours(1),
+                QueueLimit = 0
+            }));
+    options.AddPolicy("source-review", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 30,
                 Window = TimeSpan.FromHours(1),
                 QueueLimit = 0
             }));
@@ -139,6 +154,55 @@ api.MapGet("/publications/{id:guid}", async (
     })
     .WithName("GetPublication")
     .WithSummary("Obtiene una publicación y sus enlaces oficiales.");
+
+api.MapGet("/source-review/{externalId}", async (
+        string externalId,
+        IOfficialDocumentTextSource textSource,
+        ActionableSourceReviewBuilder reviewBuilder,
+        IMemoryCache cache,
+        TimeProvider clock,
+        CancellationToken cancellationToken) =>
+    {
+        if (!Regex.IsMatch(externalId, @"^BOE-[A-Z]-[0-9]{4}-[0-9]{1,10}$",
+                RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(100)))
+            return Results.BadRequest(new { message = "Identificador BOE no válido." });
+
+        var officialXmlUrl = new Uri(
+            $"https://www.boe.es/diario_boe/xml.php?id={Uri.EscapeDataString(externalId)}");
+        var cacheKey = $"source-review:{externalId}";
+        if (cache.TryGetValue<ActionableSourceReview>(cacheKey, out var cached))
+            return Results.Ok(cached);
+
+        try
+        {
+            var content = await textSource.GetAsync(officialXmlUrl, cancellationToken);
+            var review = reviewBuilder.Build(content, clock.GetUtcNow());
+            cache.Set(cacheKey, review, TimeSpan.FromHours(6));
+            return Results.Ok(review);
+        }
+        catch (HttpRequestException exception) when (exception.StatusCode == HttpStatusCode.NotFound)
+        {
+            return Results.NotFound(new { message = "El BOE no ofrece XML para este identificador." });
+        }
+        catch (HttpRequestException)
+        {
+            return Results.Problem(statusCode: StatusCodes.Status503ServiceUnavailable,
+                title: "No se pudo consultar el texto oficial en este momento.");
+        }
+        catch (BoeSourceFormatException)
+        {
+            return Results.Problem(statusCode: StatusCodes.Status502BadGateway,
+                title: "El documento oficial no tiene un formato legible para esta ficha.");
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            return Results.Problem(statusCode: StatusCodes.Status503ServiceUnavailable,
+                title: "Se agotó el tiempo de espera del texto oficial.");
+        }
+    })
+    .RequireRateLimiting("source-review")
+    .WithName("GetPublicationSourceReview")
+    .WithSummary("Localiza pasajes literales del XML oficial para revisar una publicación.");
 
 var subscriptions = api.MapGroup("/subscriptions");
 var publicBaseUrl = new Uri(builder.Configuration["RENDER_EXTERNAL_URL"]

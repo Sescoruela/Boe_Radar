@@ -7,6 +7,7 @@ import {
   PublicationDetail,
   PublicationSearchResult,
   CatalogStatus,
+  ActionableSourceReview,
   PublicationsApi,
 } from './publications';
 import { SubscriptionsApi, SubscriptionView } from './subscriptions';
@@ -23,10 +24,14 @@ export class App implements OnInit {
 
   readonly result = signal<PublicationSearchResult | null>(null);
   readonly catalogStatus = signal<CatalogStatus | null>(null);
+  readonly catalogStatusError = signal(false);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly selected = signal<PublicationDetail | null>(null);
   readonly detailLoading = signal(false);
+  readonly sourceReview = signal<ActionableSourceReview | null>(null);
+  readonly sourceReviewLoading = signal(false);
+  readonly sourceReviewError = signal(false);
   readonly currentYear = new Date().getFullYear();
   readonly subscriptionMessage = signal<string | null>(null);
   readonly subscriptionBusy = signal(false);
@@ -45,6 +50,8 @@ export class App implements OnInit {
   digestHour = 8;
   consent = false;
   private managementToken: string | null = null;
+  private detailRequestId = 0;
+  private searchRequestId = 0;
 
   filters: PublicationFilters = {
     query: '',
@@ -60,7 +67,7 @@ export class App implements OnInit {
     this.search();
     this.api.getStatus().subscribe({
       next: (status) => this.catalogStatus.set(status),
-      error: () => this.catalogStatus.set(null),
+      error: () => this.catalogStatusError.set(true),
     });
     this.handleSubscriptionLink();
   }
@@ -170,19 +177,33 @@ export class App implements OnInit {
   }
 
   search(page = 1): void {
+    const requestId = ++this.searchRequestId;
     this.filters.page = page;
-    this.loading.set(true);
     this.error.set(null);
+    this.result.set(null);
+
+    if (this.filters.dateFrom && this.filters.dateTo && this.filters.dateFrom > this.filters.dateTo) {
+      this.loading.set(false);
+      this.error.set('La fecha «Desde» no puede ser posterior a «Hasta».');
+      return;
+    }
+
+    this.loading.set(true);
+    const filters = { ...this.filters };
 
     this.api
-      .search(this.filters)
-      .pipe(finalize(() => this.loading.set(false)))
+      .search(filters)
+      .pipe(finalize(() => {
+        if (requestId === this.searchRequestId) this.loading.set(false);
+      }))
       .subscribe({
-        next: (result) => this.result.set(result),
-        error: () =>
-          this.error.set(
-            'No hemos podido consultar el radar. Comprueba que la API y PostgreSQL están disponibles.',
-          ),
+        next: (result) => {
+          if (requestId === this.searchRequestId) this.result.set(result);
+        },
+        error: () => {
+          if (requestId === this.searchRequestId)
+            this.error.set('No hemos podido consultar el catálogo. Comprueba tu conexión e inténtalo de nuevo.');
+        },
       });
   }
 
@@ -200,19 +221,46 @@ export class App implements OnInit {
   }
 
   openDetails(id: string): void {
+    const requestId = ++this.detailRequestId;
     this.detailLoading.set(true);
+    this.sourceReview.set(null);
+    this.sourceReviewError.set(false);
+    this.sourceReviewLoading.set(false);
     this.api
       .get(id)
-      .pipe(finalize(() => this.detailLoading.set(false)))
+      .pipe(finalize(() => {
+        if (requestId === this.detailRequestId) this.detailLoading.set(false);
+      }))
       .subscribe({
-        next: (publication) => this.selected.set(publication),
-        error: () =>
-          this.error.set('No hemos podido abrir la ficha de esta publicación.'),
+        next: (publication) => {
+          if (requestId !== this.detailRequestId) return;
+          this.selected.set(publication);
+          this.sourceReviewLoading.set(true);
+          this.api.getSourceReview(publication.externalId)
+            .pipe(finalize(() => {
+              if (requestId === this.detailRequestId) this.sourceReviewLoading.set(false);
+            }))
+            .subscribe({
+              next: (review) => {
+                if (requestId === this.detailRequestId) this.sourceReview.set(review);
+              },
+              error: () => {
+                if (requestId === this.detailRequestId) this.sourceReviewError.set(true);
+              },
+            });
+        },
+        error: () => {
+          if (requestId === this.detailRequestId)
+            this.error.set('No hemos podido abrir la ficha de esta publicación.');
+        },
       });
   }
 
   closeDetails(): void {
+    this.detailRequestId++;
     this.selected.set(null);
+    this.sourceReview.set(null);
+    this.sourceReviewLoading.set(false);
   }
 
   categoryLabel(category: string): string {
@@ -229,7 +277,4 @@ export class App implements OnInit {
     );
   }
 
-  confidencePercent(confidence: number): number {
-    return Math.round(confidence * 100);
-  }
 }

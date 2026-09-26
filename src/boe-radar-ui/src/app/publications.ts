@@ -34,6 +34,18 @@ export interface RadarEvidence {
   supports: string;
 }
 
+export interface SourceFactGroup {
+  key: string;
+  label: string;
+  quotes: string[];
+}
+
+export interface ActionableSourceReview {
+  sourceHash: string;
+  reviewedAt: string;
+  groups: SourceFactGroup[];
+}
+
 export interface RadarAnalysisDetail extends RadarAnalysisSummary {
   requirements: string[];
   deadlines: RadarDeadline[];
@@ -109,5 +121,9 @@ export class PublicationsApi {
 
   get(id: string): Observable<PublicationDetail> {
     return this.http.get<PublicationDetail>(`/api/v1/publications/${id}`);
+  }
+
+  getSourceReview(externalId: string): Observable<ActionableSourceReview> {
+    return this.http.get<ActionableSourceReview>(`/api/v1/source-review/${encodeURIComponent(externalId)}`);
   }
 }

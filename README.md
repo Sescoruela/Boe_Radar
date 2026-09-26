@@ -1,9 +1,10 @@
 # BOE Radar IA
 
-BOE Radar IA transforma publicaciones oficiales en información accionable para
-autónomos y pymes: detecta ayudas, subvenciones, cambios fiscales y nuevas
-obligaciones, y muestra un resumen con requisitos, plazos y enlaces a la fuente
-oficial.
+BOE Radar IA explora publicaciones oficiales potencialmente relevantes para
+autónomos y pymes. Muestra enlaces a la fuente y, al abrir una ficha, localiza
+fragmentos del texto oficial para revisar destinatarios, requisitos, cuantías y
+plazos. La selección y los fragmentos son automáticos y no verifican la
+aplicabilidad a un negocio concreto.
 
 ## Estado
 
@@ -24,6 +25,7 @@ proveedor de correo real y sus rebotes queda pendiente. La documentación base e
 - [Radar IA trazable](docs/07-radar-ia.md)
 - [Suscripciones y alertas](docs/08-suscripciones-y-alertas.md)
 - [Despliegue de pruebas en Render](docs/09-despliegue-render.md)
+- [Fichas accionables: primera iteración](docs/11-fichas-accionables.md)
 - [ADR-001: monolito modular](docs/adr/001-monolito-modular.md)
 
 ## Propuesta de valor

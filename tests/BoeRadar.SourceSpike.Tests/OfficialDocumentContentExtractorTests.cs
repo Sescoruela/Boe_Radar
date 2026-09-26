@@ -42,4 +42,17 @@ public sealed class OfficialDocumentContentExtractorTests
         Assert.Equal(first, second);
         Assert.Matches("^[a-f0-9]{64}$", first);
     }
+
+    [Fact]
+    public void ExtractPassages_PreservesAmountsAndParagraphBoundaries()
+    {
+        const string xml = "<documento><texto><p>Importe de financiación convocado.</p>" +
+            "<p>La cuantía es de 240.000 euros.</p></texto></documento>";
+
+        var passages = _sut.ExtractPassages(xml);
+        var fullText = _sut.Extract(xml, "xml");
+
+        Assert.Equal(["Importe de financiación convocado.", "La cuantía es de 240.000 euros."], passages);
+        Assert.All(passages, passage => Assert.Contains(passage, fullText, StringComparison.Ordinal));
+    }
 }
