@@ -76,9 +76,11 @@ rango de fechas antes de consultar la API y explica qué buscar en el HTML
 oficial cuando el XML no identifica el canal de solicitud.
 
 La preselección de negocios se ha acotado para excluir, en la muestra del 26
-de septiembre, las convocatorias Ramón y Cajal, Juan de la Cierva,
-profesorado universitario y Erasmus+ Deporte, además de la mera convalidación
-de una norma. Son exclusiones de títulos, no una garantía de relevancia ni
+de septiembre, las convocatorias Ramón y Cajal, Juan de la Cierva y
+profesorado universitario, además de la mera convalidación de una norma.
+La exclusión inicial de Erasmus+ Deporte se retiró después de revisar
+la guía de elegibilidad, que admite organizaciones deportivas privadas. Son
+reglas de títulos, no una garantía de relevancia ni
 un sustituto de revisar los destinatarios. La búsqueda «autónomos» exige
 contexto de trabajo por cuenta propia y contiene una equivalencia explícita
 para Auto+, cuya fuente oficial menciona a profesionales autónomos aunque el

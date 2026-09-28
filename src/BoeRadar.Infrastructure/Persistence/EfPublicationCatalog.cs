@@ -49,8 +49,7 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
                  !EF.Functions.ILike(document.Title, "%administraciones públicas%") &&
                  !EF.Functions.ILike(document.Title, "%Ramón y Cajal%") &&
                  !EF.Functions.ILike(document.Title, "%Juan de la Cierva%") &&
-                 !EF.Functions.ILike(document.Title, "%profesorado universitario%") &&
-                 !EF.Functions.ILike(document.Title, "%línea de Deporte, del Programa Erasmus+%")) ||
+                 !EF.Functions.ILike(document.Title, "%profesorado universitario%")) ||
                 (document.SectionCode == "1" &&
                  !EF.Functions.ILike(document.Title, "%Acuerdo de convalidación%") &&
                  (EF.Functions.ILike(document.Title, "%tributari%") ||
@@ -61,7 +60,19 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
                    !EF.Functions.ILike(document.Title, "%organismos autónomos%")) ||
                   EF.Functions.ILike(document.Title, "%trabajador autónom%") ||
                   EF.Functions.ILike(document.Title, "%profesional autónom%") ||
-                  EF.Functions.ILike(document.Title, "%empresa%"))));
+                  EF.Functions.ILike(document.Title, "%empresa%") ||
+                  (EF.Functions.ILike(document.Title, "%Acuerdo administrativo%") &&
+                   EF.Functions.ILike(document.Title, "%Convenio de Seguridad Social%")) ||
+                  (EF.Functions.ILike(document.Title, "Sentencia%") &&
+                   EF.Functions.ILike(document.Title, "%Tribunal Supremo%") &&
+                   EF.Functions.ILike(document.Title, "%estima%recurso%") &&
+                   EF.Functions.ILike(document.Title, "%Reglamento%") &&
+                   EF.Functions.ILike(document.Title, "%extranjeros%")) ||
+                  (EF.Functions.ILike(document.Title, "%normas de inspección y control%") &&
+                   EF.Functions.ILike(document.Title, "%Comercio%")) ||
+                  (EF.Functions.ILike(document.Title, "%precios de venta al público%") &&
+                   EF.Functions.ILike(document.Title, "%labores de tabaco%") &&
+                   EF.Functions.ILike(document.Title, "%Expendedurías%")))));
         }
 
         if (!string.IsNullOrWhiteSpace(search.Query))

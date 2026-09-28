@@ -1,0 +1,495 @@
+{
+  "dateFrom": "2026-09-23",
+  "dateTo": "2026-09-23",
+  "seed": "boe-radar-quality-v1",
+  "catalogSha256": "d78e2840ca09e9b6ce5c2f81ba875d163338b51be000cac48276f3674ffe1e57",
+  "catalogCount": 151,
+  "requestedCount": 60,
+  "counts": {
+    "shown": 0,
+    "nearMiss": 9,
+    "background": 51
+  },
+  "entries": [
+    {
+      "externalId": "BOE-B-2026-30757",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio del Servicio de Títulos, Becas y Ayudas al Estudiante de la Universidad Rey Juan Carlos sobre extravío de título universitario.",
+      "stratum": "near_miss",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30757"
+    },
+    {
+      "externalId": "BOE-B-2026-30715",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Resolución de la Presidencia de la Autoridad Portuaria de Baleares por la que se otorga licencia provisional para la prestación del servicio portuario al pasaje, licencia n.º 4, en los puertos de Eivissa y la Savina, a la empresa Balearic Handling, S.L.",
+      "stratum": "near_miss",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30715"
+    },
+    {
+      "externalId": "BOE-A-2026-19718",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 10 de septiembre de 2026, de la Dirección General de Relaciones con la Administración de Justicia, de la Consejería de Administraciones Públicas, Justicia y Seguridad, por la que se publica la relación de plazas correspondientes al ámbito de la Comunidad Autónoma de Canarias, que se ofrecen a las personas aprobadas en el proceso selectivo extraordinario para acceso, por el sistema de concurso-oposición, turno libre, al Cuerpo de Auxilio Judicial de la Administración de Justicia, convocado por Orden JUS/1327/2022, de 28 de diciembre.",
+      "stratum": "near_miss",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19718"
+    },
+    {
+      "externalId": "BOE-B-2026-30719",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Extracto de la Resolución de 21 de septiembre de 2026, de la Dirección General del Servicio Público de Empleo Estatal, por la que se aprueba la convocatoria para la concesión de subvenciones públicas, destinadas a financiar en el ejercicio 2026, la contratación de personas jóvenes desempleadas menores de treinta años en el marco de «Proyectos de primera experiencia en administraciones públicas»",
+      "stratum": "near_miss",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30719"
+    },
+    {
+      "externalId": "BOE-A-2026-19731",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 15 de septiembre de 2026, de la Diputación Provincial de Granada, Organismo Autónomo Agencia Provincial de Extinción de Incendios, referente a la convocatoria para proveer una plaza.",
+      "stratum": "near_miss",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19731"
+    },
+    {
+      "externalId": "BOE-B-2026-30701",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de licitación de: Consejo Rector de CASA 47 Entidad Pública Empresarial. Objeto: Servicios de mantenimiento de infraestructura TIC, sistema de recuperación ante desastres y custodia de copias de seguridad. Expediente: 132921.",
+      "stratum": "near_miss",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30701"
+    },
+    {
+      "externalId": "BOE-A-2026-19714",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 17 de septiembre de 2026, del Instituto Nacional de Administración Pública, O.A., por la que se aprueba la relación provisional de personas admitidas y excluidas, se anuncia lugar de celebración del ejercicio único y se designa al Tribunal calificador del proceso selectivo para acceso, para el cambio de régimen jurídico del personal laboral fijo incluido en el Anexo II del IV Convenio Único para el personal laboral de la Administración General del Estado, a la Escala Técnica de Gestión de Organismos Autónomos, convocado por Resolución de 23 de diciembre de 2025.",
+      "stratum": "near_miss",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19714"
+    },
+    {
+      "externalId": "BOE-B-2026-30755",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio del Servicio de Títulos, Becas y Ayudas al Estudiante de la Universidad Rey Juan Carlos sobre extravío de título universitario.",
+      "stratum": "near_miss",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30755"
+    },
+    {
+      "externalId": "BOE-B-2026-30688",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de formalización de contratos de: Dirección del Servicio de Gestión Económica de la Agencia Estatal de la Administración Tributaria. Objeto: Actualización del software y hardware del espectrofotómetro de infrarrojo por transformada de Fourier del Laboratorio Central de Aduanas e II.EE. Expediente: 26710060200.",
+      "stratum": "near_miss",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30688"
+    },
+    {
+      "externalId": "BOE-A-2026-19701",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 14 de septiembre de 2026, de la Subsecretaría, por la que se resuelve parcialmente la convocatoria de libre designación, efectuada por Resolución de 2 de julio de 2026.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19701"
+    },
+    {
+      "externalId": "BOE-A-2026-19742",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 16 de septiembre de 2026, del Ayuntamiento de Elda, Instituto Municipal de Servicios Sociales de Elda (Alicante/Alacant), referente a la convocatoria para proveer varias plazas.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19742"
+    },
+    {
+      "externalId": "BOE-A-2026-19758",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Resolución de 1 de septiembre de 2026, de la Universidad Alfonso X el Sabio, por la que se publica la modificación del plan de estudios de Graduado o Graduada en Derecho.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19758"
+    },
+    {
+      "externalId": "BOE-B-2026-30711",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de formalización de contratos de: Comisión Nacional del Mercado de Valores. Objeto: Programa de formación en inglés para empleados de la Comisión Nacional del Mercado de Valores. Expediente: 14/26.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30711"
+    },
+    {
+      "externalId": "BOE-B-2026-30740",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Demarcación de Costas en Murcia para la información pública relativa a la recuperación posesoria de oficio del dominio público marítimo-terrestre ocupado por embarcación, velero, de unos 11 metros de eslora, varado a unos 15 metros de la orilla en playa La Llana, en T.M de San Pedro del Pinatar (Murcia). Referencia REP01.26.30.0004.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30740"
+    },
+    {
+      "externalId": "BOE-A-2026-19697",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Acuerdo de 23 de junio de 2026, de la Comisión Permanente del Consejo General del Poder Judicial, por el que se declara la jubilación forzosa del Magistrado don Alberto Nicolás Franco.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19697"
+    },
+    {
+      "externalId": "BOE-A-2026-19743",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 16 de septiembre de 2026, del Ayuntamiento de Alagón (Zaragoza), referente a la convocatoria para proveer varias plazas.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19743"
+    },
+    {
+      "externalId": "BOE-A-2026-19749",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Resolución de 18 de septiembre de 2026, de la Secretaría General Técnica, por la que se publica el Convenio entre la Embajada de España en Líbano y BLS International FZE, para la celebración de la Fiesta Nacional de España.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19749"
+    },
+    {
+      "externalId": "BOE-B-2026-30685",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de licitación de: Sección de Asuntos Económicos de la Jefatura Sistemas de Información, Telecomunicaciones y Asistencia Técnica. Objeto: Contratación de licencias de software de la plataforma CLOUD-MINERVA. Expediente: 2026/ETSAE0904/00000482E.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30685"
+    },
+    {
+      "externalId": "BOE-B-2026-30720",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Confederación Hidrográfica del Júcar, O.A. por el que se somete a información pública la solicitud de una concesión de aguas subterráneas, T.M. Vinaròs (Castellón) Expediente 2026CP0002.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30720"
+    },
+    {
+      "externalId": "BOE-A-2026-19700",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 7 de septiembre de 2026, de la Subsecretaría, por la que se resuelve parcialmente la convocatoria de libre designación, efectuada por Resolución de 26 de junio de 2026.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19700"
+    },
+    {
+      "externalId": "BOE-A-2026-19711",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 17 de septiembre de 2026, de la Dirección de la Agencia Estatal Boletín Oficial del Estado, por la que se convoca la provisión de puesto de trabajo por el sistema de libre designación.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19711"
+    },
+    {
+      "externalId": "BOE-A-2026-19759",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Resolución de 1 de septiembre de 2026, de la Universidad Alfonso X el Sabio, por la que se publica la modificación del plan de estudios de Graduado o Graduada en Fisioterapia.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19759"
+    },
+    {
+      "externalId": "BOE-B-2026-30694",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de licitación de: ADIF Alta Velocidad - Presidencia. Objeto: Asistencia técnica para el control y vigilancia de las obras del proyecto de construcción de una base de mantenimiento de material rodante en la subbase de mantenimiento de Madrid-Sur. Expediente: 3.26/20810.0083.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30694"
+    },
+    {
+      "externalId": "BOE-B-2026-30732",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Confederación Hidrográfica del Miño-Sil, O.A. por el que se hace público el otorgamiento de la concesión para el aprovechamiento de 0,17 l/s de agua procedente de dos manantiales situados en la parcela 83 del polígono 74, en el M.V.M.C. de Quintá de Riba de Neira, en la parroquia de Riba de Neira (Santalla) en el término municipal de Baralla (Lugo) para usos domésticos y ganaderos. A/27/28548.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30732"
+    },
+    {
+      "externalId": "BOE-A-2026-19698",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 1 de septiembre de 2026, del Consorcio de la Zona Especial Canaria, por la que se resuelve la convocatoria de libre designación, efectuada por Resolución de 29 de junio de 2026.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19698"
+    },
+    {
+      "externalId": "BOE-A-2026-19740",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 16 de septiembre de 2026, del Ayuntamiento de Valldemossa (Illes Balears), referente a la convocatoria para proveer una plaza.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19740"
+    },
+    {
+      "externalId": "BOE-A-2026-19752",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Orden VAU/987/2026, de 21 de septiembre, por la que se convoca el Premio Nacional de Arquitectura correspondiente al año 2025.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19752"
+    },
+    {
+      "externalId": "BOE-B-2026-30682",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de licitación de: Jefatura de Intendencia de Asuntos Económicos Este. Objeto: Bar y cafetería Acuartelamiento Jaime II, Palma de Mallorca. Expediente: 2026/ETSAE0327/00005412E.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30682"
+    },
+    {
+      "externalId": "BOE-B-2026-30751",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Facultad de Ciencias de la Actividad Física y del Deporte de la Universidad Politécnica de Madrid sobre extravío de título universitario.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30751"
+    },
+    {
+      "externalId": "BOE-A-2026-19707",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 14 de septiembre de 2026, de la Universidad de Córdoba, por la que se nombra Profesora Titular de Universidad a doña Vanesa Cantón Habas.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19707"
+    },
+    {
+      "externalId": "BOE-A-2026-19725",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 4 de septiembre de 2026, del Ayuntamiento de Gualba (Barcelona), referente a la convocatoria para proveer una plaza.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19725"
+    },
+    {
+      "externalId": "BOE-A-2026-19753",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Resolución de 8 de septiembre de 2026, de la Dirección General de Patrimonio Cultural y Bellas Artes, por la que se incoa expediente de declaración de bien de interés cultural, en la categoría de monumento, a favor del Palacio de Fontalba (Madrid).",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19753"
+    },
+    {
+      "externalId": "BOE-B-2026-30700",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de formalización de contratos de: Presidencia del Fondo Español de Garantía Agraria. Objeto: Concesión del servicio de cafetería en la sede del FEGA de la calle Beneficencia 8 de Madrid. Expediente: 2026/112550 Concesión servicio Cafetería.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30700"
+    },
+    {
+      "externalId": "BOE-B-2026-30754",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Facultad de Turismo de la Universidad de Murcia sobre extravío de título universitario.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30754"
+    },
+    {
+      "externalId": "BOE-A-2026-19709",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 14 de septiembre de 2026, de la Universidad Rovira i Virgili, por la que se nombra personal funcionario de cuerpos docentes universitarios.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19709"
+    },
+    {
+      "externalId": "BOE-A-2026-19715",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 21 de septiembre de 2026, de la Presidencia del Tribunal de Cuentas, por la que se amplía el plazo para resolver el concurso específico para la provisión de puestos de trabajo, convocado por Resolución de 19 de enero de 2026.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19715"
+    },
+    {
+      "externalId": "BOE-A-2026-19750",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Resolución de 18 de agosto de 2026, de la Secretaría de Estado de Educación, por la que se convoca concurso para la constitución del panel de personas expertas que colaborarán en la elaboración y validación de las pruebas de certificación oficial de las enseñanzas de idiomas de régimen especial impartidas en las Escuelas Oficiales de Idiomas de Ceuta y de Melilla.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19750"
+    },
+    {
+      "externalId": "BOE-B-2026-30689",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de formalización de contratos de: Junta de Contratación de los Servicios Centrales en el Ministerio de Hacienda. Objeto: Servicio de mantenimiento de las instalaciones técnicas de la Oficina Informática Presupuestaria con destino a la Intervención General de la Administración del Estado. Expediente: 2026-05.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30689"
+    },
+    {
+      "externalId": "BOE-B-2026-30737",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Confederación Hidrográfica del Miño-Sil, O.A. por el que se hace público el otorgamiento de la concesión para el aprovechamiento de 0,503 l/s de agua procedente de un pozo sito en el lugar de Cibreiro, parroquia de Os Vilares (San Vicenzo), en el término municipal de Guitiriz (Lugo) para usos ganaderos. A/27/34046.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30737"
+    },
+    {
+      "externalId": "BOE-A-2026-19699",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 7 de septiembre de 2026, de la Subsecretaría, por la que se resuelve parcialmente la convocatoria de libre designación, efectuada por Resolución de 10 de junio de 2026.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19699"
+    },
+    {
+      "externalId": "BOE-A-2026-19733",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 15 de septiembre de 2026, del Ayuntamiento de Santa Cruz de Tenerife, referente a la convocatoria para proveer una plaza.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19733"
+    },
+    {
+      "externalId": "BOE-A-2026-19755",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Resolución de 17 de septiembre de 2026, de la Subsecretaría, por la que se publica el Convenio con la Asociación Española de Comisionados de Filmaciones, Cine y Televisión, para la promoción de la actividad audiovisual en España.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19755"
+    },
+    {
+      "externalId": "BOE-B-2026-30675",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de licitación de: Consejo General del Poder Judicial. Objeto: Servicio de mantenimiento y nuevos desarrollos de la plataforma de búsqueda del Centro de Documentación Judicial y el suministro y soporte de licencias de Opentext Knowledge Discovery (Idol Ultimate). Expediente: 26/027.0.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30675"
+    },
+    {
+      "externalId": "BOE-B-2026-30717",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Autoridad Portuaria de Huelva referente al trámite de información pública, relativo a la solicitud presentada por la mercantil Moeve, S.A. de una concesión administrativa en la zona de servicio del Puerto de Huelva.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30717"
+    },
+    {
+      "externalId": "BOE-A-2026-19702",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 16 de septiembre de 2026, de la Subsecretaría, por la que se resuelve la convocatoria de libre designación, efectuada por Resolución de 20 de julio de 2026.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19702"
+    },
+    {
+      "externalId": "BOE-A-2026-19717",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 10 de septiembre de 2026, del Departamento de Justicia y Calidad Democrática, por la que se publica la relación de plazas correspondientes al ámbito de Cataluña, que se ofrecen a las personas aprobadas en el proceso selectivo extraordinario para acceso, por el sistema de concurso-oposición, turno libre, al Cuerpo de Auxilio Judicial de la Administración de Justicia, convocado por Orden JUS/1327/2022, de 28 de diciembre.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19717"
+    },
+    {
+      "externalId": "BOE-A-2026-19754",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Resolución de 14 de septiembre de 2026, de la Subsecretaría, por la que se aprueba la actualización de la Carta de Servicios de la Biblioteca Nacional de España, O.A.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19754"
+    },
+    {
+      "externalId": "BOE-B-2026-30692",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de formalización de contratos de: Jefatura de Asuntos Económicos de la Guardia Civil. Objeto: Suministro, transporte, instalación / montaje y formación al usuario, de los componentes necesarios de una cocina industrial y material necesario para su puesta en marcha. Expediente: A/0130/A/25/6.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30692"
+    },
+    {
+      "externalId": "BOE-B-2026-30714",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Delegación de Economía y Hacienda en Albacete de inicio de expediente de investigación patrimonial de una finca rústica situada en el término municipal de Albacete.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30714"
+    },
+    {
+      "externalId": "BOE-A-2026-19703",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 15 de septiembre de 2026, de la Subsecretaría, por la que se resuelve la convocatoria de libre designación, efectuada por Resolución de 24 de julio de 2026.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19703"
+    },
+    {
+      "externalId": "BOE-A-2026-19732",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 15 de septiembre de 2026, del Ayuntamiento de Sant Cugat del Vallès (Barcelona), referente a la convocatoria para proveer varias plazas.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19732"
+    },
+    {
+      "externalId": "BOE-A-2026-19756",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Resolución de 22 de septiembre de 2026, del Banco de España, por la que se publican los cambios del euro correspondientes al día 22 de septiembre de 2026, publicados por el Banco Central Europeo, que tendrán la consideración de cambios oficiales, de acuerdo con lo dispuesto en el artículo 36 de la Ley 46/1998, de 17 de diciembre, sobre la Introducción del Euro.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19756"
+    },
+    {
+      "externalId": "BOE-B-2026-30698",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de licitación de: ADIF Alta Velocidad - Presidencia. Objeto: Suministro de aparatos de vía para la construcción de un taller de mantenimiento de material rodante en la subbase de mantenimiento de Madrid-sur. Expediente: 3.26/20810.0062.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30698"
+    },
+    {
+      "externalId": "BOE-B-2026-30713",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Delegación de Economía y Hacienda en Albacete de inicio de expediente de investigación patrimonial de una finca rústica situada en el término municipal de Hellín (Albacete).",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30713"
+    },
+    {
+      "externalId": "BOE-A-2026-19704",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 16 de septiembre de 2026, de la Secretaría de Estado de Función Pública, por la que se nombra personal funcionario de carrera, por el sistema general de acceso libre, del Cuerpo de Médicos Titulares.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19704"
+    },
+    {
+      "externalId": "BOE-A-2026-19744",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2B",
+      "title": "Resolución de 16 de septiembre de 2026, del Ayuntamiento de Soneja (Castellón/Castelló), referente a la convocatoria para proveer una plaza.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19744"
+    },
+    {
+      "externalId": "BOE-A-2026-19757",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "3",
+      "title": "Resolución de 22 de julio de 2026, de la Consejería de Cultura, Política Llingüística y Deporte, por la que se incoa expediente para la declaración como bien de interés cultural, en la categoría de zona arqueológica, del yacimiento arqueológico de Os Castros y el vinculado de A Veiga de Escouredo, sitos en Taramundi.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19757"
+    },
+    {
+      "externalId": "BOE-B-2026-30676",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5A",
+      "title": "Anuncio de formalización de contratos de: Jefatura de Intendencia de Asuntos Económicos Este. Objeto: Suministro material fungible de ferretería lote 1 Acto Sancho Ramírez. Expediente: 2026/ETSAE0327/00002567E.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30676"
+    },
+    {
+      "externalId": "BOE-B-2026-30746",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "5B",
+      "title": "Anuncio de la Delegación Territorial de Economía, Hacienda, Fondos Europeos y de Universidad, Industria, Energía e Innovación en Sevilla, por el que se somete a información pública la petición realizada por la mercantil Green Ric Energy, s.l.u, por la que se solicita la modificación de la autorización administrativa previa y de construcción, así como la declaración en concreto de utilidad pública para la hibridación mediante almacenamiento con baterías BESS de la instalación de generación denominada \"HSF híbrida Greencar 3\", ubicada en el término municipal de Carmona (Sevilla). Exp. 280.523.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30746"
+    },
+    {
+      "externalId": "BOE-A-2026-19708",
+      "publicationDate": "2026-09-23",
+      "sectionCode": "2A",
+      "title": "Resolución de 14 de septiembre de 2026, de la Universidad Rovira i Virgili, por la que se nombra Catedrático de Universidad, con plaza vinculada, a don Pedro Romero Aroca.",
+      "stratum": "background",
+      "officialUrl": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19708"
+    }
+  ]
+}

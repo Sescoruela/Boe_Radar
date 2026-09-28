@@ -1,0 +1,548 @@
+{
+  "dateFrom": "2026-09-23",
+  "dateTo": "2026-09-23",
+  "reviewMethod": "Revisión documental asistida; no doble anotación jurídica independiente.",
+  "pending": [],
+  "labels": [
+    {
+      "externalId": "BOE-B-2026-30757",
+      "relevant": false,
+      "reason": "Notificación de título universitario individual; sin acción empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30757"
+      ],
+      "textSha256": "7aa5a43984e692497389c10ecf393b0fc12e758070f3f6763d0046ce3f6e81d9"
+    },
+    {
+      "externalId": "BOE-B-2026-30715",
+      "relevant": false,
+      "reason": "Licencia, concesión, autorización o expediente patrimonial de titulares o bienes concretos; excluido del alcance general o sectorial acordado.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30715"
+      ],
+      "textSha256": "a23a86426ce2cbf2154b73117eb4a1a6ed3f2b520b76331e3509fa59fcaee177"
+    },
+    {
+      "externalId": "BOE-A-2026-19718",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19718"
+      ],
+      "textSha256": "9565ec72650109a6ea1d2cb2f288f21d3afc0fc756d1dbe9ddd3c4c96a0ef3cd"
+    },
+    {
+      "externalId": "BOE-B-2026-30719",
+      "relevant": false,
+      "reason": "Las entidades beneficiarias son órganos, organismos e instituciones del sector público estatal; no está abierta a autónomos ni pymes privadas.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30719"
+      ],
+      "textSha256": "bd1dcc5d188aeb8672d129db5b64b121e78d38196e484596bf768f61884a3948"
+    },
+    {
+      "externalId": "BOE-A-2026-19731",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19731"
+      ],
+      "textSha256": "98ccdb9cbe363bd2a1e0f25c901c797298546367b2cfdd19845e2ebadd29c143"
+    },
+    {
+      "externalId": "BOE-B-2026-30701",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30701"
+      ],
+      "textSha256": "77a56c6a8073a42c2677739d559259a65a4182ca282bc8528f1fd8692a162385"
+    },
+    {
+      "externalId": "BOE-A-2026-19714",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19714"
+      ],
+      "textSha256": "65949d86804874a418a2a44e5d23f414169147cfb9d635cd77aebe630bf7d40b"
+    },
+    {
+      "externalId": "BOE-B-2026-30755",
+      "relevant": false,
+      "reason": "Notificación de título universitario individual; sin acción empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30755"
+      ],
+      "textSha256": "8aa4a2515462748f0f4ca1c8892ca988555e00d1eee848a7bb58b7a429e9bb79"
+    },
+    {
+      "externalId": "BOE-B-2026-30688",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30688"
+      ],
+      "textSha256": "7953c335269b1ee2179c89cf3503bb75de0866372af87de2b904f6d0b2ae7056"
+    },
+    {
+      "externalId": "BOE-A-2026-19701",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19701"
+      ],
+      "textSha256": "6c5067213a5ce35f27aff331d307d35d176d43a4dcda9ec94bdb28317ae55fc8"
+    },
+    {
+      "externalId": "BOE-A-2026-19742",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19742"
+      ],
+      "textSha256": "b92c06b75315879e1a7f0859a8375109a5cb5613fe71ef3f085928c55693e603"
+    },
+    {
+      "externalId": "BOE-A-2026-19758",
+      "relevant": false,
+      "reason": "Modifica un plan universitario concreto, sin nueva acción para autónomos o pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19758"
+      ],
+      "textSha256": "b72f14c6ab1122d922397d492428c21d4123af46f69f66893bc20a682c89055a"
+    },
+    {
+      "externalId": "BOE-B-2026-30711",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30711"
+      ],
+      "textSha256": "f5688bf05f8a536d78d7976a146076f02d35852e4ed6c56cb81bda8b0c41395f"
+    },
+    {
+      "externalId": "BOE-B-2026-30740",
+      "relevant": false,
+      "reason": "Licencia, concesión, autorización o expediente patrimonial de titulares o bienes concretos; excluido del alcance general o sectorial acordado.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30740"
+      ],
+      "textSha256": "b0ed1501df9f373c67754086c6a677b6796d6fdebe30e93e0d2c2c77d77afa47"
+    },
+    {
+      "externalId": "BOE-A-2026-19697",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19697"
+      ],
+      "textSha256": "a9d1eb534f30c9a12257939d05bcec4d451af1480c7854a2fc1f1a88c7d4075c"
+    },
+    {
+      "externalId": "BOE-A-2026-19743",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19743"
+      ],
+      "textSha256": "8dff3a0027d2553eff03a60f9d157c32c7aba61ed920b76a152b3b058fef5fa5"
+    },
+    {
+      "externalId": "BOE-A-2026-19749",
+      "relevant": false,
+      "reason": "Convenio entre entidades identificadas; no abre convocatoria ni nueva obligación general para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19749"
+      ],
+      "textSha256": "02d0c27892f8b4cfb1a3950c11450181fc86f18a54d1c8be962d17d72a3bf9ab"
+    },
+    {
+      "externalId": "BOE-B-2026-30685",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30685"
+      ],
+      "textSha256": "afb28cb1cbddd9b2ac351c79e705ba91b5566f13fc2c26f032675ed0d786e4dd"
+    },
+    {
+      "externalId": "BOE-B-2026-30720",
+      "relevant": false,
+      "reason": "Licencia, concesión, autorización o expediente patrimonial de titulares o bienes concretos; excluido del alcance general o sectorial acordado.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30720"
+      ],
+      "textSha256": "deff4cdab1b1c2bfb5c3b0fd186299ff71014eb6a09a2592e7e8d6956d399fc6"
+    },
+    {
+      "externalId": "BOE-A-2026-19700",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19700"
+      ],
+      "textSha256": "c12fa8bbe2a5501de8169b0b02a024cb53284d4566cb21912a4474047cb26566"
+    },
+    {
+      "externalId": "BOE-A-2026-19711",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19711"
+      ],
+      "textSha256": "35fb58bb4435cc7af30e80830d0bd9102a1df80584ad7d8b6ac630afaf46787a"
+    },
+    {
+      "externalId": "BOE-A-2026-19759",
+      "relevant": false,
+      "reason": "Modifica un plan universitario concreto, sin nueva acción para autónomos o pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19759"
+      ],
+      "textSha256": "b10f2b3a2196df328f44cd2b0902abe987ccda57c39f64cf0f8f3ae05a8ad5d3"
+    },
+    {
+      "externalId": "BOE-B-2026-30694",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30694"
+      ],
+      "textSha256": "635f486c49503b991c5e0b71f42002a3a16890c1a0d09f9f7bfd83ae711505d2"
+    },
+    {
+      "externalId": "BOE-B-2026-30732",
+      "relevant": false,
+      "reason": "Licencia, concesión, autorización o expediente patrimonial de titulares o bienes concretos; excluido del alcance general o sectorial acordado.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30732"
+      ],
+      "textSha256": "780b3c7ba5d0d7ab0952db9cfe71f4df601c76dc814fc13b1e6018e37355b08c"
+    },
+    {
+      "externalId": "BOE-A-2026-19698",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19698"
+      ],
+      "textSha256": "c9545d761d5432fa3b4d8959d08045bde9d3a1b2dec4e5b41fcd22448464fc5d"
+    },
+    {
+      "externalId": "BOE-A-2026-19740",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19740"
+      ],
+      "textSha256": "af9b191605ec4f7fa6fca44e7368fb843dc87541210018efecfbba1443b2de60"
+    },
+    {
+      "externalId": "BOE-A-2026-19752",
+      "relevant": false,
+      "reason": "Premio económico con candidatura de terceros; el usuario ha excluido los premios del alcance actual del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19752"
+      ],
+      "textSha256": "c22d8a397daf88aa3a11d4725d83ffd66252d322b66b5771a55ce6e5d6b39af1"
+    },
+    {
+      "externalId": "BOE-B-2026-30682",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30682"
+      ],
+      "textSha256": "600dd9f2fbbfa0c57cfc10198dab8f2508792c66bb53b6882c625ad95c7abab8"
+    },
+    {
+      "externalId": "BOE-B-2026-30751",
+      "relevant": false,
+      "reason": "Notificación de título universitario individual; sin acción empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30751"
+      ],
+      "textSha256": "5e3264bf439ba367441b6b1b2dc037ec7df5f7fc612e94446e318ea9743fa3a7"
+    },
+    {
+      "externalId": "BOE-A-2026-19707",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19707"
+      ],
+      "textSha256": "ac06623ce49a9fbfabb2c647f97e4ab7f2ed79bb9a5b319c014ca4bc39775f11"
+    },
+    {
+      "externalId": "BOE-A-2026-19725",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19725"
+      ],
+      "textSha256": "ffd20e073beff26ffc00748dfc22205948c44d6ac54855069875c51747e5134d"
+    },
+    {
+      "externalId": "BOE-A-2026-19753",
+      "relevant": false,
+      "reason": "Expediente de protección patrimonial delimitado a inmuebles o parcelas concretas; fuera del alcance general o sectorial acordado, aunque afecta a sus titulares.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19753"
+      ],
+      "textSha256": "594b062b4b2ef3b6818ac05c1f526deb7d1a34adcfeb6b7df64b5ab90a934d39"
+    },
+    {
+      "externalId": "BOE-B-2026-30700",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30700"
+      ],
+      "textSha256": "4d09ec34249dbfdad18e4b250b577267d1a42ddaa85bcf6175a4c39200a3d8ae"
+    },
+    {
+      "externalId": "BOE-B-2026-30754",
+      "relevant": false,
+      "reason": "Notificación de título universitario individual; sin acción empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30754"
+      ],
+      "textSha256": "c234ec2b53dd90a1086de2defcdb7e6b53c2984cd73baaf85e124f4c3446ee84"
+    },
+    {
+      "externalId": "BOE-A-2026-19709",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19709"
+      ],
+      "textSha256": "23805af187d006c69580020bf0ae0bfeda041a2c368b2b0c88a14cc70e9d8994"
+    },
+    {
+      "externalId": "BOE-A-2026-19715",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19715"
+      ],
+      "textSha256": "bccf683aabef49b2dec67b0764106e91bbc2aceb2868497984dd582256556b8f"
+    },
+    {
+      "externalId": "BOE-A-2026-19750",
+      "relevant": false,
+      "reason": "El panel exige pertenecer a cuerpos docentes de escuelas oficiales de idiomas; no es una convocatoria para negocios privados.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19750"
+      ],
+      "textSha256": "57abe63bcf6f82d1c5d26861048d9c6d73a955bf5acd03ee05e1e70e183f7bfc"
+    },
+    {
+      "externalId": "BOE-B-2026-30689",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30689"
+      ],
+      "textSha256": "f7e84d4b5b3088c688578c90ba289a3363964f980df324bf80ca02eb573c6fff"
+    },
+    {
+      "externalId": "BOE-B-2026-30737",
+      "relevant": false,
+      "reason": "Licencia, concesión, autorización o expediente patrimonial de titulares o bienes concretos; excluido del alcance general o sectorial acordado.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30737"
+      ],
+      "textSha256": "a5d9d139409aaf96c82653daf32205da90d21dcc56379a4d91693c868a432937"
+    },
+    {
+      "externalId": "BOE-A-2026-19699",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19699"
+      ],
+      "textSha256": "e0e944aa2d95f5bf2fd0689980efdad1ca6b4fbde3894794ca05a8b0acb55411"
+    },
+    {
+      "externalId": "BOE-A-2026-19733",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19733"
+      ],
+      "textSha256": "848a5a47e5a856df786554df3139d0de87ee98792260534eeb1f93b1d3ea9bc7"
+    },
+    {
+      "externalId": "BOE-A-2026-19755",
+      "relevant": false,
+      "reason": "Convenio entre entidades identificadas; no abre convocatoria ni nueva obligación general para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19755"
+      ],
+      "textSha256": "f5b12f27f7cedb8e583b27921f7a9ab6cd9f8387103dd9e386d2b97544605b56"
+    },
+    {
+      "externalId": "BOE-B-2026-30675",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30675"
+      ],
+      "textSha256": "22aa093d46562bafee63dd8575073afb5bcade0d91460939de2c19f3fb94ea69"
+    },
+    {
+      "externalId": "BOE-B-2026-30717",
+      "relevant": false,
+      "reason": "Licencia, concesión, autorización o expediente patrimonial de titulares o bienes concretos; excluido del alcance general o sectorial acordado.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30717"
+      ],
+      "textSha256": "5c4ebfd166d200115bdafd82871dacaa01d487e82a3cdd7695897b0963ad5889"
+    },
+    {
+      "externalId": "BOE-A-2026-19702",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19702"
+      ],
+      "textSha256": "71971f2e8cc4beb097e6114784dff4e432b421b76206e25a7d18ed7358ed0a16"
+    },
+    {
+      "externalId": "BOE-A-2026-19717",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19717"
+      ],
+      "textSha256": "22d677f3f1ea2778f49929f2cf33c8e85641cce36f0a1d54aecbdda6461361ae"
+    },
+    {
+      "externalId": "BOE-A-2026-19754",
+      "relevant": false,
+      "reason": "Actualiza la carta de servicios de la Biblioteca Nacional; no abre ayuda ni impone obligación empresarial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19754"
+      ],
+      "textSha256": "c666fb09a731f8aae52fe4eb560a0e7b56a537ae803212a55faca8d78deefa98"
+    },
+    {
+      "externalId": "BOE-B-2026-30692",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30692"
+      ],
+      "textSha256": "56efddce83e9a64bc5f441288c43f1fe1c14190184a6eb4a548ab53cccbdb531"
+    },
+    {
+      "externalId": "BOE-B-2026-30714",
+      "relevant": false,
+      "reason": "Licencia, concesión, autorización o expediente patrimonial de titulares o bienes concretos; excluido del alcance general o sectorial acordado.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30714"
+      ],
+      "textSha256": "837db1b046cf88b6a3a3482a02d4f0eaa07d7cf680331f9e178e9f9dee327223"
+    },
+    {
+      "externalId": "BOE-A-2026-19703",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19703"
+      ],
+      "textSha256": "b82b0bf40dcbc9f048ffa25bf09a7a62350484bff39008b38abe20fd5412fedb"
+    },
+    {
+      "externalId": "BOE-A-2026-19732",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19732"
+      ],
+      "textSha256": "e0851dacdac4b41aa9718a00b3821651feee0e3feb870fff8212fb13dd57bee4"
+    },
+    {
+      "externalId": "BOE-A-2026-19756",
+      "relevant": false,
+      "reason": "Publica tipos de cambio diarios, sin nueva ayuda ni modificación de obligaciones fiscales o empresariales.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19756"
+      ],
+      "textSha256": "5384bae88ccba3a716ed843cc9f1fbb0ca42cb57e5ffa4d70f376a9c6013a940"
+    },
+    {
+      "externalId": "BOE-B-2026-30698",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30698"
+      ],
+      "textSha256": "4765e2392feb38dab94b0fa31b688a082cf0b2b37a3dd9357edbc810b6486ce6"
+    },
+    {
+      "externalId": "BOE-B-2026-30713",
+      "relevant": false,
+      "reason": "Licencia, concesión, autorización o expediente patrimonial de titulares o bienes concretos; excluido del alcance general o sectorial acordado.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30713"
+      ],
+      "textSha256": "1c5aac34427792ae99b7ed1a3db065a5ca43d377ab3cdf8f3c83ae75d22d4f7f"
+    },
+    {
+      "externalId": "BOE-A-2026-19704",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19704"
+      ],
+      "textSha256": "a15c3c8487c78600613c0b8900ebec60a11f0a46099577e89b50489db6a1afb5"
+    },
+    {
+      "externalId": "BOE-A-2026-19744",
+      "relevant": false,
+      "reason": "Proceso de empleo o provisión de puestos públicos; fuera del alcance empresarial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19744"
+      ],
+      "textSha256": "2968692af3f4cffe2a93c06f1c16cc114ad363e84f361ec685bc471b649fbf21"
+    },
+    {
+      "externalId": "BOE-A-2026-19757",
+      "relevant": false,
+      "reason": "Expediente de protección patrimonial delimitado a inmuebles o parcelas concretas; fuera del alcance general o sectorial acordado, aunque afecta a sus titulares.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19757"
+      ],
+      "textSha256": "e91e61f42a0d44ab2719ba6864126f7309a718715233e67ee8c15cf6f51f6c03"
+    },
+    {
+      "externalId": "BOE-B-2026-30676",
+      "relevant": false,
+      "reason": "Licitación o formalización de contratación pública, excluida del alcance acordado del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30676"
+      ],
+      "textSha256": "0b7332b315a160834ef30e85e157ba90154d039a3ae0fb2b79f2a3ea383729c3"
+    },
+    {
+      "externalId": "BOE-B-2026-30746",
+      "relevant": false,
+      "reason": "Licencia, concesión, autorización o expediente patrimonial de titulares o bienes concretos; excluido del alcance general o sectorial acordado.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30746"
+      ],
+      "textSha256": "097c694735b6b3ce1e51e7dc4700c57d8ed0c0d13f42c5f52c1186f5f36d6247"
+    },
+    {
+      "externalId": "BOE-A-2026-19708",
+      "relevant": false,
+      "reason": "Nombramiento, jubilación o provisión de personal público; fuera de ayudas y obligaciones para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19708"
+      ],
+      "textSha256": "d61c04462eba66351660d5f88655095cf8b91cae5ebfe97a7e3386a06504b145"
+    }
+  ]
+}

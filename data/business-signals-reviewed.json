@@ -1,0 +1,1608 @@
+{
+  "dateFrom": "2026-09-24",
+  "dateTo": "2026-09-26",
+  "labels": [
+    {
+      "externalId": "BOE-B-2026-30841",
+      "relevant": true,
+      "reason": "Auto+ admite empresas y personas físicas con actividad económica.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30841"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30860",
+      "relevant": true,
+      "reason": "Doctorados Industriales incluye empresas entre las entidades solicitantes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30860"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30861",
+      "relevant": true,
+      "reason": "Torres Quevedo incluye empresas entre las entidades solicitantes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30861"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30862",
+      "relevant": false,
+      "reason": "Procedimiento para proyectos internacionales ya seleccionados; no oportunidad general para nuevas pymes solicitantes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30862",
+        "https://aei.gob.es/convocatorias/buscador-convocatorias/proyectos-colaboracion-internacional-pci2026-2"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31267",
+      "relevant": true,
+      "reason": "Ronda Erasmus+ Deporte abierta a organizaciones deportivas públicas o privadas que cumplan las condiciones de deporte de base.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31267",
+        "https://erasmus-plus.ec.europa.eu/programme-guide/part-b/key-action-1/sports-staff"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30925",
+      "relevant": false,
+      "reason": "Anuncia la formalización de un contrato público ya adjudicado; no abre una nueva solicitud de ayuda u obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30925"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19924",
+      "relevant": false,
+      "reason": "Condecoración individual sin convocatoria, cambio fiscal ni obligación para autónomos o pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19924"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30779",
+      "relevant": false,
+      "reason": "Licitación pública de limpieza abierta, pero la contratación pública está fuera del alcance actual del radar de ayudas, fiscalidad y obligaciones; no implica que carezca de interés comercial para una pyme.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30779"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19941",
+      "relevant": false,
+      "reason": "Fija la retribución regulada del ejercicio 2023 para distribuidoras eléctricas concretas; no abre una ayuda ni introduce una obligación o cambio fiscal general para autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19941"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19837",
+      "relevant": false,
+      "reason": "Publica un convenio de I+D ya suscrito entre CIEMAT y Enresa; no abre una convocatoria para nuevos solicitantes ni crea una obligación empresarial general.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19837"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30833",
+      "relevant": false,
+      "reason": "Beca dirigida a españoles admitidos en un máster de la Escuela Diplomática, no a empresas o profesionales por su actividad económica.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30833"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30780",
+      "relevant": false,
+      "reason": "Licitación pública abierta de servicios de vigilancia, fuera del alcance actual del radar; puede ser una oportunidad comercial para empresas de seguridad.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30780"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19858",
+      "relevant": false,
+      "reason": "Publica nombramientos individuales de profesorado universitario; no contiene ayuda, obligación ni cambio fiscal dirigido a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19858"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19880",
+      "relevant": false,
+      "reason": "Convocatoria de dos plazas de empleo público en la Diputación de Sevilla, dirigida a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19880"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19796",
+      "relevant": false,
+      "reason": "Convocatoria de empleo público por promoción interna en el Ayuntamiento de Granada; no ofrece una ayuda ni introduce obligación empresarial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19796"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19816",
+      "relevant": false,
+      "reason": "Concurso de acceso a una plaza de profesorado universitario, dirigido a aspirantes individuales y fuera de las señales para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19816"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19820",
+      "relevant": false,
+      "reason": "Corrige la universidad de procedencia de una vocal en un concurso docente; no afecta a obligaciones ni oportunidades para autónomos o pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19820"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19847",
+      "relevant": false,
+      "reason": "Crea un distintivo honorífico para miembros de cuerpos policiales que participaron en un dispositivo de seguridad; no hay ayuda económica ni acción para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19847"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19943",
+      "relevant": true,
+      "reason": "Modifica la lista de productos de importación y exportación sujetos a inspección y control de calidad comercial, incluidos nuevos controles de indicación del origen; afecta potencialmente a pymes importadoras y exportadoras desde el día siguiente a su publicación.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19943"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19942",
+      "relevant": true,
+      "reason": "Publica nuevos precios de venta al público de labores de tabaco en expendedurías de Península y Baleares, vigentes desde el mismo día; es un cambio operativo para estancos que vendan esos productos.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19942"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30778",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30778"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30829",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30829"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19785",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19785"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30897",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30897"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30908",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30908"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30907",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30907"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19869",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19869"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19854",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19854"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19855",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19855"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30906",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30906"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19819",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19819"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19817",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19817"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30905",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30905"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19818",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19818"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30777",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30777"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30830",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30830"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19767",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19767"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19852",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19852"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19951",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19951"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19981",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19981"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19805",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19805"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19865",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19865"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19965",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19965"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31020",
+      "relevant": false,
+      "reason": "Anuncio de subasta judicial de un expediente concreto; fuera de las ayudas, cambios fiscales y obligaciones empresariales generales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31020"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30797",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30797"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30903",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30903"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19777",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19777"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19850",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19850"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19948",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19948"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19795",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19795"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19889",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19889"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19983",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19983"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31066",
+      "relevant": false,
+      "reason": "Anuncio de subasta judicial de un expediente concreto; fuera de las ayudas, cambios fiscales y obligaciones empresariales generales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31066"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30901",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30901"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30788",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30788"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19776",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19776"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19851",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19851"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19811",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19811"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19950",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19950"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19900",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19900"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19962",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19962"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30767",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30767"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30913",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30913"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19778",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19778"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19861",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19861"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19946",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19946"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19803",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19803"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19887",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19887"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19959",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19959"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31000",
+      "relevant": false,
+      "reason": "Anuncio de subasta judicial de un expediente concreto; fuera de las ayudas, cambios fiscales y obligaciones empresariales generales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31000"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30809",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30809"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30920",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30920"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31081",
+      "relevant": false,
+      "reason": "Anuncio de subasta judicial de un expediente concreto; fuera de las ayudas, cambios fiscales y obligaciones empresariales generales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31081"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19768",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19768"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19862",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19862"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19945",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19945"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19894",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19894"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19797",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19797"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19955",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19955"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31126",
+      "relevant": false,
+      "reason": "Anuncio de subasta judicial de un expediente concreto; fuera de las ayudas, cambios fiscales y obligaciones empresariales generales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31126"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30790",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30790"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30885",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30885"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19764",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19764"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19952",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19952"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19788",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19788"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19853",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19853"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19879",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19879"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19969",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19969"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31041",
+      "relevant": false,
+      "reason": "Anuncio de subasta judicial de un expediente concreto; fuera de las ayudas, cambios fiscales y obligaciones empresariales generales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31041"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30831",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30831"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30900",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30900"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19771",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19771"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19864",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19864"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19947",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19947"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19812",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19812"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19899",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19899"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19980",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19980"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30798",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30798"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30889",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30889"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19774",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19774"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31027",
+      "relevant": false,
+      "reason": "Anuncio de subasta judicial de un expediente concreto; fuera de las ayudas, cambios fiscales y obligaciones empresariales generales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31027"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19860",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19860"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19949",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19949"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19814",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19814"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19977",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19977"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19898",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19898"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31035",
+      "relevant": false,
+      "reason": "Anuncio de subasta judicial de un expediente concreto; fuera de las ayudas, cambios fiscales y obligaciones empresariales generales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31035"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30814",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30814"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30902",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30902"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19763",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19763"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19856",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19856"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19944",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19944"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19897",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19897"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19783",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19783"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19960",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19960"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31111",
+      "relevant": false,
+      "reason": "Anuncio de subasta judicial de un expediente concreto; fuera de las ayudas, cambios fiscales y obligaciones empresariales generales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31111"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30802",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30802"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30886",
+      "relevant": false,
+      "reason": "Anuncio de contratación pública o su rectificación; puede ser una oportunidad comercial, pero las licitaciones quedan fuera del alcance actual del radar.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30886"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19780",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19780"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19863",
+      "relevant": false,
+      "reason": "Nombramiento, destino, situación o rectificación sobre personal público; no abre una ayuda ni establece una obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19863"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19789",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19789"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19892",
+      "relevant": false,
+      "reason": "Proceso selectivo, provisión de plazas o actuación sobre su tribunal para empleo público; se dirige a aspirantes individuales, no a negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19892"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31266",
+      "relevant": false,
+      "reason": "Convocatoria de investigación cuya lista de beneficiarios se limita a universidades, centros de investigación y entidades equiparables; no está abierta a pymes ordinarias como solicitantes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31266"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31274",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31274"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19844",
+      "relevant": false,
+      "reason": "Modifica un plan de estudios universitario concreto; no implica una acción empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19844"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19988",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19988"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31277",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31277"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31271",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31271"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31275",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31275"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31269",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31269"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30964",
+      "relevant": false,
+      "reason": "Notificación del extravío de un título universitario individual, sin acción para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30964"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31276",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31276"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31265",
+      "relevant": false,
+      "reason": "Convocatoria de investigación cuya lista de beneficiarios se limita a universidades, centros de investigación y entidades equiparables; no está abierta a pymes ordinarias como solicitantes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31265"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19838",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19838"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31272",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31272"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31273",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31273"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31264",
+      "relevant": false,
+      "reason": "Convocatoria de investigación cuya lista de beneficiarios se limita a universidades, centros de investigación y entidades equiparables; no está abierta a pymes ordinarias como solicitantes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31264"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19845",
+      "relevant": false,
+      "reason": "Publica la convalidación de un real decreto-ley ya publicado el 9 de septiembre; no introduce por sí misma otra solicitud, plazo u obligación para negocios. El cambio original debe evaluarse en su primera publicación.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19845"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30867",
+      "relevant": false,
+      "reason": "Notificación del extravío de un título universitario individual, sin acción para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30867"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31278",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31278"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19917",
+      "relevant": false,
+      "reason": "Concede una distinción individual sin ayuda u obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19917"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31270",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31270"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31279",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31279"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19843",
+      "relevant": false,
+      "reason": "Modifica un plan de estudios universitario concreto; no implica una acción empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19843"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19918",
+      "relevant": false,
+      "reason": "Concede una distinción individual sin ayuda u obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19918"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19986",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19986"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30847",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30847"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30970",
+      "relevant": false,
+      "reason": "Convocatoria de junta de una comunidad de regantes concreta; solo afecta a sus miembros, fuera de las alertas generales o sectoriales.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30970"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31161",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31161"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19846",
+      "relevant": false,
+      "reason": "Regula el reconocimiento de cotizaciones históricas de ministros de culto concretos para prestaciones personales, no obligaciones generales o sectoriales para autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19846"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19991",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19991"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19841",
+      "relevant": false,
+      "reason": "Declara protegida una colección artística de titulares identificados; es un expediente individual, no un cambio general o sectorial para pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19841"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30836",
+      "relevant": false,
+      "reason": "Subasta de bienes de titularidad pública; es una posible compra, no una ayuda ni una obligación general o sectorial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30836"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30937",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30937"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31238",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31238"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19848",
+      "relevant": false,
+      "reason": "Crea un centro de referencia nacional de formación profesional identificado; no abre convocatoria ni impone un nuevo requisito general a empresas aeronáuticas.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19848"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19824",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19824"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19904",
+      "relevant": false,
+      "reason": "Organiza la competencia de una sección judicial concreta; no establece un requisito o ayuda para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19904"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19906",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19906"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19992",
+      "relevant": false,
+      "reason": "Otorga una autorización energética solicitada por una empresa identificada; es un expediente individual, fuera de las alertas generales o sectoriales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19992"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30857",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30857"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30940",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30940"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31186",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31186"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19849",
+      "relevant": false,
+      "reason": "Regula el reconocimiento de cotizaciones históricas de deportistas profesionales para su pensión personal, no una ayuda u obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19849"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19913",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19913"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19985",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19985"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30969",
+      "relevant": false,
+      "reason": "Convocatoria de junta de una comunidad de regantes concreta; solo afecta a sus miembros, fuera de las alertas generales o sectoriales.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30969"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30873",
+      "relevant": false,
+      "reason": "Convocatoria de junta de una comunidad de regantes concreta; solo afecta a sus miembros, fuera de las alertas generales o sectoriales.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30873"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31201",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31201"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19925",
+      "relevant": false,
+      "reason": "Concede una distinción individual sin ayuda u obligación para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19925"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19829",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19829"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19833",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19833"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19996",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19996"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30846",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30846"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30952",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30952"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31194",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31194"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19929",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19929"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19842",
+      "relevant": false,
+      "reason": "Modifica un plan de estudios universitario concreto; no implica una acción empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19842"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19997",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19997"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30934",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30934"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31191",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31191"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19825",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19825"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19912",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19912"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30864",
+      "relevant": false,
+      "reason": "Notificación del extravío de un título universitario individual, sin acción para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30864"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30853",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30853"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30965",
+      "relevant": false,
+      "reason": "Notificación del extravío de un título universitario individual, sin acción para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30965"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31193",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31193"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19993",
+      "relevant": false,
+      "reason": "Otorga una autorización energética solicitada por una empresa identificada; es un expediente individual, fuera de las alertas generales o sectoriales del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19993"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19823",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19823"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19938",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19938"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19998",
+      "relevant": false,
+      "reason": "Emplazamiento en un procedimiento judicial identificado; fuera de las alertas generales o sectoriales para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19998"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30840",
+      "relevant": false,
+      "reason": "Información pública y citación a propietarios concretos en una expropiación; expediente individual fuera del alcance general o sectorial del MVP.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30840"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30963",
+      "relevant": false,
+      "reason": "Notificación del extravío de un título universitario individual, sin acción para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30963"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31128",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31128"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19828",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19828"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19931",
+      "relevant": false,
+      "reason": "Modifica órganos y disciplina interna de la federación de petanca y clubes afiliados; no establece una obligación general o sectorial para autónomos y pymes como tales.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19931"
+      ]
+    },
+    {
+      "externalId": "BOE-A-2026-19984",
+      "relevant": false,
+      "reason": "Publica un convenio o adenda entre entidades identificadas; no abre una convocatoria ni establece un cambio general o sectorial aplicable a autónomos y pymes.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19984"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30845",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30845"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-30936",
+      "relevant": false,
+      "reason": "Anuncio de concesión, vertido o extinción de un derecho de aguas en un expediente identificado; no introduce una obligación general o sectorial para negocios.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-30936"
+      ]
+    },
+    {
+      "externalId": "BOE-B-2026-31195",
+      "relevant": false,
+      "reason": "Anuncio de subasta administrativa de un expediente concreto; no es ayuda, cambio fiscal u obligación empresarial general o sectorial.",
+      "sources": [
+        "https://www.boe.es/diario_boe/txt.php?id=BOE-B-2026-31195"
+      ]
+    }
+  ]
+}
