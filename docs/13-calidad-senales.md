@@ -121,14 +121,13 @@ como fuera de alcance, sin cambiar las reglas de producción.
 node scripts/evaluate-business-signals.mjs http://127.0.0.1:5080 data/business-signals-reviewed-v2.json data/business-signals-review-queue-v2.json
 ```
 
-La segunda muestra está completa (60/60) y necesita además otra fecha
-con positivos y disposiciones generales. No se ha publicado en GitHub ni
-desplegado en Render en esta fase.
+La segunda muestra está completa (60/60). Se amplió después con la revisión
+normativa del día 22 y se publicó junto con las correcciones en GitHub.
 
 ### Ampliación normativa: 22 de septiembre de 2026
 
-Se importaron otras 243 publicaciones. La vista empresarial devuelve cero
-señales para esa fecha. La revisión dirigida de la sección I encontró dos
+Se importaron otras 243 publicaciones. Antes de corregir las reglas, la vista
+empresarial devolvía cero señales para esa fecha. La revisión dirigida de la sección I encontró dos
 omisiones confirmadas por el texto oficial:
 
 - [BOE-A-2026-19628](https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-19628):
@@ -159,7 +158,7 @@ casos inicialmente omitidos quedan incluidos. Las otras muestras mantienen
 6 positivos y 194 negativos correctos (200), y 60 negativos correctos (60).
 Total revisado: 267 documentos, 9 positivos, 258 negativos, sin errores
 observados; no representa una estimación global de cobertura. Pasaron las
-37 pruebas .NET. La comprobación en producción sigue pendiente del despliegue.
+37 pruebas .NET. La comprobación en Render se completó el 3 de octubre de 2026.
 
 ```powershell
 node scripts/evaluate-business-signals.mjs http://127.0.0.1:5080 data/business-signals-reviewed-v3.json data/business-signals-review-queue-v3.json
@@ -172,7 +171,43 @@ node scripts/evaluate-business-signals.mjs http://127.0.0.1:5080 data/business-s
    completado en la muestra, con 6/6 positivos detectados. El objetivo del
    MVP de al menos 90 % de clasificación correcta no basta por sí solo:
    solo hay 6 positivos, así que la exhaustividad medida es inestable.
-3. Repetir la evaluación en Render tras desplegar las reglas y comprobar que las
-   fichas siguen enlazando el texto oficial y explicando la incertidumbre.
+3. ~~Repetir la evaluación en Render tras desplegar las reglas~~: completado
+   el 3 de octubre de 2026. Las fichas enlazan las fuentes oficiales y explican
+   los límites de la extracción automática.
 
-Hasta cumplir esa puerta, el hito está **en progreso**.
+El hito de corrección y validación de señales queda **cerrado para el MVP**,
+con los límites de muestra y cobertura descritos en este documento.
+
+## Comprobación pública del 3 de octubre de 2026
+
+Se desplegó manualmente el commit `3b3c1a0febdc93a19e0d87badaf29f76e351f5a2`
+en `boe-radar-ia`. Render confirmó `Deploy succeeded | Live` en el despliegue
+`dep-db0inhugekts739sl6q0`. La versión anterior era `3325ee6`.
+
+| Muestra | Revisadas | Positivos correctos | Negativos correctos | Errores |
+| --- | ---: | ---: | ---: | ---: |
+| 24–26 septiembre | 200 | 6 | 194 | 0 |
+| 23 septiembre | 60 | 0 | 60 | 0 |
+| Sección I, 22 septiembre | 7 | 3 | 4 | 0 |
+
+Las huellas de los catálogos de las tres ventanas coincidieron con las colas
+congeladas. La muestra sin positivos no permite medir precisión ni recall.
+No se ha evaluado la relevancia de las publicaciones nuevas de octubre.
+
+La web y `/health/ready` respondieron correctamente. La portada mostró
+3032 publicaciones, cobertura hasta el 3 de octubre y 19 señales de los
+últimos 30 días en el momento de la comprobación. Se probó la búsqueda
+«Filipinas» y la apertura de `BOE-A-2026-19628`: fecha de publicación correcta,
+enlaces HTML/XML/PDF oficiales y aviso de revisión obligatoria de la fuente.
+Las revisiones de XML de 19628, 19632, 19942, 19943 y 31267 respondieron
+correctamente con su huella y seis grupos de fragmentos.
+
+### Mejoras del siguiente hito
+
+- Adaptar la ficha al tipo de publicación: el acuerdo internacional todavía
+  muestra apartados de convocatoria y fragmentos sobre prestaciones que no
+  explican bien las obligaciones del artículo 4 para el negocio.
+- Distinguir la fecha de publicación de la entrada en vigor y extraer esta
+  última cuando el texto la indique; mientras tanto, se consulta en la fuente.
+- Personalizar por actividad y territorio y agrupar cambios relacionados
+  antes de emitir alertas. El correo público continúa desactivado.

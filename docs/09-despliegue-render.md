@@ -16,9 +16,9 @@ conservar ahí. Consulta las condiciones actuales de Render antes de crearlo.
 ## Crear el entorno
 
 1. Publica este proyecto en un repositorio Git privado o público en un
-   proveedor admitido por Render. Este directorio local no está asociado
-   actualmente a un repositorio Git; antes de desplegar faltará inicializarlo
-   o conectar uno existente y subir los cambios. No incluyas `.env`, claves de
+   proveedor admitido por Render. El proyecto está conectado al repositorio
+   `Sescoruela/Boe_Radar` y el servicio web se llama `boe-radar-ia`.
+   No incluyas `.env`, claves de
    GCP ni credenciales SMTP.
 2. En Render, selecciona **New → Blueprint**, conecta el repositorio y revisa
    los recursos que propone `render.yaml` antes de confirmar. Comprueba que
@@ -80,6 +80,13 @@ El alta pública permanece desactivada hasta establecer
 solo después de comprobar un envío y una confirmación reales.
 
 ## Comprobación y pendientes
+
+El 3 de octubre de 2026 se publicó el commit `3b3c1a0` mediante
+**Manual Deploy → Deploy latest commit** y se verificaron las tres muestras
+de relevancia en la API pública (267 etiquetas, sin errores observados).
+Véase [calidad de señales](13-calidad-senales.md). Si un envío a GitHub no
+actualiza la web, comprueba el commit marcado como Live en Render y despliega
+manualmente la versión deseada; no des por hecho que el envío ya está publicado.
 
 - `GET /health/live` responde aunque PostgreSQL falle; `GET /health/ready`
   solo responde correctamente si PostgreSQL es accesible.
