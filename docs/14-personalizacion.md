@@ -1,7 +1,7 @@
 # Personalización: primera iteración
 
-Implementada y verificada en local el 3 de octubre de 2026. Esta entrega no
-modifica todavía la versión pública de Render.
+Implementada y verificada en local el 3 de octubre de 2026. Publicada y
+verificada en Render el 4 de octubre de 2026.
 
 ## Recorrido del usuario
 
@@ -76,6 +76,36 @@ para mejorar la prioridad; agrupar cambios relacionados; conectar las alertas
 al perfil cuando se habilite el correo. El perfil no determina beneficiarios,
 obligaciones, plazos ni exclusiones.
 
-Antes de publicar: subir los cambios, desplegar en Render y repetir allí el
-recorrido de creación, recarga, cambio y borrado. No requiere nuevos secretos
-ni cambios en la base de datos.
+## Publicación y validación en Render
+
+Commit de aplicación: `32ad22a439793663da696792aec455bdd5464875`.
+Despliegue manual: `dep-db1356gu01pc73ck489g`, con estado
+`Deploy succeeded | Live`, duración 1m11s y fecha mostrada por Render
+4 de octubre de 2026, 13:03:54 Europe/Madrid. No se añadieron secretos
+ni migraciones. `/health/ready` devolvió HTTP 200 y base de datos conectada.
+
+Tres perfiles sintéticos consultaron la misma ventana del 24 al 26 de
+septiembre. Todos conservaron las seis señales y devolvieron `no-store`:
+
+| Perfil | Primera señal esperada y observada |
+| --- | --- |
+| Autónomo, comercio, Baleares | BOE-A-2026-19942, precios de tabaco |
+| Pyme, formación/deporte, sin territorio | BOE-B-2026-31267, Erasmus+ deporte |
+| Pyme, transporte, Canarias | BOE-B-2026-30841, Auto+ |
+
+En el navegador público se verificaron creación, recarga conservando el perfil,
+ficha con motivos y comprobaciones, segunda página con señales inciertas,
+cambio a pyme de formación y borrado confirmado mediante nueva recarga. La
+portada mostró 3032 documentos y 19 señales; el cambio de actividad priorizó
+las convocatorias de formación de ámbito estatal. Se borró el perfil sintético
+al terminar para no dejarlo como preferencia del usuario.
+
+Las tres ventanas congeladas también se evaluaron contra la API pública:
+267 documentos revisados, nueve positivos y 258 negativos correctos, sin
+errores observados. No es una evaluación global del catálogo ni de la
+relevancia individual por negocio. Las pruebas de perfiles comprueban el
+orden técnico; queda pendiente contrastar su utilidad con usuarios reales.
+
+Se cierra la entrega de publicación y validación técnica de la primera
+personalización. El siguiente hito es adaptar las fichas al tipo de publicación,
+manteniendo explícitos los datos desconocidos y la evidencia oficial.
