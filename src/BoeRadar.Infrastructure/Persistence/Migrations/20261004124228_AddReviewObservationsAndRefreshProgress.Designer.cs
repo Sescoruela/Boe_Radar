@@ -3,6 +3,7 @@ using System;
 using BoeRadar.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BoeRadar.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BoeRadarDbContext))]
-    partial class BoeRadarDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261004124228_AddReviewObservationsAndRefreshProgress")]
+    partial class AddReviewObservationsAndRefreshProgress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

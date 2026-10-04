@@ -41,3 +41,12 @@ select {
   color: white;
 }
 
+.official-references {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 14px;
+
+  ul { padding-left: 18px; }
+  li { margin-bottom: 18px; }
+  a { color: var(--accent-dark); overflow-wrap: anywhere; }
+}

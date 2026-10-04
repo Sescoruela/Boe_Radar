@@ -9,7 +9,7 @@ internal sealed class HeuristicDocumentAnalyzer : IDocumentAnalyzer
 
     public string ModelName => "deterministic-rules-v1";
 
-    public string PromptVersion => "radar-v1";
+    public string PromptVersion => "radar-v2";
 
     public Task<RadarAnalysisOutput> AnalyzeAsync(
         AnalysisCandidate candidate,

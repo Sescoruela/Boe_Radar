@@ -126,7 +126,7 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
         var items = await query
             .OrderByDescending(document => document.PublicationDate)
             .ThenBy(document => document.ExternalId)
-            .Skip((page - 1) * pageSize)
+            .Skip((int)Math.Min((long)(page - 1) * pageSize, totalItems))
             .Take(pageSize)
             .Select(document => new PublicationListItem(
                 document.Id,
@@ -223,8 +223,8 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
                 analysis.IsRelevant,
                 analysis.Category.ToString(),
                 analysis.Summary,
-                Deserialize<IReadOnlyList<string>>(analysis.RequirementsJson),
-                Deserialize<IReadOnlyList<RadarDeadline>>(analysis.DeadlinesJson),
+                analysis.PromptVersion == "radar-v2" ? Deserialize<IReadOnlyList<string>>(analysis.RequirementsJson) : [],
+                analysis.PromptVersion == "radar-v2" ? Deserialize<IReadOnlyList<RadarDeadline>>(analysis.DeadlinesJson) : [],
                 Deserialize<IReadOnlyList<RadarEvidence>>(analysis.EvidenceJson),
                 analysis.Confidence,
                 analysis.Method,

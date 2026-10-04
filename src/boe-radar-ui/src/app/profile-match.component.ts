@@ -10,7 +10,7 @@ import { BusinessProfileMatch } from './publications';
         @for (reason of match().reasons; track reason) { <p>{{ reason }}</p> }
         <h4>Antes de actuar</h4>
         <ul>@for (check of match().checks; track check) { <li>{{ check }}</li> }</ul>
-        <p>La prioridad usa el título y el epígrafe. Revisa los requisitos, los plazos y el texto oficial antes de decidir.</p>
+        <p>{{ match().sourceHash ? 'La prioridad combina metadatos y menciones del texto revisado.' : 'La prioridad usa el título y el epígrafe; todavía no incorpora una revisión guardada.' }} Revisa los requisitos, los plazos y el texto oficial antes de decidir.</p>
       </section>
     } @else {
       <div class="match" [class.has-match]="match().priority > 0">

@@ -7,14 +7,14 @@ sin enviar todo el BOE al modelo.
 
 1. Un prefiltro determinista puntúa título, organismo y epígrafe.
 2. Solo los candidatos descargan el XML oficial.
-3. El analizador produce JSON conforme al contrato `radar-v1`.
+3. El analizador produce JSON conforme al contrato `radar-v2`.
 4. La aplicación valida confianza, fechas y citas antes de persistir.
 5. El catálogo muestra el análisis junto con los enlaces oficiales.
 
 La combinación de hash del contenido, modelo y versión del contrato hace que el
 proceso sea idempotente y permite recalcular cuando cambia cualquiera de ellos.
 
-## Contrato `radar-v1`
+## Contrato `radar-v2`
 
 - `isRelevant`: relevancia para autónomos o pymes.
 - `category`: `Grant`, `Subsidy`, `Tax`, `Obligation`, `Employment`,
@@ -29,6 +29,13 @@ Un resultado relevante sin evidencia se rechaza. Cada cita debe aparecer
 literalmente en el texto normalizado del BOE y cada fecha explícita debe ser una
 fecha ISO válida. La aplicación nunca calcula una fecha implícita como si fuera
 oficial.
+
+Cada requisito conserva literalmente su cita identificada con `supports=requirements[i]`.
+Cada plazo requiere una cita `supports=deadlines[i]`, con día, mes y año completos cuando
+contiene una fecha absoluta. Los análisis anteriores no exponen requisitos ni fechas como
+datos validados hasta su reanálisis. Las fuentes de más de 40.000 caracteres se rechazan
+explícitamente, sin análisis parcial silencioso. Consulta las
+[correcciones y pruebas de regresión](19-correcciones-fiabilidad.md).
 
 ## Proveedores
 

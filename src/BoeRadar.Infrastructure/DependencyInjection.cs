@@ -37,6 +37,7 @@ public static class DependencyInjection
         services.AddScoped<IOfficialGazetteSource, BoeOfficialGazetteSource>();
         services.AddScoped<IIngestionStore, EfIngestionStore>();
         services.AddScoped<IPublicationCatalog, EfPublicationCatalog>();
+        services.AddScoped<ISourceReviewStore, EfSourceReviewStore>();
         services.AddScoped<IAnalysisCandidateStore, EfAnalysisCandidateStore>();
         services.AddScoped<ISubscriptionStore, EfSubscriptionStore>();
         services.AddScoped<SubscriptionService>();

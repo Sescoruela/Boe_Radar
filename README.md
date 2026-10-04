@@ -28,6 +28,11 @@ proveedor de correo real y sus rebotes queda pendiente. La documentación base e
 - [Fichas accionables: primera iteración](docs/11-fichas-accionables.md)
 - [Calidad de señales para negocios](docs/13-calidad-senales.md)
 - [Personalización por negocio: primera iteración](docs/14-personalizacion.md)
+- [Fichas adaptadas al tipo de publicación](docs/15-fichas-por-tipo.md)
+- [Relevancia con evidencia: primera entrega](docs/16-relevancia-con-evidencia.md)
+- [Orden personalizado y conservación de evidencia](docs/17-orden-con-evidencia.md)
+- [Publicaciones relacionadas: referencias oficiales](docs/18-publicaciones-relacionadas.md)
+- [Correcciones de fiabilidad y regresiones](docs/19-correcciones-fiabilidad.md)
 - [ADR-001: monolito modular](docs/adr/001-monolito-modular.md)
 
 ## Propuesta de valor

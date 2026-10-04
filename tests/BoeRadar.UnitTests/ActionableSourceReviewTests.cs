@@ -5,6 +5,96 @@ namespace BoeRadar.UnitTests;
 public sealed class ActionableSourceReviewTests
 {
     [Fact]
+    public void OfficialReferencesArePreservedOutsideBodyEvidenceAndProfileMatching()
+    {
+        var reference = new DocumentReference("BOE-A-2003-20151", "MODIFICA", "Normas de comercio",
+            "previous", "https://www.boe.es/buscar/doc.php?id=BOE-A-2003-20151");
+        var review = new ActionableSourceReviewBuilder().Build(
+            new("Contenido sin menciones de actividad.", "hash", "xml", References: [reference]), DateTimeOffset.UtcNow);
+        Assert.Equal(reference, Assert.Single(review.References));
+        Assert.Equal("unknown", SourceProfileContrastBuilder.Build(new("sme", "retail", "all"), review)
+            .Dimensions.Single(dimension => dimension.Key == "activity").Status);
+        Assert.All(review.Groups, group => Assert.Empty(group.Quotes));
+    }
+    [Theory]
+    [InlineData("Extracto por el que se convocan ayudas a pymes", "grant")]
+    [InlineData("Bases reguladoras de subvenciones", "grant")]
+    [InlineData("Ley por la que se modifica el Impuesto sobre Sociedades", "tax")]
+    [InlineData("Acuerdo administrativo de Seguridad Social con Filipinas", "regulation")]
+    [InlineData("Resolución de precios de venta al público de tabaco", "regulation")]
+    [InlineData("Resolución de nombramiento de personal", "general")]
+    public void TemplateUsesOfficialTitleNotIncidentalBodyTerms(string title, string expected)
+    {
+        const string text = "Se mencionan ayudas, subvenciones e impuestos en los antecedentes.";
+        var review = new ActionableSourceReviewBuilder().Build(
+            new DocumentText(text, "hash", "xml", OfficialTitle: title), DateTimeOffset.UtcNow);
+        Assert.Equal(expected, review.Kind);
+        Assert.NotEmpty(review.NextStep);
+        if (expected is "regulation" or "tax")
+            Assert.DoesNotContain(review.Groups, group => group.Key is "application" or "amount");
+    }
+
+    [Fact]
+    public void RegulatoryObligationsAndEffectiveDateRemainLiteral()
+    {
+        string[] passages = ["Artículo 4. Los empresarios deberán comunicar los datos de sus trabajadores.",
+            "Este acuerdo entrará en vigor el 1 de enero de 2027.", "Publicado el 22 de septiembre de 2026."];
+        var text = string.Join(" ", passages);
+        var review = new ActionableSourceReviewBuilder().Build(new DocumentText(text, "hash", "xml",
+            passages, "Acuerdo administrativo de Seguridad Social"), DateTimeOffset.UtcNow);
+        Assert.Equal("regulation", review.Kind);
+        Assert.Contains(review.Groups.Single(group => group.Key == "obligations").Quotes,
+            quote => quote.Contains("deberán comunicar"));
+        var effective = Assert.Single(review.Groups.Single(group => group.Key == "effective").Quotes);
+        Assert.Contains("1 de enero de 2027", effective);
+        Assert.DoesNotContain("22 de septiembre", effective);
+        Assert.All(review.Groups.SelectMany(group => group.Quotes), quote => Assert.Contains(quote, text));
+    }
+
+    [Fact]
+    public void PublicationDateDoesNotBecomeEffectiveDate()
+    {
+        var review = new ActionableSourceReviewBuilder().Build(new DocumentText(
+            "Publicado el 3 de octubre de 2026. El importe es de 50 euros.", "hash", "xml",
+            OfficialTitle: "Resolución de precios de venta de tabaco"), DateTimeOffset.UtcNow);
+        Assert.Empty(review.Groups.Single(group => group.Key == "effective").Quotes);
+        Assert.DoesNotContain(review.Groups, group => group.Key == "application");
+    }
+
+    [Fact]
+    public void GenericObligationMentionDoesNotDisplaceConcreteBusinessDuties()
+    {
+        string[] passages = ["Información sobre los derechos y obligaciones del convenio.",
+            "El empleador deberá comunicar el cese de la relación laboral.",
+            "El trabajador por cuenta propia deberá comunicar el fin de su actividad."];
+        var review = new ActionableSourceReviewBuilder().Build(new DocumentText(string.Join(" ", passages),
+            "hash", "xml", passages, "Acuerdo administrativo de Seguridad Social"), DateTimeOffset.UtcNow);
+        var quotes = review.Groups.Single(group => group.Key == "obligations").Quotes;
+        Assert.NotEmpty(quotes);
+        Assert.Contains(quotes, quote => quote.Contains("empleador deberá"));
+        Assert.Contains(quotes, quote => quote.Contains("cuenta propia deberá"));
+        Assert.DoesNotContain(quotes, quote => quote.Contains("Información sobre los derechos"));
+    }
+
+    [Fact]
+    public void MissingTitleUsesNeutralLabelsAndUnknownType()
+    {
+        var review = new ActionableSourceReviewBuilder().Build(new DocumentText(
+            "Se mencionan ayudas y un formulario de solicitud.", "hash", "xml"), DateTimeOffset.UtcNow);
+        Assert.Equal("general", review.Kind);
+        Assert.Equal("Trámites mencionados", review.Groups.Single(group => group.Key == "application").Label);
+    }
+
+    [Fact]
+    public void BdnsCallExtractWithoutAidInTitleUsesGrantTemplate()
+    {
+        var review = new ActionableSourceReviewBuilder().Build(new DocumentText(
+            "BDNS (Identif.): 123456. Beneficiarios: empresas y profesionales autónomos.", "hash", "xml",
+            OfficialTitle: "Extracto de la Orden de convocatoria de la Línea 2 del Programa Auto+"), DateTimeOffset.UtcNow);
+        Assert.Equal("grant", review.Kind);
+    }
+
+    [Fact]
     public void ExtractedPassagesAreLiteralAndMissingFieldsRemainEmpty()
     {
         const string source = "Se convocan ayudas para pequeñas y medianas empresas. " +

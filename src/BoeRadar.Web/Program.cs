@@ -182,7 +182,31 @@ api.MapGet("/source-review/{externalId}", async (
         ActionableSourceReviewBuilder reviewBuilder,
         IMemoryCache cache,
         TimeProvider clock,
+        ISourceReviewStore reviewStore,
         CancellationToken cancellationToken) =>
+        await ReviewOfficialSource(externalId, null, textSource, reviewBuilder, cache, clock, reviewStore, cancellationToken))
+    .RequireRateLimiting("source-review")
+    .WithName("GetPublicationSourceReview")
+    .WithSummary("Localiza pasajes literales del XML oficial para revisar una publicación.");
+
+api.MapPost("/source-review/{externalId}/personalized", async (
+        string externalId, BusinessProfile profile, HttpContext context,
+        IOfficialDocumentTextSource textSource, ActionableSourceReviewBuilder reviewBuilder,
+        IMemoryCache cache, TimeProvider clock, ISourceReviewStore reviewStore, CancellationToken cancellationToken) =>
+    {
+        context.Response.Headers.CacheControl = "no-store";
+        if (!BusinessProfileMatcher.IsValid(profile))
+            return Results.ValidationProblem(new Dictionary<string, string[]>
+            { ["profile"] = ["Perfil de negocio no válido."] });
+        return await ReviewOfficialSource(externalId, profile, textSource, reviewBuilder, cache, clock, reviewStore, cancellationToken);
+    })
+    .RequireRateLimiting("source-review")
+    .WithName("GetPersonalizedSourceReview")
+    .WithSummary("Contrasta un perfil con fragmentos oficiales sin confirmar elegibilidad ni guardarlo.");
+
+static async Task<IResult> ReviewOfficialSource(string externalId, BusinessProfile? profile,
+    IOfficialDocumentTextSource textSource, ActionableSourceReviewBuilder reviewBuilder,
+    IMemoryCache cache, TimeProvider clock, ISourceReviewStore reviewStore, CancellationToken cancellationToken)
     {
         if (!Regex.IsMatch(externalId, @"^BOE-[A-Z]-[0-9]{4}-[0-9]{1,10}$",
                 RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(100)))
@@ -192,14 +216,17 @@ api.MapGet("/source-review/{externalId}", async (
             $"https://www.boe.es/diario_boe/xml.php?id={Uri.EscapeDataString(externalId)}");
         var cacheKey = $"source-review:{externalId}";
         if (cache.TryGetValue<ActionableSourceReview>(cacheKey, out var cached))
-            return Results.Ok(cached);
+        {
+            return Results.Ok(Personalize(cached!));
+        }
 
         try
         {
             var content = await textSource.GetAsync(officialXmlUrl, cancellationToken);
             var review = reviewBuilder.Build(content, clock.GetUtcNow());
+            await reviewStore.SaveAsync(externalId, review, cancellationToken);
             cache.Set(cacheKey, review, TimeSpan.FromHours(6));
-            return Results.Ok(review);
+            return Results.Ok(Personalize(review));
         }
         catch (HttpRequestException exception) when (exception.StatusCode == HttpStatusCode.NotFound)
         {
@@ -220,10 +247,9 @@ api.MapGet("/source-review/{externalId}", async (
             return Results.Problem(statusCode: StatusCodes.Status503ServiceUnavailable,
                 title: "Se agotó el tiempo de espera del texto oficial.");
         }
-    })
-    .RequireRateLimiting("source-review")
-    .WithName("GetPublicationSourceReview")
-    .WithSummary("Localiza pasajes literales del XML oficial para revisar una publicación.");
+        ActionableSourceReview Personalize(ActionableSourceReview review) => profile is null ? review
+            : review with { ProfileContrast = SourceProfileContrastBuilder.Build(profile, review) };
+    }
 
 var subscriptions = api.MapGroup("/subscriptions");
 var publicBaseUrl = new Uri(builder.Configuration["RENDER_EXTERNAL_URL"]

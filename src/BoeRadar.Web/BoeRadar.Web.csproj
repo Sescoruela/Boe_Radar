@@ -17,5 +17,7 @@
     <ProjectReference Include="..\BoeRadar.Infrastructure\BoeRadar.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="BoeRadar.UnitTests" />
+  </ItemGroup>
 </Project>
-

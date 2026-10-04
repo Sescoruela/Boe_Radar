@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BoeRadar.Infrastructure.Persistence;
 
-internal sealed class EfSubscriptionStore(BoeRadarDbContext db) : ISubscriptionStore
+internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clock) : ISubscriptionStore
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
@@ -113,7 +113,7 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db) : ISubscriptionS
             .Join(db.SourceDocuments.AsNoTracking().Where(document => document.PublicationDate == date),
                 analysis => analysis.DocumentId, document => document.Id,
                 (analysis, document) => new { Analysis = analysis, Document = document })
-            .Where(item => item.Analysis.IsRelevant &&
+            .Where(item => item.Analysis.IsRelevant && item.Analysis.PromptVersion == "radar-v2" &&
                 (includeHeuristic || item.Analysis.Method == "gemini"))
             .ToArrayAsync(cancellationToken);
         var latest = analyzed.GroupBy(item => item.Document.Id)
@@ -147,8 +147,12 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db) : ISubscriptionS
                         JsonSerializer.Deserialize<string[]>(item.Analysis.RequirementsJson, JsonOptions),
                         JsonSerializer.Deserialize<RadarDeadline[]>(item.Analysis.DeadlinesJson, JsonOptions))
                 })
-                .Select(item => new { item.Analysis, item.Item,
-                    Reasons = SubscriptionRules.Match(preferences, item.Item) })
+                .Select(item => new
+                {
+                    item.Analysis,
+                    item.Item,
+                    Reasons = SubscriptionRules.Match(preferences, item.Item)
+                })
                 .Where(item => item.Reasons.Count > 0)
                 .ToArray();
             if (selected.Length == 0) continue;
@@ -178,52 +182,76 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db) : ISubscriptionS
         DateTimeOffset now, CancellationToken cancellationToken)
     {
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
+        await db.OutboxMessages.Where(item => item.Status == DeliveryStatus.Sending &&
+                item.NextAttemptAt <= now && item.AttemptCount >= 5)
+            .ExecuteUpdateAsync(update => update.SetProperty(item => item.Status, DeliveryStatus.Failed)
+                .SetProperty(item => item.LastError, "claim-expired-final-delivery-unknown"), cancellationToken);
         var messages = await db.OutboxMessages.FromSqlInterpolated($"""
             SELECT * FROM outbox_messages
-            WHERE ((status IN ('Pending', 'Failed') AND next_attempt_at <= {now})
-                OR (status = 'Sending' AND next_attempt_at <= {now}))
-                AND attempt_count < 5
+            WHERE ((status IN ('Pending', 'Failed') AND next_attempt_at <= {now} AND attempt_count < 5)
+                OR (status = 'Sending' AND next_attempt_at <= {now} AND attempt_count < 5))
             ORDER BY created_at
             LIMIT {limit}
             FOR UPDATE SKIP LOCKED
-            """).ToArrayAsync(cancellationToken);
+            """).AsNoTracking().ToArrayAsync(cancellationToken);
+        var claimed = new List<OutboxMessage>();
         foreach (var message in messages)
         {
+            var previousAttempt = message.AttemptCount;
             if (message.Status == DeliveryStatus.Sending)
-                message.MarkFailed(now, "claim-expired");
+                message.MarkFailed(now, previousAttempt >= 5 ? "claim-expired-final-delivery-unknown" : "claim-expired");
             message.Claim(now);
+            await db.OutboxMessages.Where(item => item.Id == message.Id)
+                .ExecuteUpdateAsync(update => update.SetProperty(item => item.Status, message.Status)
+                    .SetProperty(item => item.AttemptCount, message.AttemptCount)
+                    .SetProperty(item => item.NextAttemptAt, message.NextAttemptAt)
+                    .SetProperty(item => item.LastError, message.LastError), cancellationToken);
+            claimed.Add(message);
         }
-        await db.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
-        return messages;
+        return claimed;
     }
 
-    public async Task MarkSentAsync(Guid messageId, DateTimeOffset now,
+    public async Task<bool> MarkSentAsync(Guid messageId, int attempt, DateTimeOffset now,
         CancellationToken cancellationToken)
     {
-        var message = await db.OutboxMessages.SingleAsync(item => item.Id == messageId, cancellationToken);
-        message.MarkSent(now);
-        if (message.DigestId is { } digestId)
+        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
+        var changed = await OwnedMessage(messageId, attempt, now).ExecuteUpdateAsync(update => update
+            .SetProperty(item => item.Status, DeliveryStatus.Sent).SetProperty(item => item.SentAt, now)
+            .SetProperty(item => item.LastError, (string?)null).SetProperty(item => item.Body, ""), cancellationToken);
+        if (changed == 0) return false;
+        var digestId = await db.OutboxMessages.AsNoTracking().Where(item => item.Id == messageId)
+            .Select(item => item.DigestId).SingleAsync(cancellationToken);
+        if (digestId is not null)
         {
-            var digest = await db.AlertDigests.SingleAsync(item => item.Id == digestId, cancellationToken);
-            digest.MarkSent(now);
+            await db.AlertDigests.Where(item => item.Id == digestId).ExecuteUpdateAsync(update =>
+                update.SetProperty(item => item.SentAt, now), cancellationToken);
         }
-        await db.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+        return true;
     }
 
-    public async Task MarkFailedAsync(Guid messageId, string error, DateTimeOffset now,
+    public async Task MarkFailedAsync(Guid messageId, int attempt, string error, DateTimeOffset now,
         CancellationToken cancellationToken)
     {
-        var message = await db.OutboxMessages.SingleAsync(item => item.Id == messageId, cancellationToken);
-        message.MarkFailed(now, error);
-        await db.SaveChangesAsync(cancellationToken);
+        var next = now.AddMinutes(Math.Min(60, 1 << Math.Min(attempt, 6)));
+        var reason = error[..Math.Min(error.Length, 200)];
+        await OwnedMessage(messageId, attempt, now).ExecuteUpdateAsync(update => update
+            .SetProperty(item => item.Status, DeliveryStatus.Failed).SetProperty(item => item.LastError, reason)
+            .SetProperty(item => item.NextAttemptAt, next), cancellationToken);
     }
 
-    public async Task<bool> CanDeliverAsync(Guid messageId, CancellationToken cancellationToken)
+    private IQueryable<OutboxMessage> OwnedMessage(Guid id, int attempt, DateTimeOffset now) =>
+        db.OutboxMessages.Where(item => item.Id == id && item.Status == DeliveryStatus.Sending &&
+            item.AttemptCount == attempt && item.NextAttemptAt > now);
+
+    public async Task<bool> CanDeliverAsync(Guid messageId, int attempt, CancellationToken cancellationToken)
     {
         var message = await db.OutboxMessages.AsNoTracking().SingleAsync(item => item.Id == messageId,
             cancellationToken);
-        if (message.Status != DeliveryStatus.Sending) return false;
+        var now = clock.GetUtcNow();
+        if (message.Status != DeliveryStatus.Sending || message.AttemptCount != attempt || message.NextAttemptAt <= now)
+            return false;
         if (message.Kind == "management")
         {
             var managementHash = message.IdempotencyKey.Split(':').Last();
@@ -236,18 +264,18 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db) : ISubscriptionS
             var tokenHash = message.IdempotencyKey.Split(':').Last();
             return await db.Subscriptions.AsNoTracking().AnyAsync(item => item.Email == message.Recipient &&
                 item.Status == SubscriptionStatus.Pending && item.VerificationTokenHash == tokenHash &&
-                item.VerificationExpiresAt > DateTimeOffset.UtcNow,
+                item.VerificationExpiresAt > now,
                 cancellationToken);
         }
         return await db.Subscriptions.AsNoTracking().AnyAsync(item => item.Email == message.Recipient &&
             item.Status == SubscriptionStatus.Active, cancellationToken);
     }
 
-    public async Task CancelAsync(Guid messageId, CancellationToken cancellationToken)
+    public async Task CancelAsync(Guid messageId, int attempt, CancellationToken cancellationToken)
     {
-        var message = await db.OutboxMessages.SingleAsync(item => item.Id == messageId, cancellationToken);
-        message.Cancel();
-        await db.SaveChangesAsync(cancellationToken);
+        await OwnedMessage(messageId, attempt, clock.GetUtcNow()).ExecuteUpdateAsync(update => update
+            .SetProperty(item => item.Status, DeliveryStatus.Canceled).SetProperty(item => item.Body, "")
+            .SetProperty(item => item.LastError, (string?)null), cancellationToken);
     }
 
     private static SubscriptionView ToView(Subscription subscription) => new(

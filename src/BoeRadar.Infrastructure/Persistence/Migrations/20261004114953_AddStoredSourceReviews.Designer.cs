@@ -3,6 +3,7 @@ using System;
 using BoeRadar.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BoeRadar.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BoeRadarDbContext))]
-    partial class BoeRadarDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261004114953_AddStoredSourceReviews")]
+    partial class AddStoredSourceReviews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -677,62 +680,6 @@ namespace BoeRadar.Infrastructure.Persistence.Migrations
                     b.ToTable("subscriptions", (string)null);
                 });
 
-            modelBuilder.Entity("BoeRadar.Infrastructure.Persistence.CatalogRefreshProgress", b =>
-                {
-                    b.Property<string>("Source")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("source");
-
-                    b.Property<DateOnly>("NextDate")
-                        .HasColumnType("date")
-                        .HasColumnName("next_date");
-
-                    b.HasKey("Source");
-
-                    b.ToTable("catalog_refresh_progress", (string)null);
-                });
-
-            modelBuilder.Entity("BoeRadar.Infrastructure.Persistence.SourceReviewObservation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("ExternalId")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("external_id");
-
-                    b.Property<DateTimeOffset>("ObservedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("observed_at");
-
-                    b.Property<string>("SourceHash")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)")
-                        .HasColumnName("source_hash");
-
-                    b.Property<string>("Version")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("version");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExternalId", "ObservedAt", "Id");
-
-                    b.HasIndex("ExternalId", "SourceHash", "Version");
-
-                    b.ToTable("source_review_observations", (string)null);
-                });
-
             modelBuilder.Entity("BoeRadar.Infrastructure.Persistence.StoredSourceReview", b =>
                 {
                     b.Property<string>("ExternalId")
@@ -851,15 +798,6 @@ namespace BoeRadar.Infrastructure.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BoeRadar.Infrastructure.Persistence.SourceReviewObservation", b =>
-                {
-                    b.HasOne("BoeRadar.Infrastructure.Persistence.StoredSourceReview", null)
-                        .WithMany()
-                        .HasForeignKey("ExternalId", "SourceHash", "Version")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

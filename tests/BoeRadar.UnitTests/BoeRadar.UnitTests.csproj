@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\src\BoeRadar.Application\BoeRadar.Application.csproj" />
     <ProjectReference Include="..\..\src\BoeRadar.Domain\BoeRadar.Domain.csproj" />
     <ProjectReference Include="..\..\src\BoeRadar.Infrastructure\BoeRadar.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\BoeRadar.Web\BoeRadar.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

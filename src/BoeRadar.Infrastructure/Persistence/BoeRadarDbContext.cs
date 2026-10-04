@@ -13,6 +13,9 @@ public sealed class BoeRadarDbContext(DbContextOptions<BoeRadarDbContext> option
     public DbSet<SourceDocument> SourceDocuments => Set<SourceDocument>();
 
     public DbSet<DocumentContent> DocumentContents => Set<DocumentContent>();
+    public DbSet<StoredSourceReview> SourceReviews => Set<StoredSourceReview>();
+    public DbSet<SourceReviewObservation> SourceReviewObservations => Set<SourceReviewObservation>();
+    public DbSet<CatalogRefreshProgress> CatalogRefreshProgress => Set<CatalogRefreshProgress>();
 
     public DbSet<IngestionRun> IngestionRuns => Set<IngestionRun>();
 

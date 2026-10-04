@@ -38,14 +38,15 @@ public sealed class RadarAnalysisTests
             true,
             RadarCategory.Grant,
             "Se convoca una ayuda.",
-            ["Ser una pyme"],
+            ["Se convocan ayudas para pymes"],
             [new RadarDeadline("2026-10-15", "Fin de solicitudes", true)],
-            [new RadarEvidence("Se convocan ayudas para pymes", "relevancia")],
+            [new RadarEvidence("Se convocan ayudas para pymes", "requirements[0]"),
+             new RadarEvidence("El plazo finaliza el 15 de octubre de 2026", "deadlines[0]")],
             0.9m);
 
         new AnalysisValidator().Validate(
             output,
-            "Se convocan ayudas para pymes. El plazo finaliza el 15 de octubre.");
+            "Se convocan ayudas para pymes. El plazo finaliza el 15 de octubre de 2026.");
     }
 
     [Fact]

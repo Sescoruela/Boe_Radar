@@ -13,12 +13,13 @@ import {
 } from './publications';
 import { SubscriptionsApi, SubscriptionView } from './subscriptions';
 import { ProfileMatchComponent } from './profile-match.component';
+import { SourceProfileComponent } from './source-profile.component';
 import { BusinessProfile, businessTypes, activityOptions, territoryOptions,
   isBusinessProfile, loadBusinessProfile, storeBusinessProfile } from './business-profile';
 
 @Component({
   selector: 'app-root',
-  imports: [DatePipe, FormsModule, ProfileMatchComponent],
+  imports: [DatePipe, FormsModule, ProfileMatchComponent, SourceProfileComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -236,7 +237,8 @@ export class App implements OnInit {
     };
   }
 
-  search(page = 1): void {
+  search(page = 1, retainEvidenceSnapshot = false): void {
+    const evidenceAsOf = retainEvidenceSnapshot ? this.result()?.evidenceAsOf ?? null : null;
     const requestId = ++this.searchRequestId;
     this.filters.page = page;
     this.error.set(null);
@@ -253,7 +255,7 @@ export class App implements OnInit {
 
     const profile = this.businessProfile();
     const request = this.personalizedView() && profile
-      ? this.api.personalized(filters, profile) : this.api.search(filters);
+      ? this.api.personalized(filters, profile, evidenceAsOf) : this.api.search(filters);
     request
       .pipe(finalize(() => {
         if (requestId === this.searchRequestId) this.loading.set(false);
@@ -283,6 +285,7 @@ export class App implements OnInit {
   }
 
   openDetails(id: string): void {
+    const reviewProfile = this.personalizedView() ? this.businessProfile() : null;
     const requestId = ++this.detailRequestId;
     this.detailLoading.set(true);
     this.selectedProfileMatch.set(this.personalizedView()
@@ -300,7 +303,7 @@ export class App implements OnInit {
           if (requestId !== this.detailRequestId) return;
           this.selected.set(publication);
           this.sourceReviewLoading.set(true);
-          this.api.getSourceReview(publication.externalId)
+          this.api.getSourceReview(publication.externalId, reviewProfile)
             .pipe(finalize(() => {
               if (requestId === this.detailRequestId) this.sourceReviewLoading.set(false);
             }))

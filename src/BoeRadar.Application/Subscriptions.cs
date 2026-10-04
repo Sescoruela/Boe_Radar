@@ -37,11 +37,11 @@ public interface ISubscriptionStore
         bool includeHeuristic, DateTimeOffset now, CancellationToken cancellationToken);
     Task<IReadOnlyList<OutboxMessage>> ClaimMessagesAsync(int limit, DateTimeOffset now,
         CancellationToken cancellationToken);
-    Task MarkSentAsync(Guid messageId, DateTimeOffset now, CancellationToken cancellationToken);
-    Task MarkFailedAsync(Guid messageId, string error, DateTimeOffset now,
+    Task<bool> MarkSentAsync(Guid messageId, int attempt, DateTimeOffset now, CancellationToken cancellationToken);
+    Task MarkFailedAsync(Guid messageId, int attempt, string error, DateTimeOffset now,
         CancellationToken cancellationToken);
-    Task<bool> CanDeliverAsync(Guid messageId, CancellationToken cancellationToken);
-    Task CancelAsync(Guid messageId, CancellationToken cancellationToken);
+    Task<bool> CanDeliverAsync(Guid messageId, int attempt, CancellationToken cancellationToken);
+    Task CancelAsync(Guid messageId, int attempt, CancellationToken cancellationToken);
 }
 
 public interface IEmailSender
@@ -168,27 +168,29 @@ public sealed class DigestService(ISubscriptionStore store, IEmailSender emailSe
 
     public async Task<DispatchResult> DispatchAsync(int limit, CancellationToken cancellationToken)
     {
-        var messages = await store.ClaimMessagesAsync(Math.Clamp(limit, 1, 100),
-            clock.GetUtcNow(), cancellationToken);
         var sent = 0;
         var failed = 0;
-        foreach (var message in messages)
+        for (var index = 0; index < Math.Clamp(limit, 1, 100); index++)
         {
+            var messages = await store.ClaimMessagesAsync(1, clock.GetUtcNow(), cancellationToken);
+            if (messages.Count == 0) break;
+            var message = messages[0];
             try
             {
-                if (!await store.CanDeliverAsync(message.Id, cancellationToken))
+                if (!await store.CanDeliverAsync(message.Id, message.AttemptCount, cancellationToken))
                 {
-                    await store.CancelAsync(message.Id, cancellationToken);
+                    await store.CancelAsync(message.Id, message.AttemptCount, cancellationToken);
                     continue;
                 }
                 await emailSender.SendAsync(message.Recipient, message.Subject,
                     message.Body, cancellationToken);
-                await store.MarkSentAsync(message.Id, clock.GetUtcNow(), cancellationToken);
-                sent++;
+                if (await store.MarkSentAsync(message.Id, message.AttemptCount, clock.GetUtcNow(), cancellationToken))
+                    sent++;
+                else failed++; // Delivery may have happened, but this worker no longer owns the lease.
             }
             catch (Exception exception) when (exception is not OperationCanceledException)
             {
-                await store.MarkFailedAsync(message.Id, exception.GetType().Name,
+                await store.MarkFailedAsync(message.Id, message.AttemptCount, exception.GetType().Name,
                     clock.GetUtcNow(), cancellationToken);
                 failed++;
             }

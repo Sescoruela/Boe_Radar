@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { BusinessProfile } from './business-profile';
 
 export interface BusinessProfileMatch {
+  sourceHash?: string | null;
   priority: number;
   label: string;
   reasons: string[];
@@ -50,9 +51,21 @@ export interface SourceFactGroup {
 }
 
 export interface ActionableSourceReview {
+  references?: { externalId: string; relation: string; description: string;
+    direction: 'previous' | 'subsequent'; officialUrl: string }[];
+  profileContrast?: SourceProfileContrast | null;
+  kind: 'grant' | 'tax' | 'regulation' | 'general';
+  kindLabel: string;
+  nextStep: string;
   sourceHash: string;
   reviewedAt: string;
   groups: SourceFactGroup[];
+}
+
+export interface SourceProfileContrast {
+  sourceHash: string;
+  dimensions: { key: string; label: string; status: 'mention' | 'unknown' | 'notSpecified';
+    message: string; quotes: string[] }[];
 }
 
 export interface RadarAnalysisDetail extends RadarAnalysisSummary {
@@ -65,6 +78,8 @@ export interface RadarAnalysisDetail extends RadarAnalysisSummary {
 }
 
 export interface PublicationSearchResult {
+  evidenceAsOf?: string;
+  evidenceReviewedCount?: number;
   items: PublicationListItem[];
   page: number;
   pageSize: number;
@@ -134,18 +149,20 @@ export class PublicationsApi {
     return this.http.get<PublicationDetail>(`/api/v1/publications/${id}`);
   }
 
-  personalized(filters: PublicationFilters, profile: BusinessProfile): Observable<PublicationSearchResult> {
+  personalized(filters: PublicationFilters, profile: BusinessProfile, evidenceAsOf: string | null = null): Observable<PublicationSearchResult> {
     return this.http.post<PublicationSearchResult>('/api/v1/publications/personalized', {
       profile,
       search: {
         query: filters.query || null, section: filters.section || null,
         dateFrom: filters.dateFrom || null, dateTo: filters.dateTo || null,
-        page: filters.page, pageSize: filters.pageSize, businessSignalsOnly: true,
+        page: filters.page, pageSize: filters.pageSize, businessSignalsOnly: true, evidenceAsOf,
       },
     });
   }
 
-  getSourceReview(externalId: string): Observable<ActionableSourceReview> {
-    return this.http.get<ActionableSourceReview>(`/api/v1/source-review/${encodeURIComponent(externalId)}`);
+  getSourceReview(externalId: string, profile: BusinessProfile | null = null): Observable<ActionableSourceReview> {
+    const url = `/api/v1/source-review/${encodeURIComponent(externalId)}`;
+    return profile ? this.http.post<ActionableSourceReview>(`${url}/personalized`, profile)
+      : this.http.get<ActionableSourceReview>(url);
   }
 }

@@ -66,6 +66,64 @@ public sealed partial class OfficialDocumentContentExtractor
         }
     }
 
+    public string? ExtractTitle(string rawContent)
+    {
+        try
+        {
+            var document = XDocument.Parse(rawContent);
+            var title = document.Root?.Elements()
+                .FirstOrDefault(element => element.Name.LocalName == "metadatos")?
+                .Elements().FirstOrDefault(element => element.Name.LocalName == "titulo")?.Value;
+            return string.IsNullOrWhiteSpace(title) ? null : Normalize(title);
+        }
+        catch (System.Xml.XmlException exception)
+        {
+            throw new BoeSourceFormatException("El documento del BOE no es XML válido.", exception);
+        }
+    }
+
+    public IReadOnlyList<OfficialDocumentReference> ExtractReferences(string rawContent)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(rawContent);
+        try
+        {
+            var document = XDocument.Parse(rawContent);
+            var analysis = document.Root?.Elements().FirstOrDefault(element => element.Name.LocalName == "analisis");
+            var references = analysis?.Elements().FirstOrDefault(element => element.Name.LocalName == "referencias");
+            var results = new List<OfficialDocumentReference>();
+            foreach (var (container, entry, direction) in new[]
+                { ("anteriores", "anterior", "previous"), ("posteriores", "posterior", "subsequent") })
+            {
+                var entries = references?.Elements().FirstOrDefault(element => element.Name.LocalName == container)?
+                    .Elements().Where(element => element.Name.LocalName == entry) ?? [];
+                foreach (var reference in entries)
+                {
+                    var id = reference.Attribute("referencia")?.Value;
+                    if (id is null || !OfficialReferenceIdRegex().IsMatch(id)) continue;
+                    var relation = reference.Elements().FirstOrDefault(element => element.Name.LocalName == "palabra")?.Value;
+                    var description = reference.Elements().FirstOrDefault(element => element.Name.LocalName == "texto")?.Value;
+                    results.Add(new(id, BoundedLabel(relation, 100, "Referencia oficial"),
+                        BoundedLabel(description, 500, id), direction, $"https://www.boe.es/buscar/doc.php?id={id}"));
+                }
+            }
+            return results.DistinctBy(reference => (reference.ExternalId, reference.Direction, reference.Relation))
+                .Take(30).ToArray();
+        }
+        catch (System.Xml.XmlException exception)
+        {
+            throw new BoeSourceFormatException("El documento del BOE no es XML válido.", exception);
+        }
+    }
+
+    private static string BoundedLabel(string? value, int maximumLength, string fallback)
+    {
+        var normalized = string.IsNullOrWhiteSpace(value) ? fallback : Normalize(value);
+        return normalized.Length <= maximumLength ? normalized : normalized[..maximumLength] + "…";
+    }
+
+    [GeneratedRegex(@"\A(?:BOE-[AB]|DOUE-L)-[0-9]{4}-[0-9]{1,8}\z", RegexOptions.CultureInvariant)]
+    private static partial Regex OfficialReferenceIdRegex();
+
     private static string ExtractXml(string rawContent)
     {
         try

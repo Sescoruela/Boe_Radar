@@ -29,4 +29,7 @@
     <ProjectReference Include="..\BoeRadar.Sources\BoeRadar.Sources.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="BoeRadar.UnitTests" />
+  </ItemGroup>
 </Project>

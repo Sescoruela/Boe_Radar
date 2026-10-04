@@ -7,7 +7,8 @@ public sealed record PublicationSearch(
     string? Section,
     int Page = 1,
     int PageSize = 20,
-    bool BusinessSignalsOnly = false);
+    bool BusinessSignalsOnly = false,
+    DateTimeOffset? EvidenceAsOf = null);
 
 public sealed record CatalogStatus(DateOnly? LatestPublicationDate, int TotalPublications, bool EmailAlertsEnabled);
 

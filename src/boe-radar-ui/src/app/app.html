@@ -139,7 +139,7 @@
       </div>
       @if (personalizedView()) {
         <p class="profile-summary">{{ businessProfileLabel() }}</p>
-        <p class="view-explanation">Primero aparecen las coincidencias del título o epígrafe con tu perfil. Se conservan las señales cuyo alcance está por comprobar. Este orden no confirma que puedas solicitar una ayuda ni que una norma te obligue.</p>
+        <p class="view-explanation">Orden por menciones en título y revisiones del texto disponibles. Se conservan las señales inciertas; no confirma elegibilidad ni obligaciones. {{ data.evidenceReviewedCount ?? 0 }} de {{ data.totalItems }} señales examinadas tienen revisión guardada. Abre las fichas y vuelve a explorar para incorporar revisiones nuevas.</p>
         @if (data.isPartial) {
           <p class="profile-message" role="status">Se han ordenado las {{ data.totalItems }} señales más recientes de {{ data.catalogSignalCount }}. Acota las fechas para revisar una selección completa.</p>
         }
@@ -195,7 +195,7 @@
             <button
               type="button"
               [disabled]="data.page === 1 || loading()"
-              (click)="search(data.page - 1)"
+              (click)="search(data.page - 1, true)"
             >
               ← Anterior
             </button>
@@ -203,7 +203,7 @@
             <button
               type="button"
               [disabled]="data.page === data.totalPages || loading()"
-              (click)="search(data.page + 1)"
+              (click)="search(data.page + 1, true)"
             >
               Siguiente →
             </button>
@@ -321,6 +321,7 @@
         }
       </dl>
       @if (selectedProfileMatch(); as match) {
+        <p>Comprobaciones para: {{ businessProfileLabel() }}</p>
         <app-profile-match [match]="match" [detail]="true" />
       }
       <section class="source-review" aria-labelledby="source-review-title">
@@ -328,10 +329,37 @@
           <h3 id="source-review-title">Qué comprobar para actuar</h3>
           <span>Texto oficial</span>
         </div>
-        <p>Estos son fragmentos localizados automáticamente en el documento. No confirman que la convocatoria esté abierta ni que tu negocio cumpla los requisitos.</p>
+        <p>Fragmentos localizados automáticamente en el documento. No confirman que te afecte, que exista un plazo abierto ni que tu negocio cumpla las condiciones. La fecha de publicación no equivale a la entrada en vigor.</p>
         @if (sourceReviewLoading()) {
           <p class="source-review-state">Consultando el texto oficial…</p>
         } @else if (sourceReview(); as review) {
+          @if (review.profileContrast; as contrast) {
+            <app-source-profile [contrast]="contrast" />
+          }
+          <h4>{{ review.kindLabel }} · Clasificación orientativa</h4>
+          <h4>Siguiente paso para tu negocio</h4>
+          <p>{{ review.nextStep }}</p>
+          <section class="official-references" aria-labelledby="references-title">
+            <h3 id="references-title">Publicaciones relacionadas</h3>
+            <p>Referencias del análisis documental publicado por el BOE, no del análisis IA.
+              Se muestran hasta 30 relaciones. No confirman vigencia ni aplicabilidad; consulta cada fuente.</p>
+            @if (review.references?.length) {
+              <ul>
+                @for (reference of review.references; track reference.externalId + reference.direction + reference.relation) {
+                  <li>
+                    <p>{{ reference.direction === 'previous' ? 'Esta publicación respecto a otra disposición' : 'Una publicación posterior respecto a esta' }}:
+                      <strong>{{ reference.relation }}</strong></p>
+                    <a [href]="reference.officialUrl" target="_blank" rel="noopener noreferrer">
+                      {{ reference.description }} · {{ reference.externalId }} ↗
+                    </a>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="unverified">El XML consultado no contiene referencias reconocibles.
+                No significa que no existan bases, convocatorias o normas relacionadas; revisa la fuente oficial.</p>
+            }
+          </section>
           <div class="source-facts">
             @for (group of review.groups; track group.key) {
               <div class="source-fact">
@@ -341,7 +369,7 @@
                     <blockquote>“{{ quote }}”</blockquote>
                   }
                 } @else {
-                  @if (group.key === 'application') {
+                  @if (group.key === 'application' && review.kind === 'grant') {
                     <p class="unverified">El XML no indica cómo solicitarlo. Abre el HTML oficial y localiza la convocatoria completa o la sede del organismo antes de actuar.</p>
                   } @else {
                     <p class="unverified">No identificado automáticamente; revisa el documento oficial.</p>
@@ -350,7 +378,7 @@
               </div>
             }
           </div>
-          <p class="source-review-meta">Fragmentos obtenidos del XML oficial · {{ review.reviewedAt | date: 'd MMM yyyy, HH:mm' }}</p>
+          <p class="source-review-meta">Texto y referencias obtenidos del XML oficial · {{ review.reviewedAt | date: 'd MMM yyyy, HH:mm' }}</p>
         } @else if (sourceReviewError()) {
           <p class="source-review-state">No se han podido obtener los fragmentos. Consulta los enlaces oficiales de abajo.</p>
         }
@@ -371,6 +399,9 @@
                 <li>{{ requirement }}</li>
               }
             </ul>
+          }
+          @if (analysis.promptVersion !== 'radar-v2') {
+            <p class="source-notice">Análisis anterior: requisitos y fechas pendientes de revalidar. Comprueba la fuente oficial.</p>
           }
 
           @if (analysis.deadlines.length) {
@@ -402,9 +433,9 @@
           <h3>Antes de tomar una decisión</h3>
           <p>Esta publicación todavía no tiene una ficha analizada. Abre el texto oficial y comprueba:</p>
           <ul>
-            <li>Quiénes pueden solicitarla o a quién afecta.</li>
-            <li>Requisitos, importe y posibles exclusiones.</li>
-            <li>Fecha de apertura y cierre del plazo.</li>
+            <li>A quién afecta y en qué territorio.</li>
+            <li>Condiciones, actuaciones y posibles exclusiones.</li>
+            <li>Entrada en vigor, fechas de efectos o plazos, si existen.</li>
           </ul>
         </section>
       }

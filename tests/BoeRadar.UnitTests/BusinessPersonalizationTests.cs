@@ -93,6 +93,42 @@ public sealed class BusinessPersonalizationTests
         Assert.Equal(1000, result.TotalItems);
     }
 
+    [Fact]
+    public async Task StoredEvidenceRanksBeforePagingAndSnapshotExcludesLaterReviews()
+    {
+        var items = Enumerable.Range(1, 4).Select(index => Item(index, "Señal general")).ToArray();
+        var store = new FakeReviewStore();
+        var service = new PersonalizedPublicationSearch(new FakeCatalog(items), store);
+        var profile = new BusinessProfile("sme", "technology", "all");
+        var first = await service.ExecuteAsync(profile, new(null, null, null, null, 1, 2));
+        var later = first.EvidenceAsOf.AddSeconds(1);
+        store.Reviews[items[3].ExternalId] = (later,
+            new("hash", later, [new("recipients", "Destinatarios", ["Innovación para pymes."])]));
+        var second = await service.ExecuteAsync(profile, new(null, null, null, null, 2, 2)
+            { EvidenceAsOf = first.EvidenceAsOf.ToOffset(TimeSpan.FromHours(2)) });
+        Assert.Equal(first.EvidenceAsOf, second.EvidenceAsOf);
+        Assert.Equal(TimeSpan.Zero, second.EvidenceAsOf.Offset);
+        Assert.Equal(0, second.EvidenceReviewedCount);
+        Assert.Equal(4, first.Items.Concat(second.Items).Select(item => item.Id).Distinct().Count());
+        var refreshed = await service.ExecuteAsync(profile, new(null, null, null, null, 1, 2)
+            { EvidenceAsOf = later });
+        Assert.Equal(items[3].ExternalId, refreshed.Items[0].ExternalId);
+        Assert.Equal(1, refreshed.EvidenceReviewedCount);
+        Assert.Equal(4, refreshed.TotalItems);
+    }
+
+    private sealed class FakeReviewStore : ISourceReviewStore
+    {
+        public Dictionary<string, (DateTimeOffset RecordedAt, ActionableSourceReview Review)> Reviews { get; } = [];
+        public Task SaveAsync(string externalId, ActionableSourceReview review, CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
+        public Task<IReadOnlyDictionary<string, ActionableSourceReview>> GetAsync(IReadOnlyList<string> externalIds,
+            DateTimeOffset asOf, CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyDictionary<string, ActionableSourceReview>>(Reviews
+                .Where(pair => externalIds.Contains(pair.Key) && pair.Value.RecordedAt <= asOf)
+                .ToDictionary(pair => pair.Key, pair => pair.Value.Review));
+    }
+
     private sealed class FakeCatalog(PublicationListItem[] items) : IPublicationCatalog
     {
         public Task<PagedResult<PublicationListItem>> SearchAsync(PublicationSearch search,

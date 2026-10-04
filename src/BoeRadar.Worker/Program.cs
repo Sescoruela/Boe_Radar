@@ -51,12 +51,14 @@ if (parsed.Mode is "import" or "pipeline" or "all")
 if (parsed.Mode is "analyze" or "pipeline" or "all")
 {
     var analyzer = scope.ServiceProvider.GetRequiredService<AnalyzeRadarDocuments>();
-    var result = await analyzer.ExecuteAsync(parsed.Date!.Value, parsed.Limit);
+    var result = await analyzer.ExecuteAsync(parsed.Date!.Value, parsed.Limit, afterExternalId: parsed.After);
     Console.WriteLine(JsonSerializer.Serialize(result, new JsonSerializerOptions
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     }));
+    // Never produce digests from an incomplete or failed analysis batch.
+    if (result.Failures is { Count: > 0 } || result.NextCursor is not null) return 3;
 }
 
 if (parsed.Mode is "digest" or "all")
@@ -86,12 +88,14 @@ internal sealed record WorkerOptions(
     bool IncludeHeuristic,
     string? Error)
 {
+    public string? After { get; init; }
     public const string Usage = """
         Uso:
           dotnet run --project src/BoeRadar.Worker -- --date AAAA-MM-DD [--migrate]
             (o --today para usar la fecha de Europe/Madrid)
             [--mode import|analyze|pipeline|digest|dispatch|all] [--limit 100]
             [--include-heuristic]
+            [--after BOE-A-2026-12345] (continuar desde nextCursor; errores: repetir sin --after)
             [--trigger manual|scheduled|backfill]
         """;
 
@@ -103,11 +107,15 @@ internal sealed record WorkerOptions(
         var mode = "import";
         var limit = 100;
         var includeHeuristic = false;
+        string? after = null;
 
         for (var index = 0; index < args.Count; index++)
         {
             switch (args[index])
             {
+                case "--after" when index + 1 < args.Count:
+                    after = args[++index];
+                    break;
                 case "--migrate":
                     migrate = true;
                     break;
@@ -160,6 +168,6 @@ internal sealed record WorkerOptions(
 
         return date is null && mode != "dispatch"
             ? new(null, migrate, trigger, mode, limit, includeHeuristic, "Falta el argumento obligatorio --date.")
-            : new(date, migrate, trigger, mode, limit, includeHeuristic, null);
+            : new(date, migrate, trigger, mode, limit, includeHeuristic, null) { After = after };
     }
 }

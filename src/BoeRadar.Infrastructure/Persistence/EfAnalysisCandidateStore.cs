@@ -15,10 +15,12 @@ internal sealed class EfAnalysisCandidateStore(
     public async Task<IReadOnlyList<AnalysisCandidate>> GetByDateAsync(
         DateOnly publicationDate,
         int limit,
-        CancellationToken cancellationToken = default) =>
+        CancellationToken cancellationToken = default,
+        string? afterExternalId = null) =>
         await dbContext.SourceDocuments
             .AsNoTracking()
             .Where(document => document.PublicationDate == publicationDate)
+            .Where(document => afterExternalId == null || string.Compare(document.ExternalId, afterExternalId) > 0)
             .OrderBy(document => document.ExternalId)
             .Take(limit)
             .Select(document => new AnalysisCandidate(
@@ -73,6 +75,11 @@ internal sealed class EfAnalysisCandidateStore(
             timeProvider.GetUtcNow());
 
         dbContext.DocumentAnalyses.Add(analysis);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        try { await dbContext.SaveChangesAsync(cancellationToken); }
+        catch
+        {
+            dbContext.Entry(analysis).State = EntityState.Detached;
+            throw;
+        }
     }
 }

@@ -6,10 +6,17 @@ namespace BoeRadar.Application;
 
 public sealed record BusinessProfile(string BusinessType, string Activity, string Territory);
 public sealed record BusinessProfileMatch(int Priority, string Label,
-    IReadOnlyList<string> Reasons, IReadOnlyList<string> Checks);
+    IReadOnlyList<string> Reasons, IReadOnlyList<string> Checks)
+{
+    public string? SourceHash { get; init; }
+}
 public sealed record PersonalizedSearchRequest(BusinessProfile Profile, PublicationSearch Search);
 public sealed record PersonalizedSearchResult(IReadOnlyList<PublicationListItem> Items,
-    int Page, int PageSize, int TotalItems, int TotalPages, int CatalogSignalCount, bool IsPartial);
+    int Page, int PageSize, int TotalItems, int TotalPages, int CatalogSignalCount, bool IsPartial)
+{
+    public DateTimeOffset EvidenceAsOf { get; init; }
+    public int EvidenceReviewedCount { get; init; }
+}
 
 // These are metadata hints for ordering, never an eligibility determination.
 public static class BusinessProfileMatcher
@@ -91,11 +98,11 @@ public static class BusinessProfileMatcher
         return new(priority, priority > 0 ? "Coincidencias con tu perfil" : "Alcance por comprobar", reasons, checks);
     }
 
-    private static bool Contains(string text, string term) => Regex.IsMatch(text,
+    internal static bool Contains(string text, string term) => Regex.IsMatch(text,
         $@"(?<![a-z0-9]){Regex.Escape(term)}(?![a-z0-9])", RegexOptions.CultureInvariant,
         TimeSpan.FromMilliseconds(100));
 
-    private static string Normalize(string value)
+    internal static string Normalize(string value)
     {
         var result = new StringBuilder();
         foreach (var character in value.ToLowerInvariant().Normalize(NormalizationForm.FormD))
@@ -105,7 +112,8 @@ public static class BusinessProfileMatcher
     }
 }
 
-public sealed class PersonalizedPublicationSearch(IPublicationCatalog catalog)
+public sealed class PersonalizedPublicationSearch(IPublicationCatalog catalog,
+    ISourceReviewStore? sourceReviews = null, TimeProvider? clock = null)
 {
     public async Task<PersonalizedSearchResult> ExecuteAsync(BusinessProfile profile,
         PublicationSearch search, CancellationToken cancellationToken = default)
@@ -122,8 +130,13 @@ public sealed class PersonalizedPublicationSearch(IPublicationCatalog catalog)
             candidates.AddRange(result.Items);
             if (batch >= result.TotalPages) break;
         }
-        var ordered = candidates.DistinctBy(item => item.Id)
-            .Select(item => item with { ProfileMatch = BusinessProfileMatcher.Match(profile, item) })
+        var snapshot = (search.EvidenceAsOf ?? (clock ?? TimeProvider.System).GetUtcNow()).ToUniversalTime();
+        var unique = candidates.DistinctBy(item => item.Id).ToArray();
+        var evidence = sourceReviews is null ? new Dictionary<string, ActionableSourceReview>()
+            : await sourceReviews.GetAsync(unique.Select(item => item.ExternalId).ToArray(), snapshot, cancellationToken);
+        var ordered = unique
+            .Select(item => item with { ProfileMatch = SourceEvidenceRanking.Match(profile, item,
+                evidence.GetValueOrDefault(item.ExternalId)) })
             .OrderByDescending(item => item.ProfileMatch!.Priority)
             .ThenByDescending(item => item.PublicationDate).ThenBy(item => item.ExternalId, StringComparer.Ordinal)
             .ToArray();
@@ -131,6 +144,7 @@ public sealed class PersonalizedPublicationSearch(IPublicationCatalog catalog)
         var pageSize = Math.Clamp(search.PageSize, 1, 100);
         return new(ordered.Skip((int)Math.Min((long)(page - 1) * pageSize, ordered.Length)).Take(pageSize).ToArray(),
             page, pageSize, ordered.Length, (int)Math.Ceiling(ordered.Length / (double)pageSize),
-            catalogCount, ordered.Length < catalogCount);
+            catalogCount, ordered.Length < catalogCount)
+        { EvidenceAsOf = snapshot, EvidenceReviewedCount = unique.Count(item => evidence.ContainsKey(item.ExternalId)) };
     }
 }
