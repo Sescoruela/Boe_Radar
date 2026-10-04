@@ -18,6 +18,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ActionableSourceReviewBuilder>();
+builder.Services.AddScoped<PersonalizedPublicationSearch>();
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(
         new JsonStringEnumConverter<RadarCategory>(allowIntegerValues: false)));
@@ -154,6 +155,26 @@ api.MapGet("/publications/{id:guid}", async (
     })
     .WithName("GetPublication")
     .WithSummary("Obtiene una publicación y sus enlaces oficiales.");
+
+api.MapPost("/publications/personalized", async (
+        PersonalizedSearchRequest request, PersonalizedPublicationSearch search,
+        HttpContext context, CancellationToken cancellationToken) =>
+    {
+        context.Response.Headers.CacheControl = "no-store";
+        if (!BusinessProfileMatcher.IsValid(request.Profile) || request.Search is null)
+            return Results.ValidationProblem(new Dictionary<string, string[]>
+            {
+                ["profile"] = ["Selecciona un tipo de negocio, actividad y territorio válidos."]
+            });
+        if (request.Search.DateFrom > request.Search.DateTo)
+            return Results.ValidationProblem(new Dictionary<string, string[]>
+            {
+                ["dateRange"] = ["Desde no puede ser posterior a Hasta."]
+            });
+        return Results.Ok(await search.ExecuteAsync(request.Profile, request.Search, cancellationToken));
+    })
+    .WithName("PersonalizedPublications")
+    .WithSummary("Ordena señales para negocios según un perfil sin guardarlo en el servidor.");
 
 api.MapGet("/source-review/{externalId}", async (
         string externalId,

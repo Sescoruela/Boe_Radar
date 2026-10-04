@@ -28,7 +28,10 @@ public sealed record PublicationListItem(
     string Department,
     string? Epigraph,
     string? OfficialPdfUrl,
-    RadarAnalysisSummary? Analysis);
+    RadarAnalysisSummary? Analysis)
+{
+    public BusinessProfileMatch? ProfileMatch { get; init; }
+}
 
 public sealed record RadarAnalysisSummary(
     bool IsRelevant,

@@ -27,6 +27,42 @@
     }
   </section>
 
+  <section class="profile-panel" aria-labelledby="profile-title">
+    <div class="panel-heading">
+      <div><h2 id="profile-title">Tu negocio</h2></div>
+      @if (businessProfile()) {
+        <button class="text-button" type="button" (click)="removeBusinessProfile()">Borrar perfil</button>
+      }
+    </div>
+    <p>Cuéntanos a qué te dedicas para ordenar las señales que conviene revisar primero.</p>
+    <form class="profile-form" (ngSubmit)="applyBusinessProfile()">
+      <label><span>Tipo de negocio</span>
+        <select name="businessType" [(ngModel)]="profileDraft.businessType">
+          @for (option of businessTypes; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+      <label><span>Actividad principal</span>
+        <select name="activity" [(ngModel)]="profileDraft.activity">
+          @for (option of activityOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+      <label><span>Territorio de actividad</span>
+        <select name="territory" [(ngModel)]="profileDraft.territory">
+          @for (option of territoryOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+      <button class="primary-button" type="submit">{{ businessProfile() ? 'Actualizar perfil' : 'Personalizar mi radar' }}</button>
+    </form>
+    <p class="profile-note">El perfil se guarda en este navegador y se envía al consultar tu radar para ordenar los resultados. No necesitas una cuenta. Si compartes dispositivo, puedes borrarlo al terminar.</p>
+    @if (profileMessage()) { <p class="profile-message" role="status">{{ profileMessage() }}</p> }
+  </section>
+
   <section class="search-panel" aria-labelledby="search-title">
     <div class="panel-heading">
       <div>
@@ -86,17 +122,28 @@
       <div class="results-heading">
         <div>
           <span class="step">02</span>
-          <h2>Publicaciones</h2>
+          <h2>{{ personalizedView() ? 'Para mi negocio' : 'Publicaciones' }}</h2>
         </div>
         <p><strong>{{ data.totalItems }}</strong> resultados</p>
       </div>
 
       <div class="view-switch" role="group" aria-label="Vista del catálogo">
-        <button type="button" [attr.aria-pressed]="filters.businessSignalsOnly"
+        @if (businessProfile()) {
+          <button type="button" [attr.aria-pressed]="personalizedView()"
+            (click)="selectPersonalizedView()">Para mi negocio</button>
+        }
+        <button type="button" [attr.aria-pressed]="filters.businessSignalsOnly && !personalizedView()"
           (click)="selectView(true)">Señales para negocios</button>
         <button type="button" [attr.aria-pressed]="!filters.businessSignalsOnly"
           (click)="selectView(false)">Todo el BOE</button>
       </div>
+      @if (personalizedView()) {
+        <p class="profile-summary">{{ businessProfileLabel() }}</p>
+        <p class="view-explanation">Primero aparecen las coincidencias del título o epígrafe con tu perfil. Se conservan las señales cuyo alcance está por comprobar. Este orden no confirma que puedas solicitar una ayuda ni que una norma te obligue.</p>
+        @if (data.isPartial) {
+          <p class="profile-message" role="status">Se han ordenado las {{ data.totalItems }} señales más recientes de {{ data.catalogSignalCount }}. Acota las fechas para revisar una selección completa.</p>
+        }
+      }
       @if (filters.businessSignalsOnly) {
         <p class="view-explanation">
           Selección de los últimos 30 días si no indicas fechas, basada en términos del título y sección.
@@ -126,6 +173,9 @@
                 </div>
               }
               <h3>{{ item.title }}</h3>
+              @if (item.profileMatch; as match) {
+                <app-profile-match [match]="match" />
+              }
               @if (item.analysis?.isRelevant) {
                 <p class="radar-summary">{{ item.analysis!.summary }}</p>
               }
@@ -270,6 +320,9 @@
           </div>
         }
       </dl>
+      @if (selectedProfileMatch(); as match) {
+        <app-profile-match [match]="match" [detail]="true" />
+      }
       <section class="source-review" aria-labelledby="source-review-title">
         <div class="source-review-heading">
           <h3 id="source-review-title">Qué comprobar para actuar</h3>

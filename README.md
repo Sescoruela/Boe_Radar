@@ -27,6 +27,7 @@ proveedor de correo real y sus rebotes queda pendiente. La documentación base e
 - [Despliegue de pruebas en Render](docs/09-despliegue-render.md)
 - [Fichas accionables: primera iteración](docs/11-fichas-accionables.md)
 - [Calidad de señales para negocios](docs/13-calidad-senales.md)
+- [Personalización por negocio: primera iteración](docs/14-personalizacion.md)
 - [ADR-001: monolito modular](docs/adr/001-monolito-modular.md)
 
 ## Propuesta de valor

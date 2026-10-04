@@ -1,6 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { BusinessProfile } from './business-profile';
+
+export interface BusinessProfileMatch {
+  priority: number;
+  label: string;
+  reasons: string[];
+  checks: string[];
+}
 
 export interface PublicationListItem {
   id: string;
@@ -13,6 +21,7 @@ export interface PublicationListItem {
   epigraph?: string;
   officialPdfUrl?: string;
   analysis?: RadarAnalysisSummary;
+  profileMatch?: BusinessProfileMatch;
 }
 
 export interface RadarAnalysisSummary {
@@ -61,6 +70,8 @@ export interface PublicationSearchResult {
   pageSize: number;
   totalItems: number;
   totalPages: number;
+  catalogSignalCount?: number;
+  isPartial?: boolean;
 }
 
 export interface CatalogStatus {
@@ -121,6 +132,17 @@ export class PublicationsApi {
 
   get(id: string): Observable<PublicationDetail> {
     return this.http.get<PublicationDetail>(`/api/v1/publications/${id}`);
+  }
+
+  personalized(filters: PublicationFilters, profile: BusinessProfile): Observable<PublicationSearchResult> {
+    return this.http.post<PublicationSearchResult>('/api/v1/publications/personalized', {
+      profile,
+      search: {
+        query: filters.query || null, section: filters.section || null,
+        dateFrom: filters.dateFrom || null, dateTo: filters.dateTo || null,
+        page: filters.page, pageSize: filters.pageSize, businessSignalsOnly: true,
+      },
+    });
   }
 
   getSourceReview(externalId: string): Observable<ActionableSourceReview> {
