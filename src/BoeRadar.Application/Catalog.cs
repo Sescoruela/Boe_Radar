@@ -79,6 +79,11 @@ public interface IPublicationCatalog
         PublicationSearch search,
         CancellationToken cancellationToken = default);
 
+    // One bounded, consistently ordered window for ranking before UI pagination.
+    Task<PagedResult<PublicationListItem>> GetBusinessCandidatesAsync(
+        PublicationSearch search,
+        CancellationToken cancellationToken = default);
+
     Task<PublicationDetail?> GetAsync(
         Guid id,
         CancellationToken cancellationToken = default);

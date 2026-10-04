@@ -19,7 +19,7 @@ public sealed partial class OfficialDocumentContentExtractor
 
         var extracted = format.ToLowerInvariant() switch
         {
-            "xml" => ExtractXml(rawContent),
+            "xml" => ExtractXml(ParseXml(rawContent)),
             "html" => ExtractHtml(rawContent),
             _ => throw new ArgumentOutOfRangeException(
                 nameof(format),
@@ -42,77 +42,75 @@ public sealed partial class OfficialDocumentContentExtractor
         return Convert.ToHexStringLower(SHA256.HashData(bytes));
     }
 
-    public IReadOnlyList<string> ExtractPassages(string rawContent)
+    public ExtractedOfficialDocument ExtractDocument(string rawContent, string format)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(rawContent);
-        try
+        ArgumentException.ThrowIfNullOrWhiteSpace(format);
+        var normalizedFormat = format.ToLowerInvariant();
+        if (normalizedFormat != "xml")
         {
-            var document = XDocument.Parse(rawContent, LoadOptions.PreserveWhitespace);
-            var contentElement = document.Root?.Elements()
-                .FirstOrDefault(element => XmlContentElementNames.Contains(element.Name.LocalName));
-            if (contentElement is null)
-                throw new BoeSourceFormatException("El XML del BOE no contiene un nodo de texto conocido.");
-
-            return contentElement.Descendants()
-                .Where(element => element.Name.LocalName.Equals("p", StringComparison.OrdinalIgnoreCase))
-                .Select(element => Normalize(string.Join(" ", element.DescendantNodes().OfType<XText>()
-                    .Select(node => node.Value))))
-                .Where(value => value.Length > 0)
-                .ToArray();
+            var htmlText = Extract(rawContent, format);
+            return new(htmlText, ComputeSha256(htmlText), normalizedFormat, [], null, []);
         }
-        catch (System.Xml.XmlException exception)
-        {
-            throw new BoeSourceFormatException("El documento del BOE no es XML válido.", exception);
-        }
+        var document = ParseXml(rawContent);
+        var text = Normalize(ExtractXml(document));
+        if (text.Length == 0)
+            throw new BoeSourceFormatException("El documento xml no contiene texto oficial reconocible.");
+        return new(text, ComputeSha256(text), normalizedFormat, ExtractPassages(document),
+            ExtractTitle(document), ExtractReferences(document));
     }
 
-    public string? ExtractTitle(string rawContent)
+    public IReadOnlyList<string> ExtractPassages(string rawContent) => ExtractPassages(ParseXml(rawContent));
+
+    private static IReadOnlyList<string> ExtractPassages(XDocument document)
     {
-        try
-        {
-            var document = XDocument.Parse(rawContent);
-            var title = document.Root?.Elements()
-                .FirstOrDefault(element => element.Name.LocalName == "metadatos")?
-                .Elements().FirstOrDefault(element => element.Name.LocalName == "titulo")?.Value;
-            return string.IsNullOrWhiteSpace(title) ? null : Normalize(title);
-        }
-        catch (System.Xml.XmlException exception)
-        {
-            throw new BoeSourceFormatException("El documento del BOE no es XML válido.", exception);
-        }
+        var contentElement = document.Root?.Elements()
+            .FirstOrDefault(element => XmlContentElementNames.Contains(element.Name.LocalName));
+        if (contentElement is null)
+            throw new BoeSourceFormatException("El XML del BOE no contiene un nodo de texto conocido.");
+
+        return contentElement.Descendants()
+            .Where(element => element.Name.LocalName.Equals("p", StringComparison.OrdinalIgnoreCase))
+            .Select(element => Normalize(string.Join(" ", element.DescendantNodes().OfType<XText>()
+                .Select(node => node.Value))))
+            .Where(value => value.Length > 0)
+            .ToArray();
     }
 
-    public IReadOnlyList<OfficialDocumentReference> ExtractReferences(string rawContent)
+    public string? ExtractTitle(string rawContent) => ExtractTitle(ParseXml(rawContent));
+
+    private static string? ExtractTitle(XDocument document)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(rawContent);
-        try
+        var title = document.Root?.Elements()
+            .FirstOrDefault(element => element.Name.LocalName == "metadatos")?
+            .Elements().FirstOrDefault(element => element.Name.LocalName == "titulo")?.Value;
+        return string.IsNullOrWhiteSpace(title) ? null : Normalize(title);
+    }
+
+    public IReadOnlyList<OfficialDocumentReference> ExtractReferences(string rawContent) => ExtractReferences(ParseXml(rawContent));
+
+    private static IReadOnlyList<OfficialDocumentReference> ExtractReferences(XDocument document)
+    {
+        var analysis = document.Root?.Elements().FirstOrDefault(element => element.Name.LocalName == "analisis");
+        var references = analysis?.Elements().FirstOrDefault(element => element.Name.LocalName == "referencias");
+        var results = new List<OfficialDocumentReference>();
+        foreach (var (container, entry, direction) in new[]
+            { ("anteriores", "anterior", "previous"), ("posteriores", "posterior", "subsequent") })
         {
-            var document = XDocument.Parse(rawContent);
-            var analysis = document.Root?.Elements().FirstOrDefault(element => element.Name.LocalName == "analisis");
-            var references = analysis?.Elements().FirstOrDefault(element => element.Name.LocalName == "referencias");
-            var results = new List<OfficialDocumentReference>();
-            foreach (var (container, entry, direction) in new[]
-                { ("anteriores", "anterior", "previous"), ("posteriores", "posterior", "subsequent") })
+            var entries = references?.Elements().FirstOrDefault(element => element.Name.LocalName == container)?
+                .Elements().Where(element => element.Name.LocalName == entry) ?? [];
+            foreach (var reference in entries)
             {
-                var entries = references?.Elements().FirstOrDefault(element => element.Name.LocalName == container)?
-                    .Elements().Where(element => element.Name.LocalName == entry) ?? [];
-                foreach (var reference in entries)
-                {
-                    var id = reference.Attribute("referencia")?.Value;
-                    if (id is null || !OfficialReferenceIdRegex().IsMatch(id)) continue;
-                    var relation = reference.Elements().FirstOrDefault(element => element.Name.LocalName == "palabra")?.Value;
-                    var description = reference.Elements().FirstOrDefault(element => element.Name.LocalName == "texto")?.Value;
-                    results.Add(new(id, BoundedLabel(relation, 100, "Referencia oficial"),
-                        BoundedLabel(description, 500, id), direction, $"https://www.boe.es/buscar/doc.php?id={id}"));
-                }
+                var id = reference.Attribute("referencia")?.Value;
+                if (id is null || !OfficialReferenceIdRegex().IsMatch(id)) continue;
+                var relation = reference.Elements().FirstOrDefault(element => element.Name.LocalName == "palabra")?.Value;
+                var description = reference.Elements().FirstOrDefault(element => element.Name.LocalName == "texto")?.Value;
+                results.Add(new(id, BoundedLabel(relation, 100, "Referencia oficial"),
+                    BoundedLabel(description, 500, id), direction, $"https://www.boe.es/buscar/doc.php?id={id}"));
             }
-            return results.DistinctBy(reference => (reference.ExternalId, reference.Direction, reference.Relation))
-                .Take(30).ToArray();
         }
-        catch (System.Xml.XmlException exception)
-        {
-            throw new BoeSourceFormatException("El documento del BOE no es XML válido.", exception);
-        }
+        return results.DistinctBy(reference => (reference.ExternalId, reference.Direction, reference.Relation))
+            .Take(30).ToArray();
     }
 
     private static string BoundedLabel(string? value, int maximumLength, string fallback)
@@ -124,33 +122,38 @@ public sealed partial class OfficialDocumentContentExtractor
     [GeneratedRegex(@"\A(?:BOE-[AB]|DOUE-L)-[0-9]{4}-[0-9]{1,8}\z", RegexOptions.CultureInvariant)]
     private static partial Regex OfficialReferenceIdRegex();
 
-    private static string ExtractXml(string rawContent)
+    private static XDocument ParseXml(string rawContent)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(rawContent);
         try
         {
-            var document = XDocument.Parse(rawContent, LoadOptions.PreserveWhitespace);
-            var contentElement = document.Root?
-                .Elements()
-                .FirstOrDefault(element =>
-                    XmlContentElementNames.Contains(element.Name.LocalName));
-
-            if (contentElement is null)
-            {
-                throw new BoeSourceFormatException(
-                    "El XML del BOE no contiene un nodo de texto conocido.");
-            }
-
-            return string.Join(
-                " ",
-                contentElement
-                    .DescendantNodesAndSelf()
-                    .OfType<XText>()
-                    .Select(node => node.Value));
+            return XDocument.Parse(rawContent, LoadOptions.PreserveWhitespace);
         }
         catch (System.Xml.XmlException exception)
         {
             throw new BoeSourceFormatException("El documento del BOE no es XML válido.", exception);
         }
+    }
+
+    private static string ExtractXml(XDocument document)
+    {
+        var contentElement = document.Root?
+            .Elements()
+            .FirstOrDefault(element =>
+                XmlContentElementNames.Contains(element.Name.LocalName));
+
+        if (contentElement is null)
+        {
+            throw new BoeSourceFormatException(
+                "El XML del BOE no contiene un nodo de texto conocido.");
+        }
+
+        return string.Join(
+            " ",
+            contentElement
+                .DescendantNodesAndSelf()
+                .OfType<XText>()
+                .Select(node => node.Value));
     }
 
     private static string ExtractHtml(string rawContent)

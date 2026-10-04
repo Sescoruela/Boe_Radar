@@ -94,6 +94,23 @@ public sealed class BusinessPersonalizationTests
     }
 
     [Fact]
+    public async Task ReadsCandidateWindowOnceAndPreservesResultsAcrossPages()
+    {
+        var items = Enumerable.Range(1, 1001).Select(index => Item(index,
+            index % 11 == 0 ? "Ayudas al comercio de Baleares" : "Señal general")).ToArray();
+        var catalog = new FakeCatalog(items);
+        var service = new PersonalizedPublicationSearch(catalog);
+        var expected = items.Take(1000).Select(item => item with { ProfileMatch = BusinessProfileMatcher.Match(Retail, item) })
+            .OrderByDescending(item => item.ProfileMatch!.Priority).ThenByDescending(item => item.PublicationDate)
+            .ThenBy(item => item.ExternalId, StringComparer.Ordinal).ToArray();
+        var result = await service.ExecuteAsync(Retail, new(null, null, null, null, 5, 20));
+        Assert.Equal(1, catalog.CandidateReads);
+        Assert.Equal(expected.Skip(80).Take(20).Select(item => item.Id), result.Items.Select(item => item.Id));
+        Assert.True(result.IsPartial);
+        Assert.Equal(1001, result.CatalogSignalCount);
+    }
+
+    [Fact]
     public async Task StoredEvidenceRanksBeforePagingAndSnapshotExcludesLaterReviews()
     {
         var items = Enumerable.Range(1, 4).Select(index => Item(index, "Señal general")).ToArray();
@@ -131,6 +148,13 @@ public sealed class BusinessPersonalizationTests
 
     private sealed class FakeCatalog(PublicationListItem[] items) : IPublicationCatalog
     {
+        public int CandidateReads { get; private set; }
+        public Task<PagedResult<PublicationListItem>> GetBusinessCandidatesAsync(PublicationSearch search,
+            CancellationToken cancellationToken = default)
+        {
+            CandidateReads++;
+            return SearchAsync(search with { Page = 1, PageSize = 1000, BusinessSignalsOnly = true }, cancellationToken);
+        }
         public Task<PagedResult<PublicationListItem>> SearchAsync(PublicationSearch search,
             CancellationToken cancellationToken = default)
         {

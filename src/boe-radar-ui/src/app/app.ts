@@ -1,16 +1,14 @@
 import { DatePipe } from '@angular/common';
-import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import {
   PublicationFilters,
-  PublicationDetail,
-  PublicationSearchResult,
   CatalogStatus,
-  ActionableSourceReview,
-  BusinessProfileMatch,
   PublicationsApi,
 } from './publications';
+import { CatalogState } from './catalog-state';
 import { SubscriptionsApi, SubscriptionView } from './subscriptions';
 import { ProfileMatchComponent } from './profile-match.component';
 import { SourceProfileComponent } from './source-profile.component';
@@ -19,6 +17,7 @@ import { BusinessProfile, businessTypes, activityOptions, territoryOptions,
 
 @Component({
   selector: 'app-root',
+  providers: [CatalogState],
   imports: [DatePipe, FormsModule, ProfileMatchComponent, SourceProfileComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -26,6 +25,8 @@ import { BusinessProfile, businessTypes, activityOptions, territoryOptions,
 export class App implements OnInit {
   private readonly api = inject(PublicationsApi);
   private readonly subscriptions = inject(SubscriptionsApi);
+  private readonly catalog = inject(CatalogState);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly businessTypes = businessTypes;
   readonly activityOptions = activityOptions;
@@ -33,19 +34,19 @@ export class App implements OnInit {
   readonly businessProfile = signal<BusinessProfile | null>(null);
   readonly personalizedView = signal(false);
   readonly profileMessage = signal<string | null>(null);
-  readonly selectedProfileMatch = signal<BusinessProfileMatch | null>(null);
+  readonly selectedProfileMatch = this.catalog.selectedProfileMatch;
   profileDraft: BusinessProfile = { businessType: 'autonomous', activity: 'other', territory: 'all' };
 
-  readonly result = signal<PublicationSearchResult | null>(null);
+  readonly result = this.catalog.result;
   readonly catalogStatus = signal<CatalogStatus | null>(null);
   readonly catalogStatusError = signal(false);
-  readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
-  readonly selected = signal<PublicationDetail | null>(null);
-  readonly detailLoading = signal(false);
-  readonly sourceReview = signal<ActionableSourceReview | null>(null);
-  readonly sourceReviewLoading = signal(false);
-  readonly sourceReviewError = signal(false);
+  readonly loading = this.catalog.loading;
+  readonly error = this.catalog.error;
+  readonly selected = this.catalog.selected;
+  readonly detailLoading = this.catalog.detailLoading;
+  readonly sourceReview = this.catalog.sourceReview;
+  readonly sourceReviewLoading = this.catalog.sourceReviewLoading;
+  readonly sourceReviewError = this.catalog.sourceReviewError;
   readonly currentYear = new Date().getFullYear();
   readonly subscriptionMessage = signal<string | null>(null);
   readonly subscriptionBusy = signal(false);
@@ -64,8 +65,6 @@ export class App implements OnInit {
   digestHour = 8;
   consent = false;
   private managementToken: string | null = null;
-  private detailRequestId = 0;
-  private searchRequestId = 0;
 
   filters: PublicationFilters = {
     query: '',
@@ -85,7 +84,7 @@ export class App implements OnInit {
       this.personalizedView.set(true);
     }
     this.search();
-    this.api.getStatus().subscribe({
+    this.api.getStatus().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (status) => this.catalogStatus.set(status),
       error: () => this.catalogStatusError.set(true),
     });
@@ -238,37 +237,9 @@ export class App implements OnInit {
   }
 
   search(page = 1, retainEvidenceSnapshot = false): void {
-    const evidenceAsOf = retainEvidenceSnapshot ? this.result()?.evidenceAsOf ?? null : null;
-    const requestId = ++this.searchRequestId;
     this.filters.page = page;
-    this.error.set(null);
-    this.result.set(null);
-
-    if (this.filters.dateFrom && this.filters.dateTo && this.filters.dateFrom > this.filters.dateTo) {
-      this.loading.set(false);
-      this.error.set('La fecha «Desde» no puede ser posterior a «Hasta».');
-      return;
-    }
-
-    this.loading.set(true);
-    const filters = { ...this.filters };
-
-    const profile = this.businessProfile();
-    const request = this.personalizedView() && profile
-      ? this.api.personalized(filters, profile, evidenceAsOf) : this.api.search(filters);
-    request
-      .pipe(finalize(() => {
-        if (requestId === this.searchRequestId) this.loading.set(false);
-      }))
-      .subscribe({
-        next: (result) => {
-          if (requestId === this.searchRequestId) this.result.set(result);
-        },
-        error: () => {
-          if (requestId === this.searchRequestId)
-            this.error.set('No hemos podido consultar el catálogo. Comprueba tu conexión e inténtalo de nuevo.');
-        },
-      });
+    this.catalog.search(this.filters, this.personalizedView() ? this.businessProfile() : null,
+      retainEvidenceSnapshot);
   }
 
   clear(): void {
@@ -285,50 +256,11 @@ export class App implements OnInit {
   }
 
   openDetails(id: string): void {
-    const reviewProfile = this.personalizedView() ? this.businessProfile() : null;
-    const requestId = ++this.detailRequestId;
-    this.detailLoading.set(true);
-    this.selectedProfileMatch.set(this.personalizedView()
-      ? this.result()?.items.find(item => item.id === id)?.profileMatch ?? null : null);
-    this.sourceReview.set(null);
-    this.sourceReviewError.set(false);
-    this.sourceReviewLoading.set(false);
-    this.api
-      .get(id)
-      .pipe(finalize(() => {
-        if (requestId === this.detailRequestId) this.detailLoading.set(false);
-      }))
-      .subscribe({
-        next: (publication) => {
-          if (requestId !== this.detailRequestId) return;
-          this.selected.set(publication);
-          this.sourceReviewLoading.set(true);
-          this.api.getSourceReview(publication.externalId, reviewProfile)
-            .pipe(finalize(() => {
-              if (requestId === this.detailRequestId) this.sourceReviewLoading.set(false);
-            }))
-            .subscribe({
-              next: (review) => {
-                if (requestId === this.detailRequestId) this.sourceReview.set(review);
-              },
-              error: () => {
-                if (requestId === this.detailRequestId) this.sourceReviewError.set(true);
-              },
-            });
-        },
-        error: () => {
-          if (requestId === this.detailRequestId)
-            this.error.set('No hemos podido abrir la ficha de esta publicación.');
-        },
-      });
+    this.catalog.openDetails(id, this.personalizedView() ? this.businessProfile() : null);
   }
 
   closeDetails(): void {
-    this.detailRequestId++;
-    this.selected.set(null);
-    this.selectedProfileMatch.set(null);
-    this.sourceReview.set(null);
-    this.sourceReviewLoading.set(false);
+    this.catalog.closeDetails();
   }
 
   categoryLabel(category: string): string {

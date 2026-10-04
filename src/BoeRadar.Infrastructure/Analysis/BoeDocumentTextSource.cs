@@ -24,10 +24,9 @@ internal sealed class BoeDocumentTextSource(
         using var response = await httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
         var raw = await response.Content.ReadAsStringAsync(cancellationToken);
-        var text = extractor.Extract(raw, "xml");
-        var passages = extractor.ExtractPassages(raw);
-        return new DocumentText(text, OfficialDocumentContentExtractor.ComputeSha256(text), "xml", passages,
-            extractor.ExtractTitle(raw), extractor.ExtractReferences(raw).Select(reference => new DocumentReference(
+        var document = extractor.ExtractDocument(raw, "xml");
+        return new DocumentText(document.Text, document.Sha256, document.Format, document.Passages,
+            document.Title, document.References.Select(reference => new DocumentReference(
                 reference.ExternalId, reference.Relation, reference.Description, reference.Direction, reference.OfficialUrl)).ToArray());
     }
 }

@@ -19,12 +19,22 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
         return new CatalogStatus(latestDate, total, emailAlertsEnabled);
     }
 
-    public async Task<PagedResult<PublicationListItem>> SearchAsync(
+    public Task<PagedResult<PublicationListItem>> SearchAsync(
         PublicationSearch search,
+        CancellationToken cancellationToken = default) => SearchCoreAsync(search, 100, cancellationToken);
+
+    public Task<PagedResult<PublicationListItem>> GetBusinessCandidatesAsync(
+        PublicationSearch search,
+        CancellationToken cancellationToken = default) => SearchCoreAsync(
+            search with { Page = 1, PageSize = 1000, BusinessSignalsOnly = true }, 1000, cancellationToken);
+
+    private async Task<PagedResult<PublicationListItem>> SearchCoreAsync(
+        PublicationSearch search,
+        int maximumPageSize,
         CancellationToken cancellationToken = default)
     {
         var page = Math.Max(search.Page, 1);
-        var pageSize = Math.Clamp(search.PageSize, 1, 100);
+        var pageSize = Math.Clamp(search.PageSize, 1, maximumPageSize);
         var query = dbContext.SourceDocuments.AsNoTracking();
 
         if (search.BusinessSignalsOnly)
@@ -142,14 +152,18 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
             .ToArrayAsync(cancellationToken);
 
         var documentIds = items.Select(item => item.Id).ToArray();
-        var analyses = await dbContext.DocumentAnalyses
+        var analyses = documentIds.Length == 0 ? [] : await dbContext.DocumentAnalyses
             .AsNoTracking()
             .Where(analysis => documentIds.Contains(analysis.DocumentId))
-            .OrderByDescending(analysis => analysis.AnalyzedAt)
-            .ToArrayAsync(cancellationToken);
-        var latestByDocument = analyses
             .GroupBy(analysis => analysis.DocumentId)
-            .ToDictionary(group => group.Key, group => group.First());
+            .Select(group => group.OrderByDescending(analysis => analysis.AnalyzedAt)
+                .ThenByDescending(analysis => analysis.Id).Select(analysis => new
+                {
+                    analysis.DocumentId, analysis.IsRelevant, analysis.Category, analysis.Summary,
+                    analysis.Confidence, analysis.Method
+                }).First())
+            .ToArrayAsync(cancellationToken);
+        var latestByDocument = analyses.ToDictionary(analysis => analysis.DocumentId);
         items = items
             .Select(item => latestByDocument.TryGetValue(item.Id, out var analysis)
                 ? item with
@@ -210,6 +224,7 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
             .AsNoTracking()
             .Where(item => item.DocumentId == id)
             .OrderByDescending(item => item.AnalyzedAt)
+            .ThenByDescending(item => item.Id)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (analysis is null)

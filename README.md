@@ -33,6 +33,7 @@ proveedor de correo real y sus rebotes queda pendiente. La documentación base e
 - [Orden personalizado y conservación de evidencia](docs/17-orden-con-evidencia.md)
 - [Publicaciones relacionadas: referencias oficiales](docs/18-publicaciones-relacionadas.md)
 - [Correcciones de fiabilidad y regresiones](docs/19-correcciones-fiabilidad.md)
+- [Hito de optimización: rendimiento sin cambios de producto](docs/20-optimizacion-rendimiento.md)
 - [ADR-001: monolito modular](docs/adr/001-monolito-modular.md)
 
 ## Propuesta de valor
@@ -115,6 +116,16 @@ cd src/boe-radar-ui
 npm ci
 npm start
 ```
+
+Para verificar la interfaz antes de publicar, desde el mismo directorio:
+
+```powershell
+npm test
+npm run build:production
+```
+
+El [hito de optimización](docs/20-optimizacion-rendimiento.md) describe las pruebas de
+PostgreSQL, las comprobaciones automáticas de GitHub y los límites de esta entrega.
 
 La aplicación queda disponible en `http://localhost:4200`. Consulta el
 [manual de desarrollo local](docs/06-desarrollo-local.md) para ver el recorrido

@@ -9,6 +9,8 @@ using BoeRadar.Web;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Data.Common;
 
 namespace BoeRadar.UnitTests;
 
@@ -24,6 +26,71 @@ public sealed class PostgreSqlFactAttribute : FactAttribute
 // Each test migrates an isolated schema. It never changes the application's public schema.
 public sealed class PersistenceRegressionTests
 {
+    [PostgreSqlFact]
+    public async Task MigratedDatabaseMatchesModelSnapshotAndHasNoPendingMigrations()
+    {
+        await using var fixture = await TestDatabase.CreateAsync();
+        await using var db = fixture.Open();
+        Assert.False(db.Database.HasPendingModelChanges());
+        Assert.Empty(await db.Database.GetPendingMigrationsAsync());
+    }
+
+    [PostgreSqlFact]
+    public async Task PersonalizedSearchUsesFourQueriesForThousandCandidatesAndKeepsPublicPageLimit()
+    {
+        await using var fixture = await TestDatabase.CreateAsync();
+        var counter = new QueryCounter();
+        await using var db = fixture.Open(counter);
+        var clock = new TestClock();
+        await new EfIngestionStore(db, clock).ImportAsync(new("BOE", new(2026, 10, 1), new Uri("https://www.boe.es/"),
+            Enumerable.Range(1, 1001).Select(index => new OfficialDocument($"BOE-B-2026-{index:00000}", "1",
+                "5B", "Otros anuncios oficiales", "1", "Ministerio", null, "Ayudas para pymes", null,
+                null, null, null)).ToArray()), "manual");
+        var first = await db.SourceDocuments.OrderBy(item => item.ExternalId).FirstAsync();
+        db.DocumentAnalyses.Add(DocumentAnalysis.Create(first.Id, new string('a', 64), true, RadarCategory.Grant,
+            "Anterior", "[]", "[]", "[]", .8m, "heuristic", "fixture", "radar-v2", null, null, clock.Now.AddDays(-1)));
+        db.DocumentAnalyses.Add(DocumentAnalysis.Create(first.Id, new string('b', 64), true, RadarCategory.Grant,
+            "Actual", "[]", "[]", "[]", .8m, "heuristic", "fixture", "radar-v2", null, null, clock.Now));
+        await db.SaveChangesAsync();
+        var reviews = new EfSourceReviewStore(db, clock);
+        await reviews.SaveAsync(first.ExternalId, new(new string('a', 64), clock.Now,
+            [new("recipients", "Destinatarios", ["Pymes de comercio en Baleares."])]));
+        counter.Commands.Clear();
+        var catalog = new EfPublicationCatalog(db, clock);
+        var result = await new PersonalizedPublicationSearch(catalog, reviews, clock).ExecuteAsync(
+            new("sme", "retail", "baleares"), new(null, null, null, null, 1, 20));
+        Assert.Equal(4, counter.Commands.Count);
+        Assert.Equal(first.Id, result.Items[0].Id);
+        Assert.Equal("Actual", result.Items[0].Analysis!.Summary);
+        Assert.Equal(1000, result.TotalItems);
+        Assert.Equal(1001, result.CatalogSignalCount);
+        Assert.True(result.IsPartial);
+        Assert.Equal(1, result.EvidenceReviewedCount);
+        Assert.Equal(clock.Now, result.EvidenceAsOf);
+        var analysisQuery = Assert.Single(counter.Commands, command => command.Contains("document_analyses"));
+        Assert.Contains("ROW_NUMBER()", analysisQuery); // Latest per document is chosen in PostgreSQL, not in memory.
+        Assert.DoesNotContain("requirements", analysisQuery);
+        Assert.DoesNotContain("deadlines", analysisQuery);
+        Assert.DoesNotContain("evidence", analysisQuery);
+        var publicPage = await catalog.SearchAsync(new(null, null, null, null, 1, 1000));
+        Assert.Equal(100, publicPage.PageSize);
+        Assert.Equal(100, publicPage.Items.Count);
+    }
+
+    [PostgreSqlFact]
+    public async Task EmptyPersonalizedSearchDoesNotReadAnalysesOrEvidence()
+    {
+        await using var fixture = await TestDatabase.CreateAsync();
+        var counter = new QueryCounter();
+        await using var db = fixture.Open(counter);
+        var clock = new TestClock();
+        var result = await new PersonalizedPublicationSearch(new EfPublicationCatalog(db, clock),
+            new EfSourceReviewStore(db, clock), clock).ExecuteAsync(new("sme", "other", "all"), new(null, null, null, null));
+        Assert.Empty(result.Items);
+        Assert.Equal(2, counter.Commands.Count);
+        Assert.False(result.IsPartial);
+    }
+
     [PostgreSqlFact]
     public async Task LegacyAnalysisRetainsSummaryButCannotExposeUnvalidatedActionableFacts()
     {
@@ -228,6 +295,17 @@ public sealed class PersistenceRegressionTests
         public override DateTimeOffset GetUtcNow() => Now;
     }
 
+    private sealed class QueryCounter : DbCommandInterceptor
+    {
+        public List<string> Commands { get; } = [];
+        public override ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(DbCommand command,
+            CommandEventData eventData, InterceptionResult<DbDataReader> result, CancellationToken cancellationToken = default)
+        {
+            Commands.Add(command.CommandText);
+            return ValueTask.FromResult(result);
+        }
+    }
+
     private sealed class RefreshSource : IOfficialGazetteSource
     {
         public string SourceCode => "BOE";
@@ -247,8 +325,13 @@ public sealed class PersistenceRegressionTests
 
     private sealed class TestDatabase(string connection, string schema) : IAsyncDisposable
     {
-        public BoeRadarDbContext Open() => new(new DbContextOptionsBuilder<BoeRadarDbContext>()
-            .UseNpgsql(connection, options => options.MigrationsHistoryTable("__EFMigrationsHistory", schema)).Options);
+        public BoeRadarDbContext Open(DbCommandInterceptor? interceptor = null)
+        {
+            var options = new DbContextOptionsBuilder<BoeRadarDbContext>()
+                .UseNpgsql(connection, provider => provider.MigrationsHistoryTable("__EFMigrationsHistory", schema));
+            if (interceptor is not null) options.AddInterceptors(interceptor);
+            return new(options.Options);
+        }
 
         public static async Task<TestDatabase> CreateAsync(string? targetMigration = null)
         {

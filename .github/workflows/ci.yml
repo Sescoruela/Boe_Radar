@@ -1,0 +1,81 @@
+name: BOE Radar checks
+
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: boeradar
+          POSTGRES_USER: boeradar
+          POSTGRES_PASSWORD: boeradar_dev
+        ports:
+          - 54329:5432
+        options: >-
+          --health-cmd "pg_isready -U boeradar -d boeradar"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Ephemeral CI database only; tests use an isolated schema per case.
+      BOERADAR_TEST_CONNECTION: Host=localhost;Port=54329;Database=boeradar;Username=boeradar;Password=boeradar_dev
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - run: dotnet restore BoeRadar.slnx
+      - run: dotnet build BoeRadar.slnx --configuration Release --no-restore --warnaserror
+      - run: dotnet test BoeRadar.slnx --configuration Release --no-build --no-restore
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: src/boe-radar-ui
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.22.0'
+          cache: npm
+          cache-dependency-path: src/boe-radar-ui/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build:production
+      - run: npm audit --audit-level=high
+      - name: Business signal rules
+        working-directory: .
+        run: node --test scripts/evaluate-business-signals.test.mjs scripts/build-business-review-queue.test.mjs
+
+  render-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Build the production image without publishing or deploying
+        run: docker build --file src/BoeRadar.Web/Dockerfile.render --tag boe-radar-ci .

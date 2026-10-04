@@ -119,20 +119,12 @@ public sealed class PersonalizedPublicationSearch(IPublicationCatalog catalog,
         PublicationSearch search, CancellationToken cancellationToken = default)
     {
         if (!BusinessProfileMatcher.IsValid(profile)) throw new ArgumentException("Perfil no válido.");
-        var candidates = new List<PublicationListItem>();
-        var catalogCount = 0;
-        // Bounded metadata scan of business signals, without source downloads or model calls.
-        for (var batch = 1; batch <= 10; batch++)
-        {
-            var result = await catalog.SearchAsync(search with { Page = batch, PageSize = 100,
-                BusinessSignalsOnly = true }, cancellationToken);
-            catalogCount = result.TotalItems;
-            candidates.AddRange(result.Items);
-            if (batch >= result.TotalPages) break;
-        }
+        // Preserve the 1,000-signal bound without repeating counts and analysis queries per page.
+        var candidates = await catalog.GetBusinessCandidatesAsync(search, cancellationToken);
+        var catalogCount = candidates.TotalItems;
         var snapshot = (search.EvidenceAsOf ?? (clock ?? TimeProvider.System).GetUtcNow()).ToUniversalTime();
-        var unique = candidates.DistinctBy(item => item.Id).ToArray();
-        var evidence = sourceReviews is null ? new Dictionary<string, ActionableSourceReview>()
+        var unique = candidates.Items.DistinctBy(item => item.Id).ToArray();
+        var evidence = sourceReviews is null || unique.Length == 0 ? new Dictionary<string, ActionableSourceReview>()
             : await sourceReviews.GetAsync(unique.Select(item => item.ExternalId).ToArray(), snapshot, cancellationToken);
         var ordered = unique
             .Select(item => item with { ProfileMatch = SourceEvidenceRanking.Match(profile, item,

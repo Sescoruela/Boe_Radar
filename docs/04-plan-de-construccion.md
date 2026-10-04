@@ -97,11 +97,18 @@ La generación del digest es idempotente; la entrega SMTP es al menos una vez. L
 
 ## Orden inmediato de trabajo
 
-1. Definir el contrato JSON versionado del análisis IA.
-2. Crear un conjunto de documentos etiquetados para medir relevancia.
-3. Implementar el prefiltro determinista antes de invocar el modelo.
-4. Integrar Gemini mediante un puerto de aplicación reemplazable.
-5. Mostrar resumen, requisitos, plazos, evidencia y confianza en la UI.
+Actualizado el 4 de octubre de 2026 tras publicar las correcciones de fiabilidad
+y las fichas personalizadas con referencias oficiales en Render (`fe551a2`).
+
+1. Publicar las optimizaciones ya comprobadas en local: consultas del catálogo,
+   extracción unificada del XML y estado de la interfaz con cancelación de lecturas.
+2. Comprobar la primera ejecución del CI preparado y el despliegue en Render.
+3. Medir rendimiento con datos representativos antes de comunicar mejoras de latencia.
+4. Retomar las entregas de utilidad para clientes y su validación con usuarios.
+
+Véase el [hito de optimización](20-optimizacion-rendimiento.md). Gemini real,
+procesamiento de documentos largos y proveedor de correo siguen pendientes;
+no se consideran completados por la publicación de estas correcciones.
 
 ## Backlog posterior al MVP
 

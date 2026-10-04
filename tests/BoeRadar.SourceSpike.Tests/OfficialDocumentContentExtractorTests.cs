@@ -7,6 +7,48 @@ public sealed class OfficialDocumentContentExtractorTests
     private readonly OfficialDocumentContentExtractor _sut = new();
 
     [Fact]
+    public void UnifiedExtractionPreservesGoldenCanonicalBodyAndSeparateMetadata()
+    {
+        var raw = Fixture.Read("boe-document-BOE-A-2024-10761.xml");
+        var document = _sut.ExtractDocument(raw, "xml");
+        Assert.Equal(23468, document.Text.Length);
+        Assert.Equal("6fb111e35b63cb43e7e9ae92a85eec299e7c87fdc0d8feb48a03841e84329517", document.Sha256);
+        Assert.Equal(_sut.Extract(raw, "xml"), document.Text);
+        Assert.Equal(_sut.ExtractPassages(raw), document.Passages);
+        Assert.Equal(_sut.ExtractTitle(raw), document.Title);
+        Assert.Equal(_sut.ExtractReferences(raw), document.References);
+    }
+
+    [Theory]
+    [InlineData("texto")]
+    [InlineData("texto_original")]
+    public void UnifiedExtractionKeepsNamespacesNestedTextAndReferenceDirection(string element)
+    {
+        var raw = $"<documento xmlns='urn:boe'><metadatos><titulo> Ayuda &amp; apoyo </titulo></metadatos>" +
+            $"<{element}><p>Requisitos <b>para pymes</b>.</p><p>Plazo: 15 de octubre de 2026.</p></{element}>" +
+            "<analisis><referencias><posteriores><posterior referencia='BOE-A-2026-1'><palabra>MODIFICA</palabra>" +
+            "<texto>Referencia oficial</texto></posterior></posteriores></referencias></analisis></documento>";
+        var result = _sut.ExtractDocument(raw, "xml");
+        Assert.Equal("Ayuda & apoyo", result.Title);
+        Assert.Equal("Requisitos para pymes . Plazo: 15 de octubre de 2026.", result.Text);
+        Assert.Equal("subsequent", Assert.Single(result.References).Direction);
+        Assert.All(result.Passages, passage => Assert.Contains(passage, result.Text));
+    }
+
+    [Fact]
+    public void UnifiedExtractionRejectsMalformedMissingOrEmptyBodyAndPreservesHtml()
+    {
+        Assert.Throws<BoeSourceFormatException>(() => _sut.ExtractDocument("<documento>", "xml"));
+        Assert.Throws<BoeSourceFormatException>(() => _sut.ExtractDocument("<documento/>", "xml"));
+        Assert.Throws<BoeSourceFormatException>(() => _sut.ExtractDocument("<documento><texto> </texto></documento>", "xml"));
+        var html = _sut.ExtractDocument("<p>Ayuda &amp; apoyo</p>", "html");
+        Assert.Equal("Ayuda & apoyo", html.Text);
+        Assert.Empty(html.Passages);
+        Assert.Empty(html.References);
+        Assert.Null(html.Title);
+    }
+
+    [Fact]
     public void ReferencesPreserveOfficialRelationAndDirectionWithoutChangingBodyHash()
     {
         const string xml = """
