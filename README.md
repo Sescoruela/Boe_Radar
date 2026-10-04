@@ -101,7 +101,7 @@ la Agencia Estatal Boletín Oficial del Estado».
 
 ## Hito 1: catálogo ejecutable
 
-Requisitos: SDK de .NET 10, Node.js 22.22 o superior y Docker Desktop.
+Requisitos: SDK de .NET 10, Node.js 22.22.3 (o una versión compatible con Angular) y Docker Desktop.
 
 ```powershell
 docker compose up -d postgres

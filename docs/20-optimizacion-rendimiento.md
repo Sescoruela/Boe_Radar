@@ -2,7 +2,7 @@
 
 Estado: implementación de los cuatro bloques comprobada en local el 4 de octubre de 2026.
 Pendientes: publicación, primera ejecución de CI en GitHub y comprobación del despliegue.
-Los cambios son locales; Render sigue en el commit `fe551a2`.
+La entrega se ha subido a GitHub (`7c1ac10`); no se ha confirmado todavía su despliegue en Render.
 
 ## Objetivo y orden
 
@@ -139,7 +139,9 @@ acciones oficiales de [checkout](https://github.com/actions/checkout),
 
 En local se han comprobado las pruebas, el modelo/migraciones, compilaciones Windows y
 Linux y la construcción de la imagen completa de Render. GitHub Actions todavía no se
-ha ejecutado: el archivo no se ha enviado al repositorio. No se ha configurado que Render
+ha completado con éxito: la primera ejecución pasó el backend y detectó que Node 22.22.0
+era inferior al mínimo de Angular (22.22.3). Se ha fijado 22.22.3 en CI y en ambas imágenes
+de la web; queda comprobar la ejecución corregida. No se ha configurado que Render
 espere estos checks; la automatización de pruebas no constituye una barrera de despliegue
 por sí sola. Tras publicar, hay que comprobar la primera ejecución y decidir esa política.
 

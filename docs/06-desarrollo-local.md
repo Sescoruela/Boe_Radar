@@ -6,7 +6,7 @@ explorarla desde la aplicación Angular.
 ## Requisitos
 
 - SDK de .NET `10.0.401` (la versión esperada está en `global.json`).
-- Node.js `22.22` o superior y npm.
+- Node.js `22.22.3` (o una versión compatible con Angular) y npm.
 - Docker Desktop con Docker Compose.
 
 ## Primera ejecución
