@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BoeRadar.Infrastructure.Persistence;
 
-internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clock) : ISubscriptionStore
+internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clock,
+    ISourceReviewStore? sourceReviews = null) : ISubscriptionStore
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
@@ -24,7 +25,7 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
         {
             var subscription = Subscription.Create(email, tokenHash, now.AddHours(24),
                 JsonSerializer.Serialize(preferences.Categories, JsonOptions),
-                JsonSerializer.Serialize(preferences.Keywords, JsonOptions), now);
+                JsonSerializer.Serialize(preferences.Keywords, JsonOptions), now, SerializeProfile(preferences.Profile));
             subscription.UpdateDigestHour(preferences.DigestHour);
             db.Subscriptions.Add(subscription);
             db.OutboxMessages.Add(OutboxMessage.Create("verification", $"verify:{subscription.Id}:{tokenHash}",
@@ -34,7 +35,7 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
         {
             existing.RenewVerification(tokenHash, now.AddHours(24),
                 JsonSerializer.Serialize(preferences.Categories, JsonOptions),
-                JsonSerializer.Serialize(preferences.Keywords, JsonOptions), now);
+                JsonSerializer.Serialize(preferences.Keywords, JsonOptions), now, SerializeProfile(preferences.Profile));
             existing.UpdateDigestHour(preferences.DigestHour);
             db.OutboxMessages.Add(OutboxMessage.Create("verification", $"verify:{existing.Id}:{tokenHash}",
                 email, "Confirma tu suscripción a BOE Radar IA", body, null, now));
@@ -74,9 +75,13 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
             item => item.ManagementTokenHash == managementHash && item.Status == SubscriptionStatus.Active,
             cancellationToken);
         if (subscription is null) return false;
+        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         subscription.UpdatePreferences(JsonSerializer.Serialize(preferences.Categories, JsonOptions),
-            JsonSerializer.Serialize(preferences.Keywords, JsonOptions), preferences.DigestHour, now);
+            JsonSerializer.Serialize(preferences.Keywords, JsonOptions), preferences.DigestHour, now,
+            SerializeProfile(preferences.Profile));
         await db.SaveChangesAsync(cancellationToken);
+        await CancelQueuedDigestsAsync(subscription.Id, cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
         return true;
     }
 
@@ -98,10 +103,20 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
             if (subscription is null) return false;
             digest.ConsumeUnsubscribeToken();
         }
+        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         subscription.Unsubscribe(now);
         await db.SaveChangesAsync(cancellationToken);
+        await CancelQueuedDigestsAsync(subscription.Id, cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
         return true;
     }
+
+    private Task<int> CancelQueuedDigestsAsync(Guid subscriptionId, CancellationToken cancellationToken) =>
+        db.OutboxMessages.Where(message => message.Kind == "digest" &&
+            message.Status != DeliveryStatus.Sent && message.Status != DeliveryStatus.Canceled &&
+            db.AlertDigests.Any(digest => digest.Id == message.DigestId && digest.SubscriptionId == subscriptionId))
+            .ExecuteUpdateAsync(update => update.SetProperty(message => message.Status, DeliveryStatus.Canceled)
+                .SetProperty(message => message.Body, "").SetProperty(message => message.LastError, (string?)null), cancellationToken);
 
     public async Task<DigestPlan> QueueDigestsAsync(DateOnly date, Uri publicBaseUri,
         bool includeHeuristic, DateTimeOffset now, CancellationToken cancellationToken)
@@ -113,12 +128,16 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
             .Join(db.SourceDocuments.AsNoTracking().Where(document => document.PublicationDate == date),
                 analysis => analysis.DocumentId, document => document.Id,
                 (analysis, document) => new { Analysis = analysis, Document = document })
-            .Where(item => item.Analysis.IsRelevant && item.Analysis.PromptVersion == "radar-v2" &&
-                (includeHeuristic || item.Analysis.Method == "gemini"))
             .ToArrayAsync(cancellationToken);
         var latest = analyzed.GroupBy(item => item.Document.Id)
-            .Select(group => group.OrderByDescending(item => item.Analysis.AnalyzedAt).First())
+            .Select(group => group.OrderByDescending(item => item.Analysis.AnalyzedAt)
+                .ThenByDescending(item => item.Analysis.Id).First())
+            .Where(item => item.Analysis.IsRelevant && item.Analysis.PromptVersion == "radar-v2" &&
+                (includeHeuristic || item.Analysis.Method == "gemini"))
             .ToArray();
+        var reviews = sourceReviews is null || latest.Length == 0 || subscriptions.All(item => item.BusinessProfileJson is null)
+            ? new Dictionary<string, ActionableSourceReview>()
+            : await sourceReviews.GetAsync(latest.Select(item => item.Document.ExternalId).ToArray(), now, cancellationToken);
         var queued = 0;
         var matches = 0;
 
@@ -146,14 +165,19 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
                         item.Analysis.Category, item.Analysis.Method, item.Document.OfficialPdfUrl,
                         JsonSerializer.Deserialize<string[]>(item.Analysis.RequirementsJson, JsonOptions),
                         JsonSerializer.Deserialize<RadarDeadline[]>(item.Analysis.DeadlinesJson, JsonOptions))
+                    { Epigraph = item.Document.Epigraph }
                 })
                 .Select(item => new
                 {
                     item.Analysis,
-                    item.Item,
+                    Item = SubscriptionRules.Personalize(preferences, item.Item,
+                        reviews.TryGetValue(item.Item.ExternalId, out var review) && review.SourceHash == item.Analysis.ContentHash
+                            ? review : null),
                     Reasons = SubscriptionRules.Match(preferences, item.Item)
                 })
                 .Where(item => item.Reasons.Count > 0)
+                .OrderByDescending(item => item.Item.ProfileMatch?.Priority ?? 0)
+                .ThenBy(item => item.Item.ExternalId, StringComparer.Ordinal)
                 .ToArray();
             if (selected.Length == 0) continue;
 
@@ -161,12 +185,13 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
             var digest = AlertDigest.Create(subscription.Id, date, selected.Length,
                 SubscriptionTokens.Hash(unsubscribeToken), now);
             var body = BuildDigestBody(date, selected.Select(item => item.Item).ToArray(),
-                publicBaseUri, unsubscribeToken);
+                publicBaseUri, unsubscribeToken, preferences.Profile);
             db.AlertDigests.Add(digest);
             foreach (var item in selected)
             {
                 db.AlertMatches.Add(AlertMatch.Create(digest.Id, subscription.Id,
-                    item.Analysis.Id, JsonSerializer.Serialize(item.Reasons, JsonOptions), now));
+                    item.Analysis.Id, JsonSerializer.Serialize(item.Reasons.Concat(
+                        item.Item.ProfileMatch?.Reasons.Select(reason => $"profile:{reason}") ?? []), JsonOptions), now));
             }
             db.OutboxMessages.Add(OutboxMessage.Create("digest", $"digest:{subscription.Id}:{date:yyyyMMdd}",
                 subscription.Email, $"BOE Radar IA · {date:dd/MM/yyyy} · {selected.Length} novedades",
@@ -283,16 +308,34 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
         new SubscriptionPreferences(
             JsonSerializer.Deserialize<RadarCategory[]>(subscription.CategoriesJson, JsonOptions) ?? [],
             JsonSerializer.Deserialize<string[]>(subscription.KeywordsJson, JsonOptions) ?? [],
-            subscription.DigestHour));
+            subscription.DigestHour,
+            subscription.BusinessProfileJson is null ? null :
+                JsonSerializer.Deserialize<BusinessProfile>(subscription.BusinessProfileJson, JsonOptions)));
+
+    private static string? SerializeProfile(BusinessProfile? profile) =>
+        profile is null ? null : JsonSerializer.Serialize(profile, JsonOptions);
 
     private static string BuildDigestBody(DateOnly date, IReadOnlyList<DigestItem> items,
-        Uri publicBaseUri, string unsubscribeToken)
+        Uri publicBaseUri, string unsubscribeToken, BusinessProfile? profile)
     {
         var body = new StringBuilder($"BOE Radar IA · {date:dd/MM/yyyy}\n\n");
+        if (profile is not null)
+        {
+            body.AppendLine($"Perfil de alertas: {BusinessProfileDisplay.Describe(profile)}");
+            body.AppendLine("Novedades ordenadas por menciones de tu perfil. No confirma elegibilidad ni obligaciones.");
+            body.AppendLine("No se excluyen novedades cuyo ámbito no está claro; los temas y palabras clave sí filtran.");
+            body.AppendLine();
+        }
         foreach (var item in items)
         {
             body.AppendLine($"• {item.Title}");
             body.AppendLine($"  {item.Category}: {item.Summary}");
+            if (item.ProfileMatch is { } match)
+            {
+                body.AppendLine($"  Perfil: {match.Label}");
+                foreach (var reason in match.Reasons) body.AppendLine($"  Motivo: {reason}");
+                foreach (var check in match.Checks) body.AppendLine($"  Comprueba: {check}");
+            }
             if (item.Requirements is { Count: > 0 })
                 body.AppendLine($"  Requisitos: {string.Join("; ", item.Requirements)}");
             if (item.Deadlines is { Count: > 0 })
@@ -305,6 +348,7 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
             body.AppendLine();
         }
         body.AppendLine("Información orientativa. Comprueba siempre la publicación oficial.");
+        body.AppendLine("Para cambiar preferencias, utiliza el enlace de gestión recibido al confirmar la suscripción.");
         body.AppendLine($"Baja de un solo uso: {new Uri(publicBaseUri, $"/#unsubscribe={unsubscribeToken}")}");
         return body.ToString();
     }

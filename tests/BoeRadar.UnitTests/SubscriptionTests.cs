@@ -1,10 +1,76 @@
 using BoeRadar.Application;
 using BoeRadar.Domain;
+using BoeRadar.Infrastructure.Messaging;
+using Microsoft.Extensions.Configuration;
 
 namespace BoeRadar.UnitTests;
 
 public sealed class SubscriptionTests
 {
+    [Fact]
+    public async Task RemoteSmtpCannotSendWithoutTls()
+    {
+        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+        { ["Email:Host"] = "smtp.example.invalid", ["Email:From"] = "radar@example.invalid" }).Build();
+        await Assert.ThrowsAsync<InvalidOperationException>(() => new SmtpEmailSender(config)
+            .SendAsync("test@example.invalid", "Test", "Test", default));
+    }
+
+    [Theory]
+    [InlineData(0, 30)]
+    [InlineData(1025, 0)]
+    [InlineData(1025, 121)]
+    public async Task InvalidSmtpPortOrTimeoutFailsBeforeOpeningAConnection(int port, int timeout)
+    {
+        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["Email:Host"] = "localhost",
+            ["Email:From"] = "radar@example.invalid",
+            ["Email:Port"] = port.ToString(),
+            ["Email:TimeoutSeconds"] = timeout.ToString()
+        }).Build();
+        await Assert.ThrowsAsync<InvalidOperationException>(() => new SmtpEmailSender(config)
+            .SendAsync("test@example.invalid", "Test", "Test", default));
+    }
+
+    [Fact]
+    public void AlertProfileIsOptionalAndInvalidProfileIsRejected()
+    {
+        Assert.Null(SubscriptionRules.Normalize(new([], [])).Profile);
+        var profile = new BusinessProfile("sme", "retail", "baleares");
+        Assert.Equal(profile, SubscriptionRules.Normalize(new([], [], Profile: profile)).Profile);
+        Assert.Throws<ArgumentException>(() => SubscriptionRules.Normalize(
+            new([], [], Profile: profile with { Territory = "inventado" })));
+    }
+
+    [Fact]
+    public void AlertProfileAddsExplainablePriorityWithoutBecomingAnEligibilityFilter()
+    {
+        var preferences = new SubscriptionPreferences([], [], Profile: new("sme", "retail", "baleares"));
+        var item = new DigestItem(Guid.NewGuid(), Guid.NewGuid(), "BOE-A-2026-1", "Ayudas al comercio para pymes",
+            "Resumen", RadarCategory.Grant, "gemini", null);
+        var personalized = SubscriptionRules.Personalize(preferences, item);
+        Assert.True(personalized.ProfileMatch!.Priority > 0);
+        Assert.NotEmpty(personalized.ProfileMatch.Checks);
+        var unknown = SubscriptionRules.Personalize(preferences, item with { Title = "Cambios generales" });
+        Assert.Equal(0, unknown.ProfileMatch!.Priority);
+        Assert.NotEmpty(SubscriptionRules.Match(preferences, unknown));
+        Assert.Null(SubscriptionRules.Personalize(new([], []), personalized).ProfileMatch);
+    }
+
+    [Fact]
+    public void RemovingOrUnsubscribingClearsTheStoredAlertProfile()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var subscription = Subscription.Create("a@example.invalid", "verify", now.AddHours(24), "[]", "[]", now, "{}");
+        subscription.Activate("manage", now);
+        subscription.UpdatePreferences("[]", "[]", 8, now);
+        Assert.Null(subscription.BusinessProfileJson);
+        subscription.UpdatePreferences("[]", "[]", 8, now, "{}");
+        subscription.Unsubscribe(now);
+        Assert.Null(subscription.BusinessProfileJson);
+    }
+
     [Fact]
     public void Normalization_RejectsDisplayNamesAndOutOfRangeHours()
     {

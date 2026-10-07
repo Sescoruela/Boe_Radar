@@ -105,6 +105,7 @@ export interface PublicationDetail extends PublicationListItem {
 }
 
 export interface PublicationFilters {
+  intent?: '' | 'grants' | 'tax' | 'obligations';
   query: string;
   section: string;
   dateFrom: string;
@@ -133,6 +134,7 @@ export class PublicationsApi {
 
     for (const [key, value] of Object.entries({
       query: filters.query,
+      intent: filters.intent,
       section: filters.section,
       dateFrom: filters.dateFrom,
       dateTo: filters.dateTo,
@@ -154,6 +156,7 @@ export class PublicationsApi {
       profile,
       search: {
         query: filters.query || null, section: filters.section || null,
+        intent: filters.intent || null,
         dateFrom: filters.dateFrom || null, dateTo: filters.dateTo || null,
         page: filters.page, pageSize: filters.pageSize, businessSignalsOnly: true, evidenceAsOf,
       },

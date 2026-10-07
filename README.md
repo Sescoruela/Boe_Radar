@@ -34,6 +34,7 @@ proveedor de correo real y sus rebotes queda pendiente. La documentación base e
 - [Publicaciones relacionadas: referencias oficiales](docs/18-publicaciones-relacionadas.md)
 - [Correcciones de fiabilidad y regresiones](docs/19-correcciones-fiabilidad.md)
 - [Hito de optimización: rendimiento sin cambios de producto](docs/20-optimizacion-rendimiento.md)
+- [Alertas personalizadas: primera entrega y requisitos de producción](docs/21-alertas-personalizadas.md)
 - [ADR-001: monolito modular](docs/adr/001-monolito-modular.md)
 
 ## Propuesta de valor
@@ -126,6 +127,13 @@ npm run build:production
 
 El [hito de optimización](docs/20-optimizacion-rendimiento.md) describe las pruebas de
 PostgreSQL, las comprobaciones automáticas de GitHub y los límites de esta entrega.
+
+El [hito de fichas orientadas a decisiones](docs/22-fichas-orientadas-a-decisiones.md)
+describe los títulos abreviados, la cabecera de comprobaciones, los enlaces oficiales
+y los estados de carga y reintento, sin confirmar elegibilidad ni plazos abiertos.
+
+La [búsqueda por necesidades](docs/23-busqueda-por-necesidades.md) incorpora temas,
+secciones avanzadas, fechas de publicación y alternativas para búsquedas vacías.
 
 La aplicación queda disponible en `http://localhost:4200`. Consulta el
 [manual de desarrollo local](docs/06-desarrollo-local.md) para ver el recorrido

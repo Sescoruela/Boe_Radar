@@ -7,6 +7,7 @@ import { BusinessProfileMatch } from './publications';
     @if (detail()) {
       <section class="detail" aria-labelledby="profile-match-title">
         <h3 id="profile-match-title">Por qué aparece en tu radar</h3>
+        <p>Coincidir con una mención no confirma que cumplas los requisitos ni que tengas una obligación.</p>
         @for (reason of match().reasons; track reason) { <p>{{ reason }}</p> }
         <h4>Antes de actuar</h4>
         <ul>@for (check of match().checks; track check) { <li>{{ check }}</li> }</ul>
@@ -15,7 +16,9 @@ import { BusinessProfileMatch } from './publications';
     } @else {
       <div class="match" [class.has-match]="match().priority > 0">
         <strong>{{ match().label }}</strong>
-        @for (reason of match().reasons; track reason) { <p>{{ reason }}</p> }
+        <p>{{ match().priority > 0 ? 'Aplicabilidad pendiente de comprobar.' : 'Sin coincidencias claras; conservamos la señal para que puedas revisarla.' }}</p>
+        @if (match().reasons[0]; as reason) { <p>{{ reason }}</p> }
+        @if (match().reasons.length > 1) { <p>Más motivos en la ficha.</p> }
       </div>
     }
   `,

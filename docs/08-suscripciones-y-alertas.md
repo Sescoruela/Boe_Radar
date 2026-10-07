@@ -1,5 +1,10 @@
 # Hito 3 — Suscripciones y alertas
 
+Actualización: el [hito de alertas personalizadas](21-alertas-personalizadas.md) añade
+un perfil opcional y cancelación de mensajes pendientes tras cambiar preferencias.
+El perfil del navegador no se guarda automáticamente. El envío real sigue pendiente
+de proveedor HTTPS para Render, programación y validación antes de activar usuarios.
+
 ## Flujo
 
 1. El usuario solicita alertas y acepta expresamente el envío de correos.
@@ -45,7 +50,7 @@ La fecha histórica es intencionada: sirve para demostrar el flujo sin depender 
 
 ## API
 
-- `POST /api/v1/subscriptions`: `{ email, categories, keywords, digestHour, consent }`. Las categorías usan nombres de enum (`Grant`, `Tax`, etc.).
+- `POST /api/v1/subscriptions`: `{ email, categories, keywords, digestHour, consent, profile? }`. Las categorías usan nombres de enum (`Grant`, `Tax`, etc.). El perfil es opcional y validado; `null` desactiva la personalización.
 - `POST /api/v1/subscriptions/verify`: `{ token }`.
 - `GET /api/v1/subscriptions/me`: cabecera `X-Management-Token`.
 - `PUT /api/v1/subscriptions/me`: preferencias y cabecera de gestión.

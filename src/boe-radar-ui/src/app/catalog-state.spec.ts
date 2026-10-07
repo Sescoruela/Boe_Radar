@@ -32,6 +32,51 @@ describe('CatalogState', () => {
   afterEach(() => {
     state.ngOnDestroy();
     http.verify();
+    vi.useRealTimers();
+  });
+
+  it('keeps results visible after a detail error and supports retrying the same publication', () => {
+    state.search(filters, null);
+    searchRequest().flush({ ...page, items: [detail], totalItems: 1 });
+    state.openDetails('a', null);
+    http.expectOne('/api/v1/publications/a').flush('Unavailable', { status: 503, statusText: 'Unavailable' });
+    expect(state.error()).toBeNull();
+    expect(state.result()?.items).toEqual([detail]);
+    expect(state.detailTarget()?.externalId).toBe(detail.externalId);
+    expect(state.detailError()).toContain('reintentarlo');
+    state.retryDetails();
+    expect(state.detailError()).toBeNull();
+    http.expectOne('/api/v1/publications/a').flush(detail);
+    http.expectOne('/api/v1/source-review/BOE-A-2026-1').flush({ groups: [] });
+    expect(state.selected()).toEqual(detail);
+  });
+
+  it('bounds the detail wait and cancels the timed-out request', () => {
+    vi.useFakeTimers();
+    state.openDetails('a', null);
+    const request = http.expectOne('/api/v1/publications/a');
+    vi.advanceTimersByTime(20001);
+    expect(request.cancelled).toBe(true);
+    expect(state.detailLoading()).toBe(false);
+    expect(state.detailError()).not.toBeNull();
+  });
+
+  it('retries a timed-out review with the original profile and no duplicate parallel request', () => {
+    vi.useFakeTimers();
+    const profile = { businessType: 'sme', activity: 'retail', territory: 'baleares' } as const;
+    state.openDetails('a', profile);
+    http.expectOne('/api/v1/publications/a').flush(detail);
+    const previous = http.expectOne('/api/v1/source-review/BOE-A-2026-1/personalized');
+    vi.advanceTimersByTime(20001);
+    expect(previous.cancelled).toBe(true);
+    expect(state.sourceReviewError()).toBe(true);
+    expect(state.selected()).toEqual(detail);
+    state.retrySourceReview();
+    state.retrySourceReview();
+    const retried = http.expectOne('/api/v1/source-review/BOE-A-2026-1/personalized');
+    expect(retried.request.body).toEqual(profile);
+    retried.flush({ groups: [] });
+    expect(state.sourceReviewError()).toBe(false);
   });
 
   it('cancels a superseded search without clearing the current loading state', () => {
@@ -45,6 +90,33 @@ describe('CatalogState', () => {
     current.flush(page);
     expect(state.result()).toEqual(page);
     expect(state.loading()).toBe(false);
+  });
+
+  it('sends the intent to the API and snapshots applied filters separately from the editable form', () => {
+    const draft: PublicationFilters = { ...filters, intent: 'tax' };
+    state.search(draft, null);
+    const request = searchRequest();
+    expect(request.request.params.get('intent')).toBe('tax');
+    draft.intent = 'grants';
+    request.flush(page);
+    expect(state.appliedFilters()?.intent).toBe('tax');
+    state.search({ ...filters, intent: 'obligations', page: 2 },
+      { businessType: 'sme', activity: 'retail', territory: 'baleares' });
+    const personalized = http.expectOne('/api/v1/publications/personalized');
+    expect(personalized.request.body.search.intent).toBe('obligations');
+    expect(personalized.request.body.search.page).toBe(2);
+    personalized.flush(page);
+  });
+
+  it('paginates the applied intent rather than unsubmitted form edits', () => {
+    state.search({ ...filters, intent: 'grants' }, null);
+    searchRequest().flush(page);
+    state.search({ ...filters, intent: 'tax', query: 'sin enviar', page: 2 }, null, true);
+    const second = searchRequest();
+    expect(second.request.params.get('intent')).toBe('grants');
+    expect(second.request.params.has('query')).toBe(false);
+    expect(second.request.params.get('page')).toBe('2');
+    second.flush(page);
   });
 
   it('cancels the pending search when dates become invalid, without a new request', () => {

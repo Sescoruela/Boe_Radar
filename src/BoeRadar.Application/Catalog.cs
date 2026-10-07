@@ -8,7 +8,13 @@ public sealed record PublicationSearch(
     int Page = 1,
     int PageSize = 20,
     bool BusinessSignalsOnly = false,
-    DateTimeOffset? EvidenceAsOf = null);
+    DateTimeOffset? EvidenceAsOf = null,
+    string? Intent = null);
+
+public static class PublicationIntents
+{
+    public static bool IsValid(string? intent) => intent is null or "" or "grants" or "tax" or "obligations";
+}
 
 public sealed record CatalogStatus(DateOnly? LatestPublicationDate, int TotalPublications, bool EmailAlertsEnabled);
 

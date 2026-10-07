@@ -34,6 +34,7 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
         CancellationToken cancellationToken = default)
     {
         var page = Math.Max(search.Page, 1);
+        if (!PublicationIntents.IsValid(search.Intent)) throw new ArgumentException("Tema de búsqueda no válido.", nameof(search));
         var pageSize = Math.Clamp(search.PageSize, 1, maximumPageSize);
         var query = dbContext.SourceDocuments.AsNoTracking();
 
@@ -131,6 +132,22 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
         {
             query = query.Where(document => document.SectionCode == search.Section);
         }
+
+        // Navigation by mentions, not a determination of eligibility or legal applicability.
+        // Filter in SQL before count, pagination and the personalized candidate window.
+        var topic = search.Intent switch
+        {
+            "grants" => @"ayudas|ayuda(?! al refugiado)|subvenci|bonificaci|financiaci|pr[eé]stamo|programa auto\+",
+            "tax" => @"fiscal|tributari|impuesto|retenci[oó]n|deducci[oó]n|(^|[^a-záéíóúñ])(iva|irpf)([^a-záéíóúñ]|$)",
+            "obligations" => @"obligaci[oó]n|obligaciones|cotizaci|seguridad social|normas de inspecci[oó]n|reglamento|deber[aá]n|deber[aá]",
+            _ => null
+        };
+        if (topic is not null)
+            query = query.Where(document =>
+                System.Text.RegularExpressions.Regex.IsMatch(document.Title, topic,
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase) ||
+                (document.Epigraph != null && System.Text.RegularExpressions.Regex.IsMatch(document.Epigraph, topic,
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase)));
 
         var totalItems = await query.CountAsync(cancellationToken);
         var items = await query

@@ -1,10 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { BusinessProfile } from './business-profile';
 
 export interface SubscriptionPreferences {
   categories: string[];
   keywords: string[];
   digestHour: number;
+  profile?: BusinessProfile | null;
 }
 
 export interface SubscriptionView {

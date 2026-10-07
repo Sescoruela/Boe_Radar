@@ -19,6 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
+      mailpit:
+        image: axllent/mailpit:v1.31.1
+        ports:
+          - 1025:1025
       postgres:
         image: postgres:17
         env:
@@ -35,6 +39,7 @@ jobs:
     env:
       # Ephemeral CI database only; tests use an isolated schema per case.
       BOERADAR_TEST_CONNECTION: Host=localhost;Port=54329;Database=boeradar;Username=boeradar;Password=boeradar_dev
+      BOERADAR_TEST_SMTP: 'true'
     steps:
       - uses: actions/checkout@v7
         with:

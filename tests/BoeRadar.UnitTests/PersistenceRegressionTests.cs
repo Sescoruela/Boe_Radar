@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Data.Common;
+using BoeRadar.Infrastructure.Messaging;
+using Microsoft.Extensions.Configuration;
 
 namespace BoeRadar.UnitTests;
 
@@ -23,9 +25,249 @@ public sealed class PostgreSqlFactAttribute : FactAttribute
     }
 }
 
+public sealed class MailpitFactAttribute : FactAttribute
+{
+    public MailpitFactAttribute()
+    {
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("BOERADAR_TEST_CONNECTION")) ||
+            Environment.GetEnvironmentVariable("BOERADAR_TEST_SMTP") != "true")
+            Skip = "Opt in with BOERADAR_TEST_SMTP=true and local PostgreSQL/Mailpit. Never uses an external SMTP server.";
+    }
+}
+
 // Each test migrates an isolated schema. It never changes the application's public schema.
 public sealed class PersistenceRegressionTests
 {
+    [PostgreSqlFact]
+    public async Task IntentFilteringRunsBeforeCountPaginationAndPersonalizedRanking()
+    {
+        await using var fixture = await TestDatabase.CreateAsync();
+        await using var db = fixture.Open();
+        var clock = new TestClock();
+        var titles = new[] { "Convocatoria de ayudas para comercio", "Bases de subvenciones para pymes",
+            "Ayudas para tecnología", "Cambios fiscales en el impuesto para empresas",
+            "Cotización de trabajadores autónomos en la Seguridad Social", "Resolución administrativa sin tema fiscal de la Comisión Española de Ayuda al Refugiado" };
+        await new EfIngestionStore(db, clock).ImportAsync(new("BOE", new(2026, 10, 1), new Uri("https://www.boe.es/"),
+            titles.Select((title, index) => new OfficialDocument($"BOE-A-2026-{index + 1:00000}", "normal",
+                index < 3 ? "5B" : "1", "Sección", "1", "Ministerio", null,
+                title, null, null, null, null)).ToArray()), "manual");
+        var catalog = new EfPublicationCatalog(db, clock);
+        var first = await catalog.SearchAsync(new(null, null, null, null, 1, 2, Intent: "grants"));
+        Assert.Equal(3, first.TotalItems);
+        Assert.Equal(2, first.TotalPages);
+        Assert.Equal(2, first.Items.Count);
+        var second = await catalog.SearchAsync(new(null, null, null, null, 2, 2, Intent: "grants"));
+        Assert.Single(second.Items);
+        Assert.DoesNotContain(second.Items[0].Id, first.Items.Select(item => item.Id));
+        var tax = await catalog.SearchAsync(new(null, null, null, null, Intent: "tax"));
+        Assert.Equal(2, tax.TotalItems); // Mentions are navigation hints, including a negated mention.
+        var obligations = await catalog.SearchAsync(new(null, null, null, null, Intent: "obligations"));
+        Assert.Single(obligations.Items);
+        var narrowed = await catalog.SearchAsync(new("tecnología", new(2026, 10, 1), new(2026, 10, 1), "5B", Intent: "grants"));
+        Assert.Single(narrowed.Items);
+        var wrongSection = await catalog.SearchAsync(new(null, null, null, "1", Intent: "grants"));
+        Assert.Empty(wrongSection.Items);
+        var personalized = await new PersonalizedPublicationSearch(catalog).ExecuteAsync(
+            new("sme", "retail", "baleares"), new(null, null, null, null, PageSize: 1, Intent: "grants"));
+        Assert.Equal(3, personalized.TotalItems);
+        Assert.Equal(3, personalized.CatalogSignalCount);
+        Assert.Contains("comercio", Assert.Single(personalized.Items).Title);
+        await Assert.ThrowsAsync<ArgumentException>(() => catalog.SearchAsync(new(null, null, null, null, Intent: "invalid")));
+    }
+
+    [Theory]
+    [InlineData(null, true)]
+    [InlineData("", true)]
+    [InlineData("grants", true)]
+    [InlineData("tax", true)]
+    [InlineData("obligations", true)]
+    [InlineData("Grant", false)]
+    [InlineData("unknown", false)]
+    public void SearchIntentHasAnExplicitAllowlist(string? intent, bool valid) =>
+        Assert.Equal(valid, PublicationIntents.IsValid(intent));
+
+    [PostgreSqlFact]
+    public async Task SubscriptionProfileMigrationPreservesExistingSubscriptionWithoutOptingItIn()
+    {
+        await using var fixture = await TestDatabase.CreateAsync("20261004124228_AddReviewObservationsAndRefreshProgress");
+        await using var db = fixture.Open();
+        var now = new TestClock().Now;
+        var id = Guid.NewGuid();
+        await db.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO subscriptions (id, email, status, verification_token_hash, verification_expires_at,
+                management_token_hash, categories, keywords, timezone, digest_hour, consented_at, created_at, updated_at)
+            VALUES ({id}, 'legacy@example.invalid', 'Active', '', {now}, 'legacy-manage', '[]'::jsonb,
+                '[]'::jsonb, 'Europe/Madrid', 8, {now}, {now}, {now})
+            """);
+        await db.Database.MigrateAsync();
+        var view = await new EfSubscriptionStore(db, new TestClock()).GetAsync("legacy-manage", default);
+        Assert.Equal("legacy@example.invalid", view!.Email);
+        Assert.Null(view.Preferences.Profile);
+        Assert.Equal(id, (await db.Subscriptions.SingleAsync()).Id);
+    }
+
+    [PostgreSqlFact]
+    public async Task DigestEvidenceRankingUsesOnlyReviewOfTheSameSourceHashAsAnalysis()
+    {
+        foreach (var sameHash in new[] { true, false })
+        {
+            await using var fixture = await TestDatabase.CreateAsync();
+            await using var db = fixture.Open();
+            var clock = new TestClock();
+            await ImportAsync(db, clock, 2);
+            var documents = await db.SourceDocuments.OrderBy(item => item.ExternalId).ToArrayAsync();
+            foreach (var document in documents)
+                db.DocumentAnalyses.Add(DocumentAnalysis.Create(document.Id, new string('a', 64), true,
+                    RadarCategory.Grant, "Resumen", "[]", "[]", "[]", .9m, "gemini", "fixture", "radar-v2", null, null, clock.Now));
+            var subscription = Subscription.Create("test@example.invalid", "verify", clock.Now.AddHours(24), "[]", "[]", clock.Now,
+                JsonSerializer.Serialize(new BusinessProfile("sme", "retail", "baleares"), new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+            subscription.Activate("manage", clock.Now);
+            db.Subscriptions.Add(subscription);
+            await db.SaveChangesAsync();
+            var reviews = new EfSourceReviewStore(db, clock);
+            await reviews.SaveAsync(documents[1].ExternalId, new(new string(sameHash ? 'a' : 'b', 64), clock.Now,
+                [new("recipients", "Destinatarios", ["Podrán solicitar las ayudas las pymes de comercio en Illes Balears."])]));
+            var store = new EfSubscriptionStore(db, clock, reviews);
+            Assert.Equal(1, (await store.QueueDigestsAsync(new(2026, 10, 1), new("https://example.invalid"), false, clock.Now, default)).DigestsQueued);
+            var body = (await db.OutboxMessages.AsNoTracking().SingleAsync()).Body;
+            Assert.Equal(sameHash, body.Contains("Los fragmentos oficiales", StringComparison.Ordinal));
+            var first = body.IndexOf("id=" + documents[0].ExternalId, StringComparison.Ordinal);
+            var second = body.IndexOf("id=" + documents[1].ExternalId, StringComparison.Ordinal);
+            Assert.True(sameHash ? second < first : first < second);
+        }
+    }
+
+    [MailpitFact]
+    public async Task PersonalizedAlertFlowDeliversOnlyToLocalMailpitAndDoesNotRepeatDigest()
+    {
+        await using var fixture = await TestDatabase.CreateAsync();
+        await using var db = fixture.Open();
+        var clock = new TestClock();
+        var store = new EfSubscriptionStore(db, clock);
+        var service = new SubscriptionService(store, clock);
+        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["Email:Host"] = "127.0.0.1",
+            ["Email:Port"] = "1025",
+            ["Email:From"] = "radar@example.invalid",
+            ["Email:EnableSsl"] = "false"
+        }).Build();
+        var delivery = new DigestService(store, new SmtpEmailSender(config), clock);
+        var profile = new BusinessProfile("sme", "retail", "baleares");
+        var baseUri = new Uri("http://localhost:4200");
+        await service.RegisterAsync($"flow-{Guid.NewGuid():N}@example.invalid", new([], [], 8, profile), baseUri, default);
+        var verification = await db.OutboxMessages.AsNoTracking().SingleAsync();
+        var token = System.Text.RegularExpressions.Regex.Match(verification.Body, @"#verify=([a-f0-9]{64})").Groups[1].Value;
+        Assert.Equal(new DispatchResult(1, 0), await delivery.DispatchAsync(1, default));
+        var managementToken = await service.VerifyAsync(token, baseUri, default);
+        Assert.NotNull(managementToken);
+        Assert.Equal(new DispatchResult(1, 0), await delivery.DispatchAsync(1, default));
+        Assert.Equal(profile, (await service.GetAsync(managementToken, default))!.Preferences.Profile);
+        await ImportAsync(db, clock, 1);
+        var document = await db.SourceDocuments.SingleAsync();
+        db.DocumentAnalyses.Add(DocumentAnalysis.Create(document.Id, new string('a', 64), true,
+            RadarCategory.Grant, "Resumen de prueba; no es un análisis de Gemini real", "[]", "[]", "[]", .9m,
+            "gemini", "fixture", "radar-v2", null, null, clock.Now));
+        await db.SaveChangesAsync();
+        Assert.Equal(1, (await delivery.QueueAsync(new(2026, 10, 1), baseUri, false, default)).DigestsQueued);
+        Assert.Equal(new DispatchResult(1, 0), await delivery.DispatchAsync(1, default));
+        Assert.Equal(0, (await delivery.QueueAsync(new(2026, 10, 1), baseUri, false, default)).DigestsQueued);
+        Assert.Equal(new DispatchResult(0, 0), await delivery.DispatchAsync(1, default));
+        Assert.Equal(3, await db.OutboxMessages.CountAsync(item => item.Status == DeliveryStatus.Sent && item.Body == ""));
+        Assert.NotNull((await db.AlertDigests.AsNoTracking().SingleAsync()).SentAt);
+        Assert.True(await service.UnsubscribeAsync(managementToken, default));
+        Assert.Null(await service.GetAsync(managementToken, default));
+    }
+
+    [PostgreSqlFact]
+    public async Task AlertProfileSurvivesVerificationAndCannotBeOverwrittenByPublicReregistration()
+    {
+        await using var fixture = await TestDatabase.CreateAsync();
+        await using var db = fixture.Open();
+        var clock = new TestClock();
+        var store = new EfSubscriptionStore(db, clock);
+        var profile = new BusinessProfile("sme", "retail", "baleares");
+        await store.RegisterAsync("test@example.invalid", new([], [], 9, profile), "verify", "https://example.invalid/#verify=test", clock.Now, default);
+        Assert.NotNull((await db.Subscriptions.SingleAsync()).BusinessProfileJson);
+        Assert.NotNull(await store.VerifyAsync("verify", "manage", "https://example.invalid/#manage=test", clock.Now, default));
+        Assert.Equal(profile, (await store.GetAsync("manage", default))!.Preferences.Profile);
+        await store.RegisterAsync("test@example.invalid", new([], [], 8, new("autonomous", "other", "all")),
+            "attack", "https://example.invalid", clock.Now.AddHours(2), default);
+        Assert.Equal(profile, (await store.GetAsync("manage", default))!.Preferences.Profile);
+        Assert.True(await store.UpdateAsync("manage", new([], [], 10), clock.Now, default));
+        Assert.Null((await store.GetAsync("manage", default))!.Preferences.Profile);
+        Assert.Equal(10, (await store.GetAsync("manage", default))!.Preferences.DigestHour);
+    }
+
+    [PostgreSqlFact]
+    public async Task PersonalizedDigestUsesOnlyLatestAnalysisIsIdempotentAndCancelsWhenProfileRemoved()
+    {
+        await using var fixture = await TestDatabase.CreateAsync();
+        await using var db = fixture.Open();
+        var clock = new TestClock();
+        await new EfIngestionStore(db, clock).ImportAsync(new("BOE", new(2026, 10, 1), new Uri("https://www.boe.es/"),
+            Enumerable.Range(1, 5).Select(index => new OfficialDocument($"BOE-A-2026-{index:00000}", "1", "1", "General",
+                "1", "Ministerio", null, index == 2 ? "Ayudas al comercio para pymes" : "Cambios generales", null,
+                null, null, null)).ToArray()), "manual");
+        var documents = await db.SourceDocuments.OrderBy(item => item.ExternalId).ToArrayAsync();
+        for (var index = 0; index < documents.Length; index++)
+        {
+            db.DocumentAnalyses.Add(DocumentAnalysis.Create(documents[index].Id, new string('a', 64), true,
+                RadarCategory.Grant, "Resumen", "[]", "[]", "[]", .9m, "gemini", "fixture", "radar-v2", null, null, clock.Now.AddHours(-1)));
+            if (index >= 2)
+                db.DocumentAnalyses.Add(DocumentAnalysis.Create(documents[index].Id, new string('b', 64), index != 2,
+                    RadarCategory.Grant, "Actual", "[]", "[]", "[]", .9m, index == 4 ? "heuristic" : "gemini", "fixture",
+                    index == 3 ? "radar-v1" : "radar-v2", null, null, clock.Now));
+        }
+        var subscription = Subscription.Create("test@example.invalid", "verify", clock.Now.AddHours(24), "[]", "[]", clock.Now);
+        subscription.Activate("manage", clock.Now);
+        subscription.UpdatePreferences("[]", "[]", 8, clock.Now,
+            JsonSerializer.Serialize(new BusinessProfile("sme", "retail", "baleares"), new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+        db.Subscriptions.Add(subscription);
+        await db.SaveChangesAsync();
+        var store = new EfSubscriptionStore(db, clock);
+        var plan = await store.QueueDigestsAsync(new(2026, 10, 1), new("https://example.invalid"), false, clock.Now, default);
+        Assert.Equal(1, plan.DigestsQueued);
+        Assert.Equal(2, plan.Matches); // Unknown profile scope remains included; superseded positives do not.
+        var message = await db.OutboxMessages.AsNoTracking().SingleAsync();
+        Assert.True(message.Body.IndexOf("Ayudas al comercio", StringComparison.Ordinal) < message.Body.IndexOf("• Cambios generales", StringComparison.Ordinal));
+        Assert.Contains("No confirma elegibilidad", message.Body);
+        Assert.Contains("Alcance por comprobar", message.Body);
+        Assert.Contains("/#unsubscribe=", message.Body);
+        Assert.Equal(0, (await store.QueueDigestsAsync(new(2026, 10, 1), new("https://example.invalid"), false, clock.Now, default)).DigestsQueued);
+        Assert.Equal(2, await db.AlertMatches.CountAsync());
+        var claimed = Assert.Single(await store.ClaimMessagesAsync(1, clock.Now, default));
+        Assert.True(await store.UpdateAsync("manage", new([], []), clock.Now, default));
+        Assert.False(await store.CanDeliverAsync(claimed.Id, claimed.AttemptCount, default));
+        var canceled = await db.OutboxMessages.AsNoTracking().SingleAsync();
+        Assert.Equal(DeliveryStatus.Canceled, canceled.Status);
+        Assert.Empty(canceled.Body);
+        Assert.Null((await db.Subscriptions.AsNoTracking().SingleAsync()).BusinessProfileJson);
+    }
+
+    [PostgreSqlFact]
+    public async Task UnsubscribeCancelsQueuedDigestAndClearsProfileAndManagementAccess()
+    {
+        await using var fixture = await TestDatabase.CreateAsync();
+        await using var db = fixture.Open();
+        var clock = new TestClock();
+        var subscription = Subscription.Create("test@example.invalid", "verify", clock.Now.AddHours(24), "[]", "[]", clock.Now, "{}");
+        subscription.Activate("manage", clock.Now);
+        var digest = AlertDigest.Create(subscription.Id, new(2026, 10, 1), 1, "unsubscribe", clock.Now);
+        db.Subscriptions.Add(subscription);
+        db.AlertDigests.Add(digest);
+        db.OutboxMessages.Add(OutboxMessage.Create("digest", "test-digest", subscription.Email, "Test", "Profile data", digest.Id, clock.Now));
+        await db.SaveChangesAsync();
+        var store = new EfSubscriptionStore(db, clock);
+        Assert.True(await store.UnsubscribeAsync("unsubscribe", clock.Now, default));
+        Assert.False(await store.UnsubscribeAsync("unsubscribe", clock.Now, default));
+        Assert.Null(await store.GetAsync("manage", default));
+        Assert.Null((await db.Subscriptions.AsNoTracking().SingleAsync()).BusinessProfileJson);
+        var canceled = await db.OutboxMessages.AsNoTracking().SingleAsync();
+        Assert.Equal(DeliveryStatus.Canceled, canceled.Status);
+        Assert.Empty(canceled.Body);
+    }
+
     [PostgreSqlFact]
     public async Task MigratedDatabaseMatchesModelSnapshotAndHasNoPendingMigrations()
     {
@@ -118,9 +360,14 @@ public sealed class PersistenceRegressionTests
         await using var db = fixture.Open();
         var clock = new TestClock();
         var original = new ActionableSourceReview(new string('a', 64), clock.Now, []);
-        db.SourceReviews.Add(new StoredSourceReview { ExternalId = "BOE-A-2026-1", SourceHash = original.SourceHash,
-            Version = "source-review-v1", RecordedAt = clock.Now,
-            ReviewJson = JsonSerializer.Serialize(original, new JsonSerializerOptions(JsonSerializerDefaults.Web)) });
+        db.SourceReviews.Add(new StoredSourceReview
+        {
+            ExternalId = "BOE-A-2026-1",
+            SourceHash = original.SourceHash,
+            Version = "source-review-v1",
+            RecordedAt = clock.Now,
+            ReviewJson = JsonSerializer.Serialize(original, new JsonSerializerOptions(JsonSerializerDefaults.Web))
+        });
         await db.SaveChangesAsync();
         await db.Database.MigrateAsync();
         var result = await new EfSourceReviewStore(db, clock).GetAsync(["BOE-A-2026-1"], clock.Now);

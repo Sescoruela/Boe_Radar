@@ -1,4 +1,4 @@
-<header class="topbar">
+<header class="topbar" [attr.inert]="detailLoading() || detailError() || selected() ? '' : null">
   <a class="brand" href="/" aria-label="BOE Radar IA, inicio">
     <span class="brand-mark" aria-hidden="true">BR</span>
     <span>BOE Radar <em>IA</em></span>
@@ -6,7 +6,7 @@
   <span class="source-status"><i></i> Catálogo de fuente oficial</span>
 </header>
 
-<main>
+<main [attr.inert]="detailLoading() || detailError() || selected() ? '' : null">
   <section class="hero">
     <div class="eyebrow">Explorador para autónomos y pymes</div>
     <h1>Encuentra señales en el BOE,<br /><span>sin perder la fuente.</span></h1>
@@ -84,7 +84,33 @@
       </label>
 
       <label>
-        <span>Sección</span>
+        <span>Qué quieres revisar</span>
+        <select name="intent" [(ngModel)]="filters.intent">
+          @for (option of intentOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        <span>Publicado desde</span>
+        <input name="dateFrom" type="date" [(ngModel)]="filters.dateFrom" />
+      </label>
+
+      <label>
+        <span>Publicado hasta</span>
+        <input name="dateTo" type="date" [(ngModel)]="filters.dateTo" />
+      </label>
+
+      <button class="primary-button" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Buscando…' : 'Explorar radar' }}
+      </button>
+
+      <p class="search-help">Estas fechas filtran la publicación en el BOE, no el plazo de solicitud ni la entrada en vigor.</p>
+      <details class="advanced-filters">
+      <summary>Filtros avanzados{{ filters.section ? ' · sección seleccionada' : '' }}</summary>
+      <label>
+        <span>Sección oficial del BOE</span>
         <select name="section" [(ngModel)]="filters.section">
           <option value="">Todas</option>
           <option value="1">I · Disposiciones generales</option>
@@ -96,20 +122,7 @@
           <option value="5B">V.B · Otros anuncios oficiales</option>
         </select>
       </label>
-
-      <label>
-        <span>Desde</span>
-        <input name="dateFrom" type="date" [(ngModel)]="filters.dateFrom" />
-      </label>
-
-      <label>
-        <span>Hasta</span>
-        <input name="dateTo" type="date" [(ngModel)]="filters.dateTo" />
-      </label>
-
-      <button class="primary-button" type="submit" [disabled]="loading()">
-        {{ loading() ? 'Buscando…' : 'Explorar radar' }}
-      </button>
+      </details>
     </form>
   </section>
 
@@ -127,6 +140,14 @@
         <p><strong>{{ data.totalItems }}</strong> resultados</p>
       </div>
 
+      <p class="view-explanation">Búsqueda aplicada: {{ appliedIntentLabel() }}.
+        @if (appliedFilters()?.section) { Sección BOE {{ appliedFilters()?.section }}. }
+        @if (appliedFilters()?.intent) {
+          El tema se selecciona por menciones en el título o epígrafe. No confirma relevancia para tu negocio,
+          obligaciones ni una convocatoria abierta; puede omitir publicaciones.
+        }
+      </p>
+
       <div class="view-switch" role="group" aria-label="Vista del catálogo">
         @if (businessProfile()) {
           <button type="button" [attr.aria-pressed]="personalizedView()"
@@ -139,12 +160,17 @@
       </div>
       @if (personalizedView()) {
         <p class="profile-summary">{{ businessProfileLabel() }}</p>
-        <p class="view-explanation">Orden por menciones en título y revisiones del texto disponibles. Se conservan las señales inciertas; no confirma elegibilidad ni obligaciones. {{ data.evidenceReviewedCount ?? 0 }} de {{ data.totalItems }} señales examinadas tienen revisión guardada. Abre las fichas y vuelve a explorar para incorporar revisiones nuevas.</p>
+        <p class="view-explanation">Primero aparecen las menciones relacionadas con tu actividad, tipo de negocio o territorio.
+          También conservamos señales de esta búsqueda sin coincidencias claras con tu perfil. Coincidir no significa cumplir los requisitos ni tener una obligación.
+          @if (data.totalItems > 0) {
+          {{ data.evidenceReviewedCount ?? 0 }} de {{ data.totalItems }} señales examinadas tienen revisión guardada.
+          Abre una ficha para comprobar el contexto y las condiciones.
+          }</p>
         @if (data.isPartial) {
           <p class="profile-message" role="status">Se han ordenado las {{ data.totalItems }} señales más recientes de {{ data.catalogSignalCount }}. Acota las fechas para revisar una selección completa.</p>
         }
       }
-      @if (filters.businessSignalsOnly) {
+      @if (appliedFilters()?.businessSignalsOnly) {
         <p class="view-explanation">
           Selección de los últimos 30 días si no indicas fechas, basada en términos del título y sección.
           Puede incluir publicaciones que no te apliquen y omitir otras relevantes; no confirma beneficiarios ni plazos.
@@ -153,31 +179,33 @@
 
       @if (data.items.length === 0) {
         <div class="state">
-          No hay publicaciones para estos filtros.
-          @if (filters.businessSignalsOnly) { Prueba «Todo el BOE» para ampliar la búsqueda. }
+          <h3>No encontramos publicaciones con esta búsqueda</h3>
+          <p>No significa que no existan ayudas o cambios que puedan afectarte. Solo buscamos en el catálogo disponible.</p>
+          <p>Prueba otro término, amplía las fechas de publicación o elimina la sección avanzada.</p>
+          @if (appliedFilters()?.intent) {
+            <button type="button" class="primary-button" (click)="clearIntent()">Buscar en todos los temas</button>
+          }
+          <button type="button" class="text-button" (click)="broadenSearch()">Ver catálogo sin filtros</button>
         </div>
       } @else {
         <div class="publication-grid">
           @for (item of data.items; track item.id) {
             <article class="publication-card">
               <div class="card-meta">
-                <span class="section-badge">{{ item.sectionCode }}</span>
+                <span class="section-badge">{{ publicationCategory(item) }}</span>
                 <time [attr.datetime]="item.publicationDate">
-                  {{ (item.publicationDate + 'T00:00:00Z') | date: 'd MMM yyyy' : 'UTC' }}
+                  Publicado {{ (item.publicationDate + 'T00:00:00Z') | date: 'd MMM yyyy' : 'UTC' }}
                 </time>
               </div>
               <p class="department">{{ item.department }}</p>
+              <h3 [title]="item.title">{{ briefTitle(item.title) }}</h3>
               @if (item.analysis?.isRelevant) {
-                <div class="radar-label">
-                  {{ categoryLabel(item.analysis!.category) }} · análisis automático
-                </div>
+                <p class="radar-summary">Posible impacto · interpretación automática: {{ item.analysis!.summary }}</p>
+              } @else {
+                <p class="radar-summary">Impacto pendiente de analizar. Abre la ficha para comprobar destinatarios, condiciones y fechas.</p>
               }
-              <h3>{{ item.title }}</h3>
               @if (item.profileMatch; as match) {
                 <app-profile-match [match]="match" />
-              }
-              @if (item.analysis?.isRelevant) {
-                <p class="radar-summary">{{ item.analysis!.summary }}</p>
               }
               @if (item.epigraph) {
                 <p class="epigraph">{{ item.epigraph }}</p>
@@ -236,6 +264,43 @@
             autocomplete="email" placeholder="tu@empresa.es" />
         </label>
       }
+      <fieldset class="alert-profile">
+        <legend>Perfil para ordenar las alertas</legend>
+        <label class="subscription-consent">
+          <input type="checkbox" name="personalizedAlerts" [(ngModel)]="personalizedAlerts" />
+          Quiero personalizar los correos con un perfil de negocio
+        </label>
+        <p class="profile-note">Es opcional. Si lo activas y guardas, este perfil se almacena en el servidor junto a tu suscripción.
+          Es independiente del perfil guardado en este navegador. Al desactivarlo y guardar se elimina de la suscripción.</p>
+        @if (personalizedAlerts) {
+          @if (businessProfile()) {
+            <button class="text-button" type="button" (click)="copyRadarProfileToAlerts()">Copiar perfil de mi radar</button>
+          }
+          <label><span>Tipo de negocio para alertas</span>
+            <select name="alertBusinessType" [(ngModel)]="alertProfileDraft.businessType">
+              @for (option of businessTypes; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </label>
+          <label><span>Actividad para alertas</span>
+            <select name="alertActivity" [(ngModel)]="alertProfileDraft.activity">
+              @for (option of activityOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </label>
+          <label><span>Territorio para alertas</span>
+            <select name="alertTerritory" [(ngModel)]="alertProfileDraft.territory">
+              @for (option of territoryOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </label>
+          <p class="profile-note">El perfil prioriza menciones y añade motivos; no confirma que una ayuda te corresponda.
+            Las novedades sin coincidencias claras no se excluyen. Temas y palabras clave sí filtran.</p>
+        }
+      </fieldset>
       <fieldset>
         <legend>Temas (vacío = todos)</legend>
         <div class="category-choices">
@@ -256,7 +321,7 @@
       <label class="subscription-hour">
         <span>Hora preferida (Madrid)</span>
         <select name="digestHour" [(ngModel)]="digestHour">
-          @for (hour of [7, 8, 9, 10, 12, 16, 20]; track hour) {
+          @for (hour of digestHours; track hour) {
             <option [ngValue]="hour">{{ hour }}:00</option>
           }
         </select>
@@ -273,7 +338,7 @@
     </form>
     }
     @if (managedSubscription()) {
-      <button class="unsubscribe-button" type="button" (click)="leaveSubscription()">Dar de baja</button>
+      <button class="unsubscribe-button" type="button" (click)="leaveSubscription()" [disabled]="subscriptionBusy()">Dar de baja</button>
     }
     @if (subscriptionMessage()) {
       <p class="subscription-message" role="status">{{ subscriptionMessage() }}</p>
@@ -282,9 +347,21 @@
   </section>
 </main>
 
-@if (detailLoading()) {
-  <div class="detail-backdrop">
-    <div class="detail-loading">Cargando ficha oficial…</div>
+@if (detailLoading() || detailError()) {
+  <div class="detail-backdrop" (click)="closeDetails()">
+    <section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-state-title"
+      (click)="$event.stopPropagation()">
+      <button class="close-button" type="button" (click)="closeDetails()" aria-label="Cerrar">×</button>
+      <h2 id="detail-state-title">{{ detailLoading() ? 'Abriendo la ficha' : 'No se pudo abrir la ficha' }}</h2>
+      @if (detailTarget(); as target) { <p>{{ briefTitle(target.title) }}</p> }
+      <p role="status">{{ detailLoading() ? 'Cargando ficha oficial… Puedes cerrarla o consultar directamente el BOE.' : detailError() }}</p>
+      @if (detailError()) {
+        <button class="primary-button" type="button" (click)="retryDetails()">Reintentar ficha</button>
+      }
+      @if (officialSource(detailTarget()); as url) {
+        <div class="official-links"><a class="primary-link" [href]="url" target="_blank" rel="noopener noreferrer">Consultar texto oficial ↗</a></div>
+      }
+    </section>
   </div>
 } @else if (selected(); as publication) {
   <div class="detail-backdrop" (click)="closeDetails()">
@@ -299,7 +376,16 @@
         ×
       </button>
       <div class="eyebrow">{{ publication.externalId }} · BOE {{ publication.issueNumber }}</div>
-      <h2 id="detail-title">{{ publication.title }}</h2>
+      <h2 id="detail-title">{{ briefTitle(publication.title) }}</h2>
+      <p>Publicado el {{ (publication.publicationDate + 'T00:00:00Z') | date: 'd MMMM yyyy' : 'UTC' }} · {{ publication.department }}</p>
+      <app-decision-summary [publication]="publication" [review]="sourceReview()" [loading]="sourceReviewLoading()" />
+      @if (sourceReviewError()) {
+        <p role="status">No se ha podido revisar el texto oficial. Los datos no identificados siguen pendientes de comprobar.</p>
+        <button class="primary-button" type="button" (click)="retrySourceReview()">Reintentar revisión</button>
+      }
+      <details class="technical-details">
+      <summary>Título oficial y datos de publicación</summary>
+      <h3>{{ publication.title }}</h3>
       <dl>
         <div>
           <dt>Publicación</dt>
@@ -320,15 +406,16 @@
           </div>
         }
       </dl>
+      </details>
       @if (selectedProfileMatch(); as match) {
+        <details class="technical-details">
+        <summary>Por qué aparece en tu radar</summary>
         <p>Comprobaciones para: {{ businessProfileLabel() }}</p>
         <app-profile-match [match]="match" [detail]="true" />
+        </details>
       }
-      <section class="source-review" aria-labelledby="source-review-title">
-        <div class="source-review-heading">
-          <h3 id="source-review-title">Qué comprobar para actuar</h3>
-          <span>Texto oficial</span>
-        </div>
+      <details class="source-review">
+        <summary id="source-review-title">Fragmentos y comprobaciones en la fuente oficial</summary>
         <p>Fragmentos localizados automáticamente en el documento. No confirman que te afecte, que exista un plazo abierto ni que tu negocio cumpla las condiciones. La fecha de publicación no equivale a la entrada en vigor.</p>
         @if (sourceReviewLoading()) {
           <p class="source-review-state">Consultando el texto oficial…</p>
@@ -337,10 +424,8 @@
             <app-source-profile [contrast]="contrast" />
           }
           <h4>{{ review.kindLabel }} · Clasificación orientativa</h4>
-          <h4>Siguiente paso para tu negocio</h4>
-          <p>{{ review.nextStep }}</p>
-          <section class="official-references" aria-labelledby="references-title">
-            <h3 id="references-title">Publicaciones relacionadas</h3>
+          <details class="official-references">
+            <summary id="references-title">Publicaciones relacionadas</summary>
             <p>Referencias del análisis documental publicado por el BOE, no del análisis IA.
               Se muestran hasta 30 relaciones. No confirman vigencia ni aplicabilidad; consulta cada fuente.</p>
             @if (review.references?.length) {
@@ -359,7 +444,7 @@
               <p class="unverified">El XML consultado no contiene referencias reconocibles.
                 No significa que no existan bases, convocatorias o normas relacionadas; revisa la fuente oficial.</p>
             }
-          </section>
+          </details>
           <div class="source-facts">
             @for (group of review.groups; track group.key) {
               <div class="source-fact">
@@ -382,9 +467,10 @@
         } @else if (sourceReviewError()) {
           <p class="source-review-state">No se han podido obtener los fragmentos. Consulta los enlaces oficiales de abajo.</p>
         }
-      </section>
+      </details>
       @if (publication.analysis; as analysis) {
-        <section class="analysis-block" aria-labelledby="analysis-title">
+        <details class="analysis-block">
+          <summary>Consultar análisis automático y evidencias</summary>
           <div class="analysis-heading">
             <span>Radar {{ categoryLabel(analysis.category) }}</span>
             <span>{{ analysis.method === 'gemini' ? 'Análisis IA' : 'Heurística' }}</span>
@@ -427,17 +513,7 @@
             Método: {{ analysis.method === 'gemini' ? analysis.modelName : 'heurística local' }} ·
             contrato {{ analysis.promptVersion }}
           </p>
-        </section>
-      } @else if (!sourceReview()) {
-        <section class="review-guide" aria-label="Qué comprobar en la fuente">
-          <h3>Antes de tomar una decisión</h3>
-          <p>Esta publicación todavía no tiene una ficha analizada. Abre el texto oficial y comprueba:</p>
-          <ul>
-            <li>A quién afecta y en qué territorio.</li>
-            <li>Condiciones, actuaciones y posibles exclusiones.</li>
-            <li>Entrada en vigor, fechas de efectos o plazos, si existen.</li>
-          </ul>
-        </section>
+        </details>
       }
       <div class="official-links">
         @if (publication.officialHtmlUrl) {
@@ -460,7 +536,7 @@
   </div>
 }
 
-<footer>
+<footer [attr.inert]="detailLoading() || detailError() || selected() ? '' : null">
   <p>
     Basado en datos de la
     <a href="https://www.boe.es" target="_blank" rel="noopener">

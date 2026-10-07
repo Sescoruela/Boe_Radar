@@ -15,6 +15,7 @@ public sealed class Subscription
     public string ManagementTokenHash { get; private set; } = string.Empty;
     public string CategoriesJson { get; private set; } = "[]";
     public string KeywordsJson { get; private set; } = "[]";
+    public string? BusinessProfileJson { get; private set; }
     public string Timezone { get; private set; } = "Europe/Madrid";
     public int DigestHour { get; private set; } = 8;
     public DateTimeOffset ConsentedAt { get; private set; }
@@ -24,16 +25,17 @@ public sealed class Subscription
     public DateTimeOffset UpdatedAt { get; private set; }
 
     public static Subscription Create(string email, string verificationHash, DateTimeOffset expiresAt,
-        string categoriesJson, string keywordsJson, DateTimeOffset now) => new()
+        string categoriesJson, string keywordsJson, DateTimeOffset now, string? businessProfileJson = null) => new()
     {
         Id = Guid.CreateVersion7(), Email = email, Status = SubscriptionStatus.Pending,
         VerificationTokenHash = verificationHash, VerificationExpiresAt = expiresAt,
         CategoriesJson = categoriesJson, KeywordsJson = keywordsJson,
+        BusinessProfileJson = businessProfileJson,
         ConsentedAt = now, CreatedAt = now, UpdatedAt = now
     };
 
     public void RenewVerification(string hash, DateTimeOffset expiresAt,
-        string categoriesJson, string keywordsJson, DateTimeOffset now)
+        string categoriesJson, string keywordsJson, DateTimeOffset now, string? businessProfileJson = null)
     {
         Status = SubscriptionStatus.Pending;
         VerificationTokenHash = hash;
@@ -41,6 +43,7 @@ public sealed class Subscription
         ManagementTokenHash = string.Empty;
         CategoriesJson = categoriesJson;
         KeywordsJson = keywordsJson;
+        BusinessProfileJson = businessProfileJson;
         DigestHour = 8;
         ConsentedAt = now;
         UnsubscribedAt = null;
@@ -58,12 +61,14 @@ public sealed class Subscription
         UpdatedAt = now;
     }
 
-    public void UpdatePreferences(string categoriesJson, string keywordsJson, int digestHour, DateTimeOffset now)
+    public void UpdatePreferences(string categoriesJson, string keywordsJson, int digestHour, DateTimeOffset now,
+        string? businessProfileJson = null)
     {
         if (Status != SubscriptionStatus.Active) throw new InvalidOperationException("La suscripción no está activa.");
         if (digestHour is < 0 or > 23) throw new ArgumentOutOfRangeException(nameof(digestHour));
         CategoriesJson = categoriesJson;
         KeywordsJson = keywordsJson;
+        BusinessProfileJson = businessProfileJson;
         DigestHour = digestHour;
         UpdatedAt = now;
     }
@@ -80,6 +85,7 @@ public sealed class Subscription
         VerificationTokenHash = string.Empty;
         ManagementTokenHash = string.Empty;
         UnsubscribedAt = now;
+        BusinessProfileJson = null;
         UpdatedAt = now;
     }
 

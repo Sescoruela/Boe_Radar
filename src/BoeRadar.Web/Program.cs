@@ -124,11 +124,15 @@ api.MapGet("/publications", async (
         DateOnly? dateFrom,
         DateOnly? dateTo,
         string? section,
+        string? intent,
         bool businessSignalsOnly = false,
         int page = 1,
         int pageSize = 20,
         CancellationToken cancellationToken = default) =>
     {
+        if (!PublicationIntents.IsValid(intent))
+            return Results.ValidationProblem(new Dictionary<string, string[]>
+            { ["intent"] = ["Selecciona ayudas, fiscalidad u obligaciones, o todos los temas."] });
         if (dateFrom > dateTo)
         {
             return Results.ValidationProblem(new Dictionary<string, string[]>
@@ -138,7 +142,7 @@ api.MapGet("/publications", async (
         }
 
         var result = await catalog.SearchAsync(
-            new PublicationSearch(query, dateFrom, dateTo, section, page, pageSize, businessSignalsOnly),
+            new PublicationSearch(query, dateFrom, dateTo, section, page, pageSize, businessSignalsOnly, Intent: intent),
             cancellationToken);
         return Results.Ok(result);
     })
@@ -171,6 +175,9 @@ api.MapPost("/publications/personalized", async (
             {
                 ["dateRange"] = ["Desde no puede ser posterior a Hasta."]
             });
+        if (!PublicationIntents.IsValid(request.Search.Intent))
+            return Results.ValidationProblem(new Dictionary<string, string[]>
+            { ["intent"] = ["Selecciona un tema de búsqueda válido."] });
         return Results.Ok(await search.ExecuteAsync(request.Profile, request.Search, cancellationToken));
     })
     .WithName("PersonalizedPublications")
@@ -271,7 +278,7 @@ subscriptions.MapPost("", async (RegisterSubscriptionRequest request,
     try
     {
         await service.RegisterAsync(request.Email,
-            new SubscriptionPreferences(request.Categories ?? [], request.Keywords ?? [], request.DigestHour),
+            new SubscriptionPreferences(request.Categories ?? [], request.Keywords ?? [], request.DigestHour, request.Profile),
             publicBaseUrl, cancellationToken);
         return Results.Accepted(value: new { message = "Si procede, recibirás un correo de verificación." });
     }
@@ -345,5 +352,5 @@ public partial class Program;
 
 public sealed record RegisterSubscriptionRequest(string Email,
     IReadOnlyList<RadarCategory>? Categories, IReadOnlyList<string>? Keywords,
-    int DigestHour, bool Consent);
+    int DigestHour, bool Consent, BusinessProfile? Profile = null);
 public sealed record TokenRequest(string Token);

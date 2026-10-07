@@ -18,6 +18,7 @@ internal sealed class SubscriptionConfiguration : IEntityTypeConfiguration<Subsc
         builder.Property(item => item.ManagementTokenHash).HasColumnName("management_token_hash").HasMaxLength(64);
         builder.Property(item => item.CategoriesJson).HasColumnName("categories").HasColumnType("jsonb");
         builder.Property(item => item.KeywordsJson).HasColumnName("keywords").HasColumnType("jsonb");
+        builder.Property(item => item.BusinessProfileJson).HasColumnName("business_profile").HasColumnType("jsonb");
         builder.Property(item => item.Timezone).HasColumnName("timezone").HasMaxLength(60);
         builder.Property(item => item.DigestHour).HasColumnName("digest_hour");
         builder.Property(item => item.ConsentedAt).HasColumnName("consented_at");

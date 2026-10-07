@@ -8,7 +8,8 @@ namespace BoeRadar.Application;
 public sealed record SubscriptionPreferences(
     IReadOnlyList<RadarCategory> Categories,
     IReadOnlyList<string> Keywords,
-    int DigestHour = 8);
+    int DigestHour = 8,
+    BusinessProfile? Profile = null);
 
 public sealed record SubscriptionView(
     string Email,
@@ -18,7 +19,11 @@ public sealed record SubscriptionView(
 public sealed record DigestItem(Guid AnalysisId, Guid DocumentId, string ExternalId,
     string Title, string Summary, RadarCategory Category, string Method,
     string? OfficialPdfUrl, IReadOnlyList<string>? Requirements = null,
-    IReadOnlyList<RadarDeadline>? Deadlines = null);
+    IReadOnlyList<RadarDeadline>? Deadlines = null)
+{
+    public string? Epigraph { get; init; }
+    public BusinessProfileMatch? ProfileMatch { get; init; }
+}
 
 public sealed record DigestPlan(int Subscribers, int DigestsQueued, int Matches);
 public sealed record DispatchResult(int Sent, int Failed);
@@ -79,6 +84,8 @@ public sealed class SubscriptionRules
         ArgumentNullException.ThrowIfNull(preferences);
         if (preferences.DigestHour is < 0 or > 23)
             throw new ArgumentException("La hora del digest debe estar entre 0 y 23.");
+        if (preferences.Profile is not null && !BusinessProfileMatcher.IsValid(preferences.Profile))
+            throw new ArgumentException("El perfil de las alertas no es válido.");
         if (preferences.Categories is null || preferences.Keywords is null ||
             preferences.Keywords.Any(keyword => keyword is null))
             throw new ArgumentException("Las preferencias no son válidas.");
@@ -92,8 +99,17 @@ public sealed class SubscriptionRules
             .ToArray();
         if (keywords.Length > 10 || keywords.Any(keyword => keyword.Length > 80))
             throw new ArgumentException("Se admiten hasta 10 palabras clave de 80 caracteres.");
-        return new SubscriptionPreferences(categories, keywords, preferences.DigestHour);
+        return new SubscriptionPreferences(categories, keywords, preferences.DigestHour, preferences.Profile);
     }
+
+    public static DigestItem Personalize(SubscriptionPreferences preferences, DigestItem item,
+        ActionableSourceReview? review = null) => preferences.Profile is null ? item with { ProfileMatch = null }
+        : item with
+        {
+            ProfileMatch = SourceEvidenceRanking.Match(preferences.Profile,
+            new(item.DocumentId, item.ExternalId, default, item.Title, "", "", "", item.Epigraph,
+                item.OfficialPdfUrl, null), review)
+        };
 
     public static IReadOnlyList<string> Match(SubscriptionPreferences preferences, DigestItem item)
     {

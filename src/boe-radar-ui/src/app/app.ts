@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, HostListener, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, Injector, OnInit, afterEveryRender, afterNextRender, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -12,13 +12,15 @@ import { CatalogState } from './catalog-state';
 import { SubscriptionsApi, SubscriptionView } from './subscriptions';
 import { ProfileMatchComponent } from './profile-match.component';
 import { SourceProfileComponent } from './source-profile.component';
+import { DecisionSummaryComponent } from './decision-summary.component';
+import { briefTitle, categoryLabel, officialSource, publicationCategory } from './publication-presentation';
 import { BusinessProfile, businessTypes, activityOptions, territoryOptions,
   isBusinessProfile, loadBusinessProfile, storeBusinessProfile } from './business-profile';
 
 @Component({
   selector: 'app-root',
   providers: [CatalogState],
-  imports: [DatePipe, FormsModule, ProfileMatchComponent, SourceProfileComponent],
+  imports: [DatePipe, FormsModule, ProfileMatchComponent, SourceProfileComponent, DecisionSummaryComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -27,6 +29,15 @@ export class App implements OnInit {
   private readonly subscriptions = inject(SubscriptionsApi);
   private readonly catalog = inject(CatalogState);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
+  private detailOpener: HTMLElement | null = null;
+
+  constructor() {
+    afterEveryRender(() => {
+      const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
+      if (dialog && !dialog.contains(document.activeElement)) dialog.querySelector<HTMLElement>('button')?.focus();
+    });
+  }
 
   readonly businessTypes = businessTypes;
   readonly activityOptions = activityOptions;
@@ -38,16 +49,29 @@ export class App implements OnInit {
   profileDraft: BusinessProfile = { businessType: 'autonomous', activity: 'other', territory: 'all' };
 
   readonly result = this.catalog.result;
+  readonly appliedFilters = this.catalog.appliedFilters;
   readonly catalogStatus = signal<CatalogStatus | null>(null);
   readonly catalogStatusError = signal(false);
   readonly loading = this.catalog.loading;
   readonly error = this.catalog.error;
   readonly selected = this.catalog.selected;
   readonly detailLoading = this.catalog.detailLoading;
+  readonly detailError = this.catalog.detailError;
+  readonly detailTarget = this.catalog.detailTarget;
+  readonly briefTitle = briefTitle;
+  readonly categoryLabel = categoryLabel;
+  readonly publicationCategory = publicationCategory;
+  readonly officialSource = officialSource;
   readonly sourceReview = this.catalog.sourceReview;
   readonly sourceReviewLoading = this.catalog.sourceReviewLoading;
   readonly sourceReviewError = this.catalog.sourceReviewError;
   readonly currentYear = new Date().getFullYear();
+  readonly intentOptions = [
+    { value: '', label: 'Todos los temas' },
+    { value: 'grants', label: 'Ayudas y subvenciones' },
+    { value: 'tax', label: 'Fiscalidad' },
+    { value: 'obligations', label: 'Obligaciones y cambios normativos' },
+  ];
   readonly subscriptionMessage = signal<string | null>(null);
   readonly subscriptionBusy = signal(false);
   readonly managedSubscription = signal<SubscriptionView | null>(null);
@@ -63,10 +87,14 @@ export class App implements OnInit {
   subscriptionKeywords = '';
   subscriptionCategories: string[] = [];
   digestHour = 8;
+  readonly digestHours = Array.from({ length: 24 }, (_, hour) => hour);
   consent = false;
+  personalizedAlerts = false;
+  alertProfileDraft: BusinessProfile = { businessType: 'autonomous', activity: 'other', territory: 'all' };
   private managementToken: string | null = null;
 
   filters: PublicationFilters = {
+    intent: '',
     query: '',
     section: '',
     dateFrom: '',
@@ -164,6 +192,7 @@ export class App implements OnInit {
         next: () => {
           this.managedSubscription.set(null);
           this.managementToken = null;
+          this.clearAlertProfile();
           this.subscriptionMessage.set('Has dado de baja las alertas.');
         },
         error: () => this.subscriptionMessage.set('El enlace de baja no es válido o ya se ha utilizado.'),
@@ -178,6 +207,10 @@ export class App implements OnInit {
   }
 
   submitSubscription(): void {
+    if (!this.consent || (this.personalizedAlerts && !isBusinessProfile(this.alertProfileDraft))) {
+      this.subscriptionMessage.set('Acepta los correos y revisa el perfil de alertas antes de continuar.');
+      return;
+    }
     this.subscriptionBusy.set(true);
     this.subscriptionMessage.set(null);
     this.subscriptions.register(this.subscriptionEmail, this.preferences(), this.consent)
@@ -189,18 +222,27 @@ export class App implements OnInit {
   }
 
   savePreferences(): void {
-    if (!this.managementToken) return;
+    if (!this.managementToken || this.subscriptionBusy()) return;
+    if (this.personalizedAlerts && !isBusinessProfile(this.alertProfileDraft)) {
+      this.subscriptionMessage.set('Revisa el perfil de alertas antes de guardar.');
+      return;
+    }
     this.subscriptionBusy.set(true);
-    this.subscriptions.update(this.managementToken, this.preferences())
+    const preferences = this.preferences();
+    this.subscriptions.update(this.managementToken, preferences)
       .pipe(finalize(() => this.subscriptionBusy.set(false)))
       .subscribe({
-        next: () => this.subscriptionMessage.set('Preferencias guardadas.'),
+        next: () => {
+          const current = this.managedSubscription();
+          if (current) this.managedSubscription.set({ ...current, preferences });
+          this.subscriptionMessage.set('Preferencias guardadas para los próximos resúmenes. Se cancelan los correos pendientes con las preferencias anteriores. El perfil del radar en este navegador no ha cambiado.');
+        },
         error: () => this.subscriptionMessage.set('No se pudieron guardar las preferencias.'),
       });
   }
 
   leaveSubscription(): void {
-    if (!this.managementToken) return;
+    if (!this.managementToken || this.subscriptionBusy()) return;
     this.subscriptionBusy.set(true);
     this.subscriptions.unsubscribe(this.managementToken)
       .pipe(finalize(() => this.subscriptionBusy.set(false)))
@@ -208,6 +250,7 @@ export class App implements OnInit {
         next: () => {
           this.managedSubscription.set(null);
           this.managementToken = null;
+          this.clearAlertProfile();
           this.subscriptionMessage.set('Has dado de baja las alertas.');
         },
         error: () => this.subscriptionMessage.set('No se pudo completar la baja.'),
@@ -223,6 +266,9 @@ export class App implements OnInit {
         this.subscriptionCategories = [...view.preferences.categories];
         this.subscriptionKeywords = view.preferences.keywords.join(', ');
         this.digestHour = view.preferences.digestHour;
+        this.personalizedAlerts = !!view.preferences.profile;
+        this.alertProfileDraft = view.preferences.profile ? { ...view.preferences.profile }
+          : { businessType: 'autonomous', activity: 'other', territory: 'all' };
       },
       error: () => this.subscriptionMessage.set('El enlace de gestión no es válido.'),
     });
@@ -233,7 +279,19 @@ export class App implements OnInit {
       categories: this.subscriptionCategories,
       keywords: this.subscriptionKeywords.split(',').map((item) => item.trim()).filter(Boolean),
       digestHour: this.digestHour,
+      profile: this.personalizedAlerts ? { ...this.alertProfileDraft } : null,
     };
+  }
+
+  copyRadarProfileToAlerts(): void {
+    const profile = this.businessProfile();
+    if (profile) this.alertProfileDraft = { ...profile };
+  }
+
+  private clearAlertProfile(): void {
+    this.personalizedAlerts = false;
+    this.alertProfileDraft = { businessType: 'autonomous', activity: 'other', territory: 'all' };
+    this.consent = false;
   }
 
   search(page = 1, retainEvidenceSnapshot = false): void {
@@ -244,6 +302,7 @@ export class App implements OnInit {
 
   clear(): void {
     this.filters = {
+      intent: '',
       query: '',
       section: '',
       dateFrom: '',
@@ -255,26 +314,54 @@ export class App implements OnInit {
     this.search();
   }
 
+  appliedIntentLabel(): string {
+    return this.intentOptions.find(option => option.value === (this.appliedFilters()?.intent ?? ''))?.label ?? 'Todos los temas';
+  }
+
+  clearIntent(): void {
+    this.filters = { ...(this.appliedFilters() ?? this.filters), intent: '' };
+    this.search();
+  }
+
+  broadenSearch(): void {
+    this.filters = { ...this.filters, query: '', intent: '', section: '', dateFrom: '', dateTo: '' };
+    this.personalizedView.set(false);
+    this.filters.businessSignalsOnly = false;
+    this.search();
+  }
+
   openDetails(id: string): void {
+    this.detailOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.catalog.openDetails(id, this.personalizedView() ? this.businessProfile() : null);
   }
 
   closeDetails(): void {
+    const opener = this.detailOpener;
     this.catalog.closeDetails();
+    this.detailOpener = null;
+    if (opener) afterNextRender(() => opener.focus(), { injector: this.injector });
   }
 
-  categoryLabel(category: string): string {
-    return (
-      {
-        Grant: 'Ayuda',
-        Subsidy: 'Subvención',
-        Tax: 'Fiscalidad',
-        Obligation: 'Obligación',
-        Employment: 'Laboral',
-        Financing: 'Financiación',
-        Other: 'Otra',
-      }[category] ?? category
-    );
+  retryDetails(): void { this.catalog.retryDetails(); }
+  retrySourceReview(): void { this.catalog.retrySourceReview(); }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.closeDetails();
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  keepDialogFocus(event: KeyboardEvent): void {
+    if (event.key !== 'Tab') return;
+    const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
+    if (!dialog) return;
+    const controls = Array.from(dialog.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], summary, [tabindex="0"]'))
+      .filter(element => element.getClientRects().length > 0);
+    const target = event.shiftKey ? controls.at(-1) : controls[0];
+    if (target && document.activeElement === (event.shiftKey ? controls[0] : controls.at(-1))) {
+      event.preventDefault();
+      target.focus();
+    }
   }
 
 }
