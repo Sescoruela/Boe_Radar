@@ -64,13 +64,13 @@ export class CatalogState implements OnDestroy {
     });
   }
 
-  openDetails(id: string, profile: BusinessProfile | null): void {
+  openDetails(id: string, profile: BusinessProfile | null, savedPublication?: PublicationListItem): void {
     this.closeDetails();
     const requestId = this.detailRequestId;
     const reviewProfile = profile ? { ...profile } : null;
     this.reviewProfile = reviewProfile;
     this.openedId = id;
-    this.detailTarget.set(this.result()?.items.find(item => item.id === id) ?? null);
+    this.detailTarget.set(this.result()?.items.find(item => item.id === id) ?? savedPublication ?? null);
     this.detailLoading.set(true);
     this.selectedProfileMatch.set(profile
       ? this.result()?.items.find(item => item.id === id)?.profileMatch ?? null : null);
@@ -92,7 +92,7 @@ export class CatalogState implements OnDestroy {
   }
 
   retryDetails(): void {
-    if (this.openedId) this.openDetails(this.openedId, this.reviewProfile);
+    if (this.openedId) this.openDetails(this.openedId, this.reviewProfile, this.detailTarget() ?? undefined);
   }
 
   retrySourceReview(): void {

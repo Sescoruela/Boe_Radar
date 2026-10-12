@@ -134,6 +134,45 @@ public sealed class BusinessPersonalizationTests
         Assert.Equal(4, refreshed.TotalItems);
     }
 
+    [Theory]
+    [InlineData("Ayudas para personas trabajadoras autónomas", "autonomous", "businessType", 20)]
+    [InlineData("Subvenciones a microempresas", "sme", "businessType", 20)]
+    [InlineData("Ayudas a videojuegos y cultura digital", "sme", "activity", 60)]
+    public void MetadataHintsExposeTheirDimensionAndOriginalPassage(string title, string type, string key, int expected)
+    {
+        var match = BusinessProfileMatcher.Match(new(type, "technology", "all"), Item(10, title));
+        Assert.Equal(expected, match.Priority);
+        var dimension = match.Dimensions.Single(dimension => dimension.Key == key);
+        Assert.Equal("mention", dimension.Status);
+        Assert.Equal("metadata", dimension.Origin);
+        Assert.Equal(title, Assert.Single(dimension.Quotes));
+    }
+
+    [Fact]
+    public void ForeignNationalityDoesNotImplyProfessionalServices()
+    {
+        var match = BusinessProfileMatcher.Match(new("autonomous", "professional", "all"),
+            Item(11, "Regulación general de extranjeros y extranjería"));
+        Assert.Equal(0, match.Priority);
+    }
+
+    [Fact]
+    public void ARestrictiveMetadataMentionIsNotAPositiveCoincidence()
+    {
+        var match = BusinessProfileMatcher.Match(new("sme", "other", "all"), Item(12, "Ayudas excepto para pymes"));
+        Assert.Equal(0, match.Priority);
+        Assert.Equal("restriction", match.Dimensions.Single(dimension => dimension.Key == "businessType").Status);
+        Assert.Equal("Posibles restricciones por revisar", match.Label);
+    }
+
+    [Fact]
+    public void UnspecifiedProfileFieldsAreNotInferredFromThePublication()
+    {
+        var match = BusinessProfileMatcher.Match(new("sme", "other", "all"), Item(13, "Ayudas de ámbito nacional al comercio"));
+        Assert.Equal(0, match.Priority);
+        Assert.Equal(2, match.Dimensions.Count(dimension => dimension.Status == "notSpecified"));
+    }
+
     private sealed class FakeReviewStore : ISourceReviewStore
     {
         public Dictionary<string, (DateTimeOffset RecordedAt, ActionableSourceReview Review)> Reviews { get; } = [];

@@ -41,4 +41,51 @@ public sealed class SourceEvidenceRankingTests
         Assert.Equal(0, reviewed.Priority);
         Assert.Equal("Alcance por comprobar", reviewed.Label);
     }
+
+    [Theory]
+    [InlineData("Ayudas a pymes", "No podrán ser beneficiarias las pymes con deudas.", "sme", "other", "all", 0)]
+    [InlineData("Comercio en Canarias", "Comercio excepto en Canarias.", "sme", "retail", "canarias", 0)]
+    [InlineData("Comercio de ámbito estatal", "Ámbito estatal excepto Canarias.", "sme", "retail", "canarias", 60)]
+    public void SourceRestrictionsOverrideOnlyTheAffectedMetadataWeights(string title, string quote,
+        string type, string activity, string territory, int expected)
+    {
+        var item = Item() with { Title = title };
+        var match = SourceEvidenceRanking.Match(new(type, activity, territory), item, Review(quote));
+        Assert.Equal(expected, match.Priority);
+        Assert.Equal("Posibles restricciones por revisar", match.Label);
+        Assert.Contains(match.Dimensions, dimension => dimension.Status == "restriction" && dimension.Origin == "source");
+        Assert.Contains(match.Checks, check => check.Contains("Posible restricción"));
+    }
+
+    [Fact]
+    public void UnknownSourceDoesNotTurnAPreservedMetadataHintIntoVerifiedEvidence()
+    {
+        var match = SourceEvidenceRanking.Match(new("sme", "other", "all"), Item() with { Title = "Ayudas a pymes" },
+            Review("Destinatarios pendientes de concretar."));
+        var type = match.Dimensions.Single(dimension => dimension.Key == "businessType");
+        Assert.Equal("metadata", type.Origin);
+        Assert.Equal(20, match.Priority);
+        Assert.Equal("hash", match.SourceHash);
+    }
+
+    [Fact]
+    public void DimensionsAreRebuiltPerProfileRatherThanLeakingFromStoredReview()
+    {
+        var review = Review("Innovación para pymes de Canarias.");
+        var first = SourceEvidenceRanking.Match(new("sme", "technology", "canarias"), Item(), review);
+        var second = SourceEvidenceRanking.Match(new("autonomous", "retail", "baleares"), Item(), review);
+        Assert.Equal(3, first.Dimensions.Count(dimension => dimension.Status == "mention"));
+        Assert.All(second.Dimensions, dimension => Assert.Equal("unknown", dimension.Status));
+        Assert.Null(review.ProfileContrast);
+    }
+
+    [Fact]
+    public void PositiveSourceMentionsDoNotHideARestrictiveTitle()
+    {
+        var match = SourceEvidenceRanking.Match(new("sme", "other", "all"),
+            Item() with { Title = "Ayudas excepto para pymes" }, Review("Se mencionan las pymes."));
+        Assert.Equal(0, match.Priority);
+        Assert.Equal("Posibles restricciones por revisar", match.Label);
+        Assert.Equal("metadata", match.Dimensions.Single(dimension => dimension.Key == "businessType").Origin);
+    }
 }

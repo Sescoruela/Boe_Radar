@@ -2,8 +2,106 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
+import { FOLLOW_UP_KEY } from './follow-up';
 
 describe('App catalog wiring', () => {
+  it('shows a source contrast outside collapsed technical details without reordering results', async () => {
+    const fixture = TestBed.createComponent(App);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.componentInstance.businessProfile.set({ businessType: 'sme', activity: 'technology', territory: 'canarias' });
+    fixture.componentInstance.personalizedView.set(true);
+    fixture.detectChanges();
+    const publication = { id: 'a', externalId: 'BOE-A-2026-1', title: 'Ayuda para innovación',
+      publicationDate: '2026-10-01', sectionCode: '3', sectionName: 'Otras disposiciones', department: 'Ministerio' };
+    http.expectOne('/api/v1/publications/personalized').flush({ items: [publication], page: 1, pageSize: 12, totalItems: 1, totalPages: 1 });
+    http.expectOne('/api/v1/catalog/status').flush({ totalPublications: 1, latestPublicationDate: null, emailAlertsEnabled: false });
+    await fixture.whenStable();
+    fixture.componentInstance.openDetails('a');
+    http.expectOne('/api/v1/publications/a').flush({ ...publication, departmentCode: '1', issueNumber: '1' });
+    const review = http.expectOne('/api/v1/source-review/BOE-A-2026-1/personalized');
+    expect(review.request.body).toEqual({ businessType: 'sme', activity: 'technology', territory: 'canarias' });
+    review.flush({ sourceHash: 'hash', groups: [], kind: 'grant', nextStep: 'Revisa las bases', profileContrast: { sourceHash: 'hash', dimensions: [
+      { key: 'businessType', label: 'Tipo de negocio', status: 'restriction', origin: 'source', message: 'Posible desajuste, no exclusión confirmada', quotes: ['Beneficiarias exclusivamente las entidades locales.'] },
+    ] } });
+    await fixture.whenStable();
+    const contrast = fixture.nativeElement.querySelector('[role="dialog"] app-source-profile');
+    expect(contrast.closest('details')).toBeNull();
+    expect(contrast.textContent).toContain('Posible restricción');
+    expect(fixture.componentInstance.result()?.items[0].id).toBe('a');
+    http.expectNone('/api/v1/publications/personalized');
+    fixture.destroy();
+    http.verify();
+  });
+
+  it('identifies unspecified profile fields without making them mandatory', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.componentInstance.businessProfile.set({ businessType: 'sme', activity: 'other', territory: 'all' });
+    expect(fixture.componentInstance.profileMissingFields()).toEqual(['actividad principal', 'territorio de actividad']);
+    fixture.componentInstance.businessProfile.set({ businessType: 'sme', activity: 'retail', territory: 'canarias' });
+    expect(fixture.componentInstance.profileMissingFields()).toEqual([]);
+    fixture.destroy();
+  });
+  it('saves from a card, changes state in its detail and restores from follow-up', async () => {
+    const fixture = TestBed.createComponent(App);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    const publication = { id: 'a', externalId: 'BOE-A-2026-1', title: 'Ayuda de prueba',
+      publicationDate: '2026-10-01', sectionCode: '3', sectionName: 'Otras disposiciones', department: 'Ministerio' };
+    http.expectOne(request => request.url === '/api/v1/publications').flush({ items: [publication], page: 1, pageSize: 12, totalItems: 1, totalPages: 1 });
+    http.expectOne('/api/v1/catalog/status').flush({ totalPublications: 1, latestPublicationDate: null, emailAlertsEnabled: false });
+    await fixture.whenStable();
+    const button = Array.from(fixture.nativeElement.querySelectorAll('.publication-card button'))
+      .find((element: any) => element.textContent.includes('Guardar publicación')) as HTMLButtonElement;
+    button.click();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('#seguimiento').textContent).toContain(publication.title);
+    expect(JSON.parse(localStorage.getItem(FOLLOW_UP_KEY)!).entries[0].status).toBe('review');
+    fixture.componentInstance.openDetails('a');
+    http.expectOne('/api/v1/publications/a').flush({ ...publication, departmentCode: '1', issueNumber: '1' });
+    http.expectOne('/api/v1/source-review/BOE-A-2026-1').flush({ groups: [], kind: 'general', nextStep: 'Revisa la fuente.' });
+    await fixture.whenStable();
+    const state = fixture.nativeElement.querySelector('[role="dialog"] app-follow-up-controls select') as HTMLSelectElement;
+    state.value = 'preparing';
+    state.dispatchEvent(new Event('change'));
+    await fixture.whenStable();
+    expect(fixture.componentInstance.followUp.find(publication.externalId)?.status).toBe('preparing');
+    fixture.componentInstance.closeDetails();
+    await fixture.whenStable();
+    const panel = fixture.nativeElement.querySelector('#seguimiento') as HTMLElement;
+    Array.from(panel.querySelectorAll('article button')).find((element: any) => element.textContent === 'Descartar')!.dispatchEvent(new Event('click'));
+    await fixture.whenStable();
+    expect(panel.querySelector('article')).toBeNull();
+    Array.from(panel.querySelectorAll('.filters button')).find((element: any) => element.textContent === 'Descartado')!.dispatchEvent(new Event('click'));
+    await fixture.whenStable();
+    Array.from(panel.querySelectorAll('article button')).find((element: any) => element.textContent === 'Recuperar publicación')!.dispatchEvent(new Event('click'));
+    await fixture.whenStable();
+    expect(fixture.componentInstance.followUp.find(publication.externalId)?.status).toBe('preparing');
+    fixture.destroy();
+    http.verify();
+  });
+
+  it('keeps saved items and their official links usable when the catalog and detail are unavailable', async () => {
+    const fixture = TestBed.createComponent(App);
+    const http = TestBed.inject(HttpTestingController);
+    const publication = { id: 'saved', externalId: 'BOE-A-2026-2', title: 'Publicación guardada',
+      publicationDate: '2026-10-01', sectionCode: '1', sectionName: 'Disposiciones', department: 'Ministerio' };
+    fixture.componentInstance.followUp.setStatus(publication, 'interested');
+    fixture.detectChanges();
+    http.expectOne(request => request.url === '/api/v1/publications').flush('', { status: 503, statusText: 'Unavailable' });
+    http.expectOne('/api/v1/catalog/status').flush('', { status: 503, statusText: 'Unavailable' });
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('#seguimiento').textContent).toContain(publication.title);
+    fixture.nativeElement.querySelector('#seguimiento article button').click();
+    http.expectOne('/api/v1/publications/saved').flush('', { status: 503, statusText: 'Unavailable' });
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('[role="dialog"] a').href).toContain('BOE-A-2026-2');
+    fixture.componentInstance.retryDetails();
+    http.expectOne('/api/v1/publications/saved').flush('', { status: 503, statusText: 'Unavailable' });
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('[role="dialog"] a').href).toContain('BOE-A-2026-2');
+    fixture.destroy();
+    http.verify();
+  });
   it('shows intent-first filters and offers safe recovery from an empty result', async () => {
     const fixture = TestBed.createComponent(App);
     const http = TestBed.inject(HttpTestingController);

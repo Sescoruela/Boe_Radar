@@ -35,9 +35,20 @@ proveedor de correo real y sus rebotes queda pendiente. La documentación base e
 - [Correcciones de fiabilidad y regresiones](docs/19-correcciones-fiabilidad.md)
 - [Hito de optimización: rendimiento sin cambios de producto](docs/20-optimizacion-rendimiento.md)
 - [Alertas personalizadas: primera entrega y requisitos de producción](docs/21-alertas-personalizadas.md)
+- [Fichas orientadas a decisiones](docs/22-fichas-orientadas-a-decisiones.md)
+- [Búsqueda por necesidades](docs/23-busqueda-por-necesidades.md)
+- [Mi seguimiento: persistencia local](docs/24-seguimiento-local.md)
+- [Personalización explicable por dimensiones](docs/25-personalizacion-explicable.md)
+- [Validación y publicación de los hitos 3 y 4](docs/26-validacion-hitos-3-4.md)
 - [ADR-001: monolito modular](docs/adr/001-monolito-modular.md)
 
 ## Propuesta de valor
+
+La iteración de producto añade **Mi seguimiento**: guardar publicaciones y gestionar
+estados personales sin cuenta. Es local a cada navegador y no activa correos.
+La implementación y sus pruebas automáticas están disponibles; la validación
+visual de escritorio/móvil sigue pendiente. Este hito de producto es distinto del
+hito técnico de suscripciones descrito arriba.
 
 > Cada mañana, saber qué ha publicado el BOE que puede afectar a tu negocio,
 > por qué importa y qué fecha no debes perder, sin sustituir la lectura de la

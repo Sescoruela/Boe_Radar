@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { BusinessProfile } from './business-profile';
 
 export interface BusinessProfileMatch {
+  dimensions?: SourceProfileDimension[];
   sourceHash?: string | null;
   priority: number;
   label: string;
@@ -64,8 +65,16 @@ export interface ActionableSourceReview {
 
 export interface SourceProfileContrast {
   sourceHash: string;
-  dimensions: { key: string; label: string; status: 'mention' | 'unknown' | 'notSpecified';
-    message: string; quotes: string[] }[];
+  dimensions: SourceProfileDimension[];
+}
+
+export interface SourceProfileDimension {
+  key: string;
+  label: string;
+  status: 'mention' | 'restriction' | 'unknown' | 'notSpecified';
+  origin?: 'metadata' | 'source';
+  message: string;
+  quotes: string[];
 }
 
 export interface RadarAnalysisDetail extends RadarAnalysisSummary {

@@ -70,6 +70,11 @@ La conexión local predeterminada usa `localhost:54329`, base y usuario
 Para otro entorno, define `ConnectionStrings__BoeRadar` sin guardar secretos en
 el repositorio.
 
+Las pruebas de integración aceptan exclusivamente hosts de loopback y los puertos 54329 o 55439.
+El segundo es una alternativa local para Windows cuando el primero está reservado por el sistema.
+Configura `BOERADAR_TEST_CONNECTION` con la base temporal y, para probar correo en Mailpit,
+`BOERADAR_TEST_SMTP=true`. Cada prueba usa y elimina su propio esquema aislado; no utiliza Render.
+
 ## Parada
 
 Detén la API y Angular con `Ctrl+C`. Para detener PostgreSQL conservando los

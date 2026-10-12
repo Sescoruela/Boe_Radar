@@ -3,10 +3,13 @@
     <span class="brand-mark" aria-hidden="true">BR</span>
     <span>BOE Radar <em>IA</em></span>
   </a>
+  <a class="tracking-link" href="#seguimiento">Mi seguimiento ({{ followUp.activeCount() }})</a>
   <span class="source-status"><i></i> Catálogo de fuente oficial</span>
 </header>
 
 <main [attr.inert]="detailLoading() || detailError() || selected() ? '' : null">
+  @if (followUp.warning()) { <p class="tracking-notice" role="alert">{{ followUp.warning() }}</p> }
+  @if (followUp.message()) { <p class="tracking-notice" role="status">{{ followUp.message() }}</p> }
   <section class="hero">
     <div class="eyebrow">Explorador para autónomos y pymes</div>
     <h1>Encuentra señales en el BOE,<br /><span>sin perder la fuente.</span></h1>
@@ -60,6 +63,10 @@
       <button class="primary-button" type="submit">{{ businessProfile() ? 'Actualizar perfil' : 'Personalizar mi radar' }}</button>
     </form>
     <p class="profile-note">El perfil se guarda en este navegador y se envía al consultar tu radar para ordenar los resultados. No necesitas una cuenta. Si compartes dispositivo, puedes borrarlo al terminar.</p>
+    @if (profileMissingFields().length) {
+      <p class="profile-note">Para afinar las pistas puedes concretar: {{ profileMissingFields().join(' y ') }}.
+        Es opcional; mientras tanto estos datos quedan por comprobar y no se excluyen publicaciones.</p>
+    }
     @if (profileMessage()) { <p class="profile-message" role="status">{{ profileMessage() }}</p> }
   </section>
 
@@ -214,6 +221,7 @@
                 <code>{{ item.externalId }}</code>
                 <button type="button" (click)="openDetails(item.id)">Ver ficha →</button>
               </div>
+              <app-follow-up-controls [publication]="item" />
             </article>
           }
         </div>
@@ -240,6 +248,8 @@
       }
     }
   </section>
+
+  <app-follow-up-panel (openPublication)="openDetails($event.id, $event)" />
 
   <section class="subscription-panel" id="alertas" aria-labelledby="subscription-title">
     <div class="subscription-intro">
@@ -378,7 +388,15 @@
       <div class="eyebrow">{{ publication.externalId }} · BOE {{ publication.issueNumber }}</div>
       <h2 id="detail-title">{{ briefTitle(publication.title) }}</h2>
       <p>Publicado el {{ (publication.publicationDate + 'T00:00:00Z') | date: 'd MMMM yyyy' : 'UTC' }} · {{ publication.department }}</p>
+      <app-follow-up-controls [publication]="publication" />
+      @if (followUp.warning()) { <p class="tracking-notice" role="alert">{{ followUp.warning() }}</p> }
+      @if (followUp.message()) { <p class="tracking-notice" role="status">{{ followUp.message() }}</p> }
       <app-decision-summary [publication]="publication" [review]="sourceReview()" [loading]="sourceReviewLoading()" />
+      @if (sourceReview()?.profileContrast; as contrast) {
+        <app-source-profile [contrast]="contrast" />
+      } @else if (businessProfile()) {
+        <p class="profile-note">{{ sourceReviewLoading() ? 'Contrastando tu perfil con los fragmentos oficiales…' : 'El contraste de tu perfil con la fuente está pendiente. No se ha confirmado que esta publicación te aplique.' }}</p>
+      }
       @if (sourceReviewError()) {
         <p role="status">No se ha podido revisar el texto oficial. Los datos no identificados siguen pendientes de comprobar.</p>
         <button class="primary-button" type="button" (click)="retrySourceReview()">Reintentar revisión</button>
@@ -420,9 +438,6 @@
         @if (sourceReviewLoading()) {
           <p class="source-review-state">Consultando el texto oficial…</p>
         } @else if (sourceReview(); as review) {
-          @if (review.profileContrast; as contrast) {
-            <app-source-profile [contrast]="contrast" />
-          }
           <h4>{{ review.kindLabel }} · Clasificación orientativa</h4>
           <details class="official-references">
             <summary id="references-title">Publicaciones relacionadas</summary>

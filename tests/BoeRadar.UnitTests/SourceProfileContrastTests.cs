@@ -36,9 +36,9 @@ public sealed class SourceProfileContrastTests
         var contrast = SourceProfileContrastBuilder.Build(new("sme", "technology", "all"),
             Review("No podrán ser beneficiarias las pymes que incumplan los requisitos."));
         var type = contrast.Dimensions.Single(item => item.Key == "businessType");
-        Assert.Equal("mention", type.Status);
+        Assert.Equal("restriction", type.Status);
         Assert.Contains("No podrán", Assert.Single(type.Quotes));
-        Assert.Contains("exclusiones", type.Message);
+        Assert.Contains("No confirma que estés excluido", type.Message);
     }
 
     [Fact]
@@ -73,4 +73,79 @@ public sealed class SourceProfileContrastTests
     [Fact]
     public void InvalidProfileIsRejected() => Assert.Throws<ArgumentException>(() =>
         SourceProfileContrastBuilder.Build(new("invalid", "other", "all"), Review()));
+
+    [Fact]
+    public void UnrelatedAmountsDeadlinesAndApplicationPassagesAreNotProfileEvidence()
+    {
+        var review = new ActionableSourceReview("hash", DateTimeOffset.UtcNow,
+            [new("amount", "Importes", ["Pymes: presupuesto para comercio de Canarias." ]),
+             new("application", "Solicitud", ["El formulario digital de pymes se presenta en Canarias." ]),
+             new("deadlines", "Plazos", ["Comercio de pymes de Canarias hasta el día 3." ])]);
+        var contrast = SourceProfileContrastBuilder.Build(new("sme", "retail", "canarias"), review);
+        Assert.All(contrast.Dimensions, dimension => Assert.Equal("unknown", dimension.Status));
+    }
+
+    [Fact]
+    public void RestrictivePassagesTakePrecedenceOverPositiveMentionsAndKeepTheirEvidence()
+    {
+        const string restriction = "No podrán ser beneficiarias las pymes con deudas.";
+        var contrast = SourceProfileContrastBuilder.Build(new("sme", "other", "all"), Review("Ayudas a pymes.", restriction));
+        var type = contrast.Dimensions.Single(dimension => dimension.Key == "businessType");
+        Assert.Equal("restriction", type.Status);
+        Assert.Equal(restriction, Assert.Single(type.Quotes));
+        Assert.Equal("source", type.Origin);
+    }
+
+    [Fact]
+    public void NationalScopeIsAHintAndAnUnspecifiedTerritoryRemainsUnspecified()
+    {
+        var review = new ActionableSourceReview("hash", DateTimeOffset.UtcNow,
+            [new("territory", "Ámbito", ["Ámbito estatal con condiciones específicas." ])]);
+        var local = SourceProfileContrastBuilder.Build(new("sme", "other", "canarias"), review);
+        Assert.Equal("mention", local.Dimensions.Single(dimension => dimension.Key == "territory").Status);
+        var general = SourceProfileContrastBuilder.Build(new("sme", "other", "all"), review);
+        Assert.Equal("notSpecified", general.Dimensions.Single(dimension => dimension.Key == "territory").Status);
+    }
+
+    [Theory]
+    [InlineData("Serán beneficiarias exclusivamente las entidades locales.")]
+    [InlineData("Destinatarios: únicamente ayuntamientos.")]
+    public void ExplicitExclusivePublicRecipientsAreAPossibleMismatchNotAHiddenResult(string quote)
+    {
+        var contrast = SourceProfileContrastBuilder.Build(new("autonomous", "other", "all"), Review(quote));
+        var type = contrast.Dimensions.Single(dimension => dimension.Key == "businessType");
+        Assert.Equal("restriction", type.Status);
+        Assert.Contains("posible desajuste", type.Message);
+        Assert.Equal(quote, Assert.Single(type.Quotes));
+    }
+
+    [Theory]
+    [InlineData("Entidades locales y otras entidades podrán solicitar las ayudas.")]
+    [InlineData("El ayuntamiento informa a las empresas sobre las ayudas.")]
+    public void NonexclusivePublicReferencesDoNotInventAMismatch(string quote)
+    {
+        var contrast = SourceProfileContrastBuilder.Build(new("sme", "other", "all"), Review(quote));
+        Assert.Equal("unknown", contrast.Dimensions.Single(dimension => dimension.Key == "businessType").Status);
+    }
+
+    [Fact]
+    public void ExplicitPhysicalPersonExclusionFlagsASelfEmploymentRestrictionWithTheOriginalQuote()
+    {
+        const string quote = "2. Quedan excluidas las personas físicas, las Administraciones Públicas y las entidades con ánimo de lucro.";
+        var contrast = SourceProfileContrastBuilder.Build(new("autonomous", "technology", "all"), Review(quote));
+        var type = contrast.Dimensions.Single(dimension => dimension.Key == "businessType");
+        Assert.Equal("restriction", type.Status);
+        Assert.Equal(quote, Assert.Single(type.Quotes));
+        Assert.Contains("posible restricción", type.Message);
+        var sme = SourceProfileContrastBuilder.Build(new("sme", "technology", "all"), Review(quote));
+        Assert.Equal("unknown", sme.Dimensions.Single(dimension => dimension.Key == "businessType").Status);
+    }
+
+    [Fact]
+    public void NegatedPhysicalPersonExclusionIsNotARestriction()
+    {
+        var contrast = SourceProfileContrastBuilder.Build(new("autonomous", "other", "all"),
+            Review("No quedan excluidas las personas físicas."));
+        Assert.Equal("unknown", contrast.Dimensions.Single(dimension => dimension.Key == "businessType").Status);
+    }
 }

@@ -3,6 +3,8 @@
 }
 
 .topbar {
+  flex-wrap: wrap;
+  gap: 14px;
   align-items: center;
   border-bottom: 1px solid var(--line);
   display: flex;
@@ -11,6 +13,9 @@
   max-width: 1240px;
   padding: 22px 32px;
 }
+
+.tracking-link { color: var(--accent-dark); font-size: .85rem; padding: 8px; }
+.tracking-notice { color: var(--accent-dark); font-size: .85rem; padding: 12px; border: 1px solid var(--line); }
 
 .brand {
   align-items: center;

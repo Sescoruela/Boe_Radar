@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, HostListener, Injector, OnInit, afterEveryRender, afterNextRender, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, Injector, OnInit, afterEveryRender, afterNextRender, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -7,8 +7,12 @@ import {
   PublicationFilters,
   CatalogStatus,
   PublicationsApi,
+  PublicationListItem,
 } from './publications';
 import { CatalogState } from './catalog-state';
+import { FOLLOW_UP_KEY, FollowUpStore } from './follow-up';
+import { FollowUpControlsComponent } from './follow-up-controls.component';
+import { FollowUpPanelComponent } from './follow-up-panel.component';
 import { SubscriptionsApi, SubscriptionView } from './subscriptions';
 import { ProfileMatchComponent } from './profile-match.component';
 import { SourceProfileComponent } from './source-profile.component';
@@ -20,11 +24,12 @@ import { BusinessProfile, businessTypes, activityOptions, territoryOptions,
 @Component({
   selector: 'app-root',
   providers: [CatalogState],
-  imports: [DatePipe, FormsModule, ProfileMatchComponent, SourceProfileComponent, DecisionSummaryComponent],
+  imports: [DatePipe, FormsModule, ProfileMatchComponent, SourceProfileComponent, DecisionSummaryComponent, FollowUpControlsComponent, FollowUpPanelComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App implements OnInit {
+  readonly followUp = inject(FollowUpStore);
   private readonly api = inject(PublicationsApi);
   private readonly subscriptions = inject(SubscriptionsApi);
   private readonly catalog = inject(CatalogState);
@@ -43,6 +48,11 @@ export class App implements OnInit {
   readonly activityOptions = activityOptions;
   readonly territoryOptions = territoryOptions;
   readonly businessProfile = signal<BusinessProfile | null>(null);
+  readonly profileMissingFields = computed(() => {
+    const profile = this.businessProfile();
+    return profile ? [profile.activity === 'other' ? 'actividad principal' : '',
+      profile.territory === 'all' ? 'territorio de actividad' : ''].filter(Boolean) : [];
+  });
   readonly personalizedView = signal(false);
   readonly profileMessage = signal<string | null>(null);
   readonly selectedProfileMatch = this.catalog.selectedProfileMatch;
@@ -330,16 +340,24 @@ export class App implements OnInit {
     this.search();
   }
 
-  openDetails(id: string): void {
+  openDetails(id: string, savedPublication?: PublicationListItem): void {
     this.detailOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    this.catalog.openDetails(id, this.personalizedView() ? this.businessProfile() : null);
+    this.catalog.openDetails(id, this.personalizedView() ? this.businessProfile() : null, savedPublication);
+  }
+
+  @HostListener('window:storage', ['$event'])
+  syncFollowUp(event: StorageEvent): void {
+    if (event.key === FOLLOW_UP_KEY || event.key === null) this.followUp.reload();
   }
 
   closeDetails(): void {
     const opener = this.detailOpener;
     this.catalog.closeDetails();
     this.detailOpener = null;
-    if (opener) afterNextRender(() => opener.focus(), { injector: this.injector });
+    if (opener) afterNextRender(() => {
+      if (opener.isConnected) opener.focus();
+      else document.querySelector<HTMLElement>('.tracking-link')?.focus();
+    }, { injector: this.injector });
   }
 
   retryDetails(): void { this.catalog.retryDetails(); }
@@ -355,7 +373,7 @@ export class App implements OnInit {
     if (event.key !== 'Tab') return;
     const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
     if (!dialog) return;
-    const controls = Array.from(dialog.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], summary, [tabindex="0"]'))
+    const controls = Array.from(dialog.querySelectorAll<HTMLElement>('button:not(:disabled), select:not(:disabled), a[href], summary, [tabindex="0"]'))
       .filter(element => element.getClientRects().length > 0);
     const target = event.shiftKey ? controls.at(-1) : controls[0];
     if (target && document.activeElement === (event.shiftKey ? controls[0] : controls.at(-1))) {

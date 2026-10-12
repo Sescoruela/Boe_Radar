@@ -21,7 +21,7 @@ public sealed class PostgreSqlFactAttribute : FactAttribute
     public PostgreSqlFactAttribute()
     {
         if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("BOERADAR_TEST_CONNECTION")))
-            Skip = "Set BOERADAR_TEST_CONNECTION to the local test PostgreSQL (localhost:54329).";
+            Skip = "Set BOERADAR_TEST_CONNECTION to local test PostgreSQL (localhost:54329 or localhost:55439).";
     }
 }
 
@@ -583,8 +583,8 @@ public sealed class PersistenceRegressionTests
         public static async Task<TestDatabase> CreateAsync(string? targetMigration = null)
         {
             var settings = new NpgsqlConnectionStringBuilder(Environment.GetEnvironmentVariable("BOERADAR_TEST_CONNECTION"));
-            if (settings.Host is not ("localhost" or "127.0.0.1") || settings.Port != 54329)
-                throw new InvalidOperationException("Integration tests only accept local PostgreSQL on port 54329.");
+            if (settings.Host is not ("localhost" or "127.0.0.1") || settings.Port is not (54329 or 55439))
+                throw new InvalidOperationException("Integration tests only accept local PostgreSQL on ports 54329 or 55439.");
             var schema = "boeradar_test_" + Guid.NewGuid().ToString("N");
             await using (var admin = new NpgsqlConnection(settings.ConnectionString))
             {
