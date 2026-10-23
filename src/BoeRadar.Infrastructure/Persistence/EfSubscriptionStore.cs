@@ -132,7 +132,7 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
         var latest = analyzed.GroupBy(item => item.Document.Id)
             .Select(group => group.OrderByDescending(item => item.Analysis.AnalyzedAt)
                 .ThenByDescending(item => item.Analysis.Id).First())
-            .Where(item => item.Analysis.IsRelevant && item.Analysis.PromptVersion == "radar-v2" &&
+            .Where(item => item.Analysis.IsRelevant && (item.Analysis.PromptVersion is "radar-v2" or "radar-v3") &&
                 (includeHeuristic || item.Analysis.Method == "gemini"))
             .ToArray();
         var reviews = sourceReviews is null || latest.Length == 0 || subscriptions.All(item => item.BusinessProfileJson is null)
@@ -165,7 +165,7 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
                         item.Analysis.Category, item.Analysis.Method, item.Document.OfficialPdfUrl,
                         JsonSerializer.Deserialize<string[]>(item.Analysis.RequirementsJson, JsonOptions),
                         JsonSerializer.Deserialize<RadarDeadline[]>(item.Analysis.DeadlinesJson, JsonOptions))
-                    { Epigraph = item.Document.Epigraph }
+                    { Epigraph = item.Document.Epigraph, Actionable = EfPublicationCatalog.ReadActionable(item.Analysis.ActionableJson) }
                 })
                 .Select(item => new
                 {
@@ -330,6 +330,19 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
         {
             body.AppendLine($"• {item.Title}");
             body.AppendLine($"  {item.Category}: {item.Summary}");
+            if (item.Actionable is { } action)
+            {
+                var topic = action.Topic switch { RadarTopic.Grants => "Ayudas", RadarTopic.Tax => "Fiscalidad",
+                    RadarTopic.Employment => "Laboral", RadarTopic.Financing => "Financiación",
+                    RadarTopic.Regulation => "Regulación", _ => "Otros temas" };
+                var impact = action.ImpactKind switch { ImpactKind.Obligation => "Posible obligación",
+                    ImpactKind.Opportunity => "Oportunidad", _ => "Información" };
+                body.AppendLine($"  Tema: {topic} · Impacto posible: {impact}");
+                body.AppendLine($"  Qué cambia: {action.WhatChanged}");
+                foreach (var group in action.AffectedGroups) body.AppendLine($"  Afectados: {group}");
+                foreach (var step in action.NextSteps) body.AppendLine($"  Revisa ahora: {step}");
+                foreach (var uncertainty in action.Uncertainties) body.AppendLine($"  Por verificar: {uncertainty}");
+            }
             if (item.ProfileMatch is { } match)
             {
                 body.AppendLine($"  Perfil: {match.Label}");
@@ -341,12 +354,13 @@ internal sealed class EfSubscriptionStore(BoeRadarDbContext db, TimeProvider clo
             if (item.Deadlines is { Count: > 0 })
             {
                 foreach (var deadline in item.Deadlines)
-                    body.AppendLine($"  Plazo: {deadline.Date ?? "sin fecha explícita"} · {deadline.Description}");
+                    body.AppendLine($"  {(deadline.Kind == "EffectiveDate" ? "Efectos" : deadline.Kind == "Other" ? "Otra fecha" : "Plazo")}: {deadline.Date ?? "sin fecha explícita"} · {deadline.Description}");
             }
             body.AppendLine($"  Fuente: {item.OfficialPdfUrl ?? $"https://www.boe.es/diario_boe/txt.php?id={item.ExternalId}"}");
             body.AppendLine($"  Método: {item.Method}");
             body.AppendLine();
         }
+        body.AppendLine("Cobertura: publicaciones importadas del BOE estatal; selección automática no exhaustiva.");
         body.AppendLine("Información orientativa. Comprueba siempre la publicación oficial.");
         body.AppendLine("Para cambiar preferencias, utiliza el enlace de gestión recibido al confirmar la suscripción.");
         body.AppendLine($"Baja de un solo uso: {new Uri(publicBaseUri, $"/#unsubscribe={unsubscribeToken}")}");

@@ -45,7 +45,10 @@ public sealed record RadarAnalysisSummary(
     string Category,
     string Summary,
     decimal Confidence,
-    string Method);
+    string Method)
+{
+    public ActionableAnalysis? Actionable { get; init; }
+}
 
 public sealed record RadarAnalysisDetail(
     bool IsRelevant,
@@ -58,7 +61,11 @@ public sealed record RadarAnalysisDetail(
     string Method,
     string ModelName,
     string PromptVersion,
-    DateTimeOffset AnalyzedAt);
+    DateTimeOffset AnalyzedAt)
+{
+    public ActionableAnalysis? Actionable { get; init; }
+    public string? ContentHash { get; init; }
+}
 
 public sealed record PublicationDetail(
     Guid Id,

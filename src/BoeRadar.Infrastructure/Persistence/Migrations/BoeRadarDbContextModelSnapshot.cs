@@ -114,6 +114,10 @@ namespace BoeRadar.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("ActionableJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("actionable");
+
                     b.Property<DateTimeOffset>("AnalyzedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("analyzed_at");

@@ -72,7 +72,8 @@ internal sealed class EfAnalysisCandidateStore(
             promptVersion,
             output.InputTokens,
             output.OutputTokens,
-            timeProvider.GetUtcNow());
+            timeProvider.GetUtcNow(),
+            output.Actionable is null ? null : JsonSerializer.Serialize(output.Actionable, JsonOptions));
 
         dbContext.DocumentAnalyses.Add(analysis);
         try { await dbContext.SaveChangesAsync(cancellationToken); }

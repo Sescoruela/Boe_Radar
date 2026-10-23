@@ -21,6 +21,7 @@ public sealed record DigestItem(Guid AnalysisId, Guid DocumentId, string Externa
     string? OfficialPdfUrl, IReadOnlyList<string>? Requirements = null,
     IReadOnlyList<RadarDeadline>? Deadlines = null)
 {
+    public ActionableAnalysis? Actionable { get; init; }
     public string? Epigraph { get; init; }
     public BusinessProfileMatch? ProfileMatch { get; init; }
 }

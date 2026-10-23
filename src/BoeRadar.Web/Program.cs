@@ -22,6 +22,10 @@ builder.Services.AddScoped<PersonalizedPublicationSearch>();
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(
         new JsonStringEnumConverter<RadarCategory>(allowIntegerValues: false)));
+builder.Services.ConfigureHttpJsonOptions(options => {
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<RadarTopic>(allowIntegerValues: false));
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter<ImpactKind>(allowIntegerValues: false));
+});
 builder.Services.AddBoeRadarInfrastructure(builder.Configuration);
 if (builder.Configuration.GetValue<bool>("Ingestion:RefreshEnabled"))
 {

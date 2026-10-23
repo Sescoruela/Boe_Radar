@@ -177,7 +177,7 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
                 .ThenByDescending(analysis => analysis.Id).Select(analysis => new
                 {
                     analysis.DocumentId, analysis.IsRelevant, analysis.Category, analysis.Summary,
-                    analysis.Confidence, analysis.Method
+                    analysis.Confidence, analysis.Method, analysis.ActionableJson
                 }).First())
             .ToArrayAsync(cancellationToken);
         var latestByDocument = analyses.ToDictionary(analysis => analysis.DocumentId);
@@ -190,7 +190,7 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
                         analysis.Category.ToString(),
                         analysis.Summary,
                         analysis.Confidence,
-                        analysis.Method)
+                        analysis.Method) { Actionable = ReadActionable(analysis.ActionableJson) }
                 }
                 : item)
             .ToArray();
@@ -255,16 +255,19 @@ internal sealed class EfPublicationCatalog(BoeRadarDbContext dbContext, TimeProv
                 analysis.IsRelevant,
                 analysis.Category.ToString(),
                 analysis.Summary,
-                analysis.PromptVersion == "radar-v2" ? Deserialize<IReadOnlyList<string>>(analysis.RequirementsJson) : [],
-                analysis.PromptVersion == "radar-v2" ? Deserialize<IReadOnlyList<RadarDeadline>>(analysis.DeadlinesJson) : [],
+                analysis.PromptVersion is "radar-v2" or "radar-v3" ? Deserialize<IReadOnlyList<string>>(analysis.RequirementsJson) : [],
+                analysis.PromptVersion is "radar-v2" or "radar-v3" ? Deserialize<IReadOnlyList<RadarDeadline>>(analysis.DeadlinesJson) : [],
                 Deserialize<IReadOnlyList<RadarEvidence>>(analysis.EvidenceJson),
                 analysis.Confidence,
                 analysis.Method,
                 analysis.ModelName,
                 analysis.PromptVersion,
-                analysis.AnalyzedAt)
+                analysis.AnalyzedAt) { Actionable = ReadActionable(analysis.ActionableJson), ContentHash = analysis.ContentHash }
         };
     }
+
+    internal static ActionableAnalysis? ReadActionable(string? json) =>
+        json is null ? null : Deserialize<ActionableAnalysis>(json);
 
     private static T Deserialize<T>(string json) =>
         JsonSerializer.Deserialize<T>(json, JsonOptions)

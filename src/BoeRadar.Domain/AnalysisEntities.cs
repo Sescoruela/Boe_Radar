@@ -11,6 +11,9 @@ public enum RadarCategory
     Other
 }
 
+public enum RadarTopic { Grants, Tax, Employment, Financing, Regulation, Other }
+public enum ImpactKind { Obligation, Opportunity, Information }
+
 public sealed class DocumentAnalysis
 {
     private DocumentAnalysis()
@@ -26,6 +29,9 @@ public sealed class DocumentAnalysis
     public bool IsRelevant { get; private set; }
 
     public RadarCategory Category { get; private set; }
+
+    // Null means this row predates the evidence-backed v3 contract.
+    public string? ActionableJson { get; private set; }
 
     public string Summary { get; private set; } = string.Empty;
 
@@ -64,7 +70,8 @@ public sealed class DocumentAnalysis
         string promptVersion,
         int? inputTokens,
         int? outputTokens,
-        DateTimeOffset analyzedAt)
+        DateTimeOffset analyzedAt,
+        string? actionableJson = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(contentHash);
         ArgumentException.ThrowIfNullOrWhiteSpace(summary);
@@ -94,7 +101,8 @@ public sealed class DocumentAnalysis
             PromptVersion = promptVersion,
             InputTokens = inputTokens,
             OutputTokens = outputTokens,
-            AnalyzedAt = analyzedAt
+            AnalyzedAt = analyzedAt,
+            ActionableJson = actionableJson
         };
     }
 }
