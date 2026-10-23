@@ -14,24 +14,40 @@ describe('Decision summary', () => {
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('Destinatarios pendientes de comprobar');
     expect(text).toContain('Requisitos pendientes de comprobar');
-    expect(text).toContain('No hay un plazo confirmado');
+    expect(text).toContain('No consta un plazo confirmado');
+    expect(text).toContain('2026-10-01');
+    expect(text).toContain('Información');
     expect(fixture.nativeElement.querySelector('a').href).toContain('www.boe.es/diario_boe/txt.php');
   });
 
-  it('preserves literal source passages and does not turn a mention into a confirmed deadline', () => {
+  it('separates publication, effects and deadline without claiming eligibility', () => {
     const fixture = TestBed.createComponent(DecisionSummaryComponent);
     fixture.componentRef.setInput('publication', publication);
     fixture.componentRef.setInput('review', { kind: 'grant', kindLabel: 'Ayudas', sourceHash: 'hash', reviewedAt: '',
       nextStep: 'Comprueba las bases completas.', groups: [
         { key: 'recipients', label: 'Destinatarios', quotes: ['No podrán ser beneficiarias las entidades excluidas.'] },
+        { key: 'effective', label: 'Entrada en vigor', quotes: ['La orden producirá efectos el 15 de octubre de 2026.'] },
         { key: 'deadlines', label: 'Plazos', quotes: ['Diez días hábiles a partir de la publicación.'] },
       ] } satisfies ActionableSourceReview);
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('No podrán ser beneficiarias');
-    expect(fixture.nativeElement.textContent).toContain('Diez días hábiles a partir de la publicación.');
-    expect(fixture.nativeElement.textContent).toContain('Plazo · pendiente de confirmar');
-    expect(fixture.nativeElement.textContent).not.toContain('Solicitud abierta');
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('Oportunidad');
+    expect(text).toContain('No podrán ser beneficiarias');
+    expect(text).toContain('La orden producirá efectos el 15 de octubre de 2026.');
+    expect(text).toContain('Diez días hábiles a partir de la publicación.');
+    expect(text).toContain('Qué no sabemos todavía');
+    expect(text).not.toContain('Solicitud abierta');
     expect(fixture.componentInstance.facts()[1].quote).toBeUndefined();
+  });
+
+  it('labels regulatory items conservatively as possible obligations', () => {
+    const fixture = TestBed.createComponent(DecisionSummaryComponent);
+    fixture.componentRef.setInput('publication', publication);
+    fixture.componentRef.setInput('review', { kind: 'regulation', kindLabel: 'Cambio normativo', sourceHash: 'hash', reviewedAt: '',
+      nextStep: 'Revisa el ámbito.', groups: [] } satisfies ActionableSourceReview);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Posible obligación o cambio');
+    expect(fixture.nativeElement.textContent).toContain('Revisa si el ámbito y las condiciones alcanzan a tu negocio');
   });
 
   it('labels truncated previews and keeps the complete passage alongside them', () => {
