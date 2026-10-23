@@ -5,6 +5,22 @@ import { App } from './app';
 import { FOLLOW_UP_KEY } from './follow-up';
 
 describe('App catalog wiring', () => {
+  it('opens shared publication links using fresh API data and rejects invalid identifiers', () => {
+    const previous = window.location.href;
+    const fixture = TestBed.createComponent(App);
+    const http = TestBed.inject(HttpTestingController);
+    window.history.replaceState(null, '', '#publication=11111111-1111-4111-8111-111111111111');
+    fixture.componentInstance.handleSubscriptionLink();
+    http.expectOne('/api/v1/publications/11111111-1111-4111-8111-111111111111')
+      .flush('Not found', { status: 404, statusText: 'Not Found' });
+    window.history.replaceState(null, '', '#publication=invalid');
+    fixture.componentInstance.handleSubscriptionLink();
+    http.expectNone('/api/v1/publications/invalid');
+    window.history.replaceState(null, '', previous);
+    fixture.destroy();
+    http.verify();
+  });
+
   it('shows a source contrast outside collapsed technical details without reordering results', async () => {
     const fixture = TestBed.createComponent(App);
     const http = TestBed.inject(HttpTestingController);

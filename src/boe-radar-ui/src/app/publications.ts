@@ -26,7 +26,17 @@ export interface PublicationListItem {
   profileMatch?: BusinessProfileMatch;
 }
 
+export interface ActionableAnalysis {
+  topic: 'Grants' | 'Tax' | 'Employment' | 'Financing' | 'Regulation' | 'Other';
+  impactKind: 'Obligation' | 'Opportunity' | 'Information';
+  whatChanged: string;
+  affectedGroups: string[];
+  nextSteps: string[];
+  uncertainties: string[];
+}
+
 export interface RadarAnalysisSummary {
+  actionable?: ActionableAnalysis | null;
   isRelevant: boolean;
   category: string;
   summary: string;
@@ -35,6 +45,7 @@ export interface RadarAnalysisSummary {
 }
 
 export interface RadarDeadline {
+  kind?: 'EffectiveDate' | 'ApplicationDeadline' | 'Other';
   date?: string;
   description: string;
   isExplicit: boolean;
@@ -78,6 +89,7 @@ export interface SourceProfileDimension {
 }
 
 export interface RadarAnalysisDetail extends RadarAnalysisSummary {
+  contentHash?: string | null;
   requirements: string[];
   deadlines: RadarDeadline[];
   evidence: RadarEvidence[];

@@ -12,9 +12,9 @@
   @if (followUp.message()) { <p class="tracking-notice" role="status">{{ followUp.message() }}</p> }
   <section class="hero">
     <div class="eyebrow">Explorador para autónomos y pymes</div>
-    <h1>Encuentra señales en el BOE,<br /><span>sin perder la fuente.</span></h1>
+    <h1>Descubre qué cambia en el BOE<br /><span>y qué conviene revisar.</span></h1>
     <p>
-      Empieza por posibles ayudas y cambios para negocios. La selección es automática:
+      Novedades para autónomos y pequeñas empresas: a quién pueden afectar y el siguiente paso. La selección es automática:
       comprueba siempre destinatarios, requisitos y plazos en el texto oficial.
     </p>
     @if (catalogStatus()?.latestPublicationDate; as latestDate) {
@@ -28,6 +28,7 @@
     } @else {
       <p class="coverage-status">Comprobando la cobertura del catálogo…</p>
     }
+    <p class="coverage-status">Cobertura: publicaciones importadas del BOE estatal. La selección automática puede omitir novedades. No incluye todos los boletines autonómicos, locales ni convocatorias europeas.</p>
   </section>
 
   <section class="profile-panel" aria-labelledby="profile-title">
@@ -501,17 +502,17 @@
               }
             </ul>
           }
-          @if (analysis.promptVersion !== 'radar-v2') {
+          @if (analysis.promptVersion !== 'radar-v2' && analysis.promptVersion !== 'radar-v3') {
             <p class="source-notice">Análisis anterior: requisitos y fechas pendientes de revalidar. Comprueba la fuente oficial.</p>
           }
 
           @if (analysis.deadlines.length) {
-            <h4>Plazos</h4>
+            <h4>Fechas identificadas</h4>
             <ul>
               @for (deadline of analysis.deadlines; track deadline.description) {
                 <li>
                   @if (deadline.date) { <strong>{{ deadline.date }}</strong> · }
-                  {{ deadline.description }}
+                  {{ deadline.kind === 'EffectiveDate' ? 'Efectos: ' : deadline.kind === 'Other' ? 'Otra fecha: ' : 'Plazo: ' }}{{ deadline.description }}
                 </li>
               }
             </ul>
@@ -526,7 +527,8 @@
 
           <p class="analysis-meta">
             Método: {{ analysis.method === 'gemini' ? analysis.modelName : 'heurística local' }} ·
-            contrato {{ analysis.promptVersion }}
+            contrato {{ analysis.promptVersion }} · {{ analysis.analyzedAt | date: 'd MMM yyyy, HH:mm' }}
+            @if (analysis.contentHash) { <span> · Huella del texto: {{ analysis.contentHash }}</span> }
           </p>
         </details>
       }

@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { PublicationListItem } from './publications';
 import { FollowUpStore, FollowUpStatus, followUpStates } from './follow-up';
 
@@ -6,6 +6,10 @@ import { FollowUpStore, FollowUpStatus, followUpStates } from './follow-up';
   selector: 'app-follow-up-controls',
   template: `
     <div class="controls" role="group" [attr.aria-label]="'Seguimiento de ' + publication().externalId">
+      @if (shareUrl(); as url) {
+        <button type="button" (click)="copyLink()">Copiar enlace</button>
+        @if (shareMessage()) { <span role="status">{{ shareMessage() }} <a [href]="url">Enlace a la ficha</a></span> }
+      }
       @if (store.find(publication().externalId); as entry) {
         @if (entry.status === 'discarded') {
           <span>Descartado</span>
@@ -39,5 +43,16 @@ export class FollowUpControlsComponent {
   readonly publication = input.required<PublicationListItem>();
   readonly store = inject(FollowUpStore);
   readonly states = followUpStates;
+  readonly shareMessage = signal('');
+  readonly shareUrl = computed(() => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(this.publication().id)
+    ? window.location.origin + window.location.pathname + '#publication=' + this.publication().id : null);
+  async copyLink(): Promise<void> {
+    const url = this.shareUrl();
+    if (!url) return;
+    try {
+      await navigator.clipboard.writeText(url);
+      this.shareMessage.set('Enlace copiado.');
+    } catch { this.shareMessage.set('Puedes copiar el destino de este enlace.'); }
+  }
   change(status: FollowUpStatus): void { this.store.setStatus(this.publication(), status); }
 }

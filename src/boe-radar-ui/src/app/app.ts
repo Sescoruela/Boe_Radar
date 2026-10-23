@@ -179,6 +179,11 @@ export class App implements OnInit {
   @HostListener('window:hashchange')
   handleSubscriptionLink(): void {
     const fragment = new URLSearchParams(window.location.hash.slice(1));
+    const publication = fragment.get('publication');
+    if (publication && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(publication)) {
+      this.openDetails(publication);
+      return;
+    }
     const verify = fragment.get('verify');
     const manage = fragment.get('manage');
     const unsubscribe = fragment.get('unsubscribe');

@@ -18,7 +18,7 @@ import { briefTitle, officialSource } from './publication-presentation';
       }
 
       <h4>Qué se publica o cambia</h4>
-      <p>{{ briefTitle(publication().title) }}</p>
+      <p>{{ actionable()?.whatChanged ?? briefTitle(publication().title) }}</p>
       @if (publication().analysis; as analysis) {
         <h4>Posible impacto · interpretación automática</h4>
         <p>{{ analysis.summary }}</p>
@@ -26,6 +26,13 @@ import { briefTitle, officialSource } from './publication-presentation';
         <p class="pending">El impacto para tu negocio todavía no está analizado.</p>
       }
 
+      @if (stale()) { <p class="pending">El texto oficial ha cambiado desde el análisis. Revisa la fuente actualizada antes de actuar.</p> }
+      @if (actionable(); as action) {
+        <h4>Tema</h4><p>{{ topicLabel(action.topic) }}</p>
+        <h4>Destinatarios identificados en el análisis</h4>
+        @for (group of action.affectedGroups; track $index) { <p>{{ group }}</p> }
+        @if (!action.affectedGroups.length) { <p class="pending">Ámbito pendiente de comprobar.</p> }
+      }
       <h4>Fechas que no deben confundirse</h4>
       <dl class="dates">
         <div>
@@ -56,9 +63,14 @@ import { briefTitle, officialSource } from './publication-presentation';
       }
 
       <h4>Qué conviene revisar ahora</h4>
-      <p>{{ review()?.nextStep ?? 'Abre la fuente oficial y comprueba a quién afecta, las condiciones y las fechas antes de actuar.' }}</p>
+      @if (actionable(); as action) {
+        <ol>@for (step of action.nextSteps; track $index) { <li>{{ step }}</li> }</ol>
+      } @else {
+        <p>{{ review()?.nextStep ?? 'Abre la fuente oficial y comprueba a quién afecta, las condiciones y las fechas antes de actuar.' }}</p>
+      }
 
       <h4>Qué no sabemos todavía</h4>
+      @for (uncertainty of actionable()?.uncertainties ?? []; track $index) { <p class="pending">{{ uncertainty }}</p> }
       <p class="pending">Esta ficha no confirma por sí sola que la publicación te afecte, que cumplas los requisitos ni que exista un plazo abierto. La fecha de publicación tampoco equivale a la entrada en vigor.</p>
     </section>
   `,
@@ -95,22 +107,29 @@ export class DecisionSummaryComponent {
 
   readonly sourceUrl = computed(() => officialSource(this.publication()));
 
+  readonly stale = computed(() => !!this.review()?.sourceHash && !!this.publication().analysis?.contentHash
+    && this.review()!.sourceHash !== this.publication().analysis!.contentHash);
+  readonly actionable = computed(() => this.stale() ? null : this.publication().analysis?.actionable);
+  topicLabel(topic: string): string {
+    return ({ Grants: 'Ayudas', Tax: 'Fiscalidad', Employment: 'Laboral', Financing: 'Financiación',
+      Regulation: 'Regulación', Other: 'Otros temas' } as Record<string, string>)[topic] ?? 'Por revisar';
+  }
+
   readonly impact = computed(() => {
-    const kind = this.review()?.kind;
-    if (kind === 'grant') {
-      return { key: 'opportunity', label: 'Oportunidad', help: 'Ayuda o convocatoria que puede merecer una revisión.' };
-    }
-    if (kind === 'tax' || kind === 'regulation') {
-      return { key: 'obligation', label: 'Posible obligación o cambio', help: 'Revisa si el ámbito y las condiciones alcanzan a tu negocio.' };
-    }
-    return { key: 'information', label: 'Información', help: 'Novedad que conviene entender antes de decidir si requiere acción.' };
+    const impact = this.actionable()?.impactKind;
+    if (impact) return {
+      key: impact.toLowerCase(),
+      label: { Obligation: 'Posible obligación', Opportunity: 'Oportunidad', Information: 'Información' }[impact],
+      help: 'Interpretación automática respaldada por citas; verifica si el ámbito y las condiciones alcanzan a tu negocio.'
+    };
+    return { key: 'information', label: 'Información', help: 'Impacto pendiente de clasificar. El tema por sí solo no confirma una obligación ni una oportunidad.' };
   });
 
   readonly effectiveDateText = computed(() =>
-    this.firstQuote(['effective']) ?? 'No confirmada en esta ficha. Revisa la fuente oficial.');
+    this.typedDate('EffectiveDate') ?? this.firstQuote(['effective']) ?? 'No confirmada en esta ficha. Revisa la fuente oficial.');
 
   readonly deadlineText = computed(() =>
-    this.firstQuote(['deadlines']) ?? 'No consta un plazo confirmado en esta ficha.');
+    this.typedDate('ApplicationDeadline') ?? this.firstQuote(['deadlines']) ?? 'No consta un plazo confirmado en esta ficha.');
 
   readonly facts = computed(() => {
     const groups = this.review()?.groups ?? [];
@@ -119,6 +138,12 @@ export class DecisionSummaryComponent {
       { label: 'Condiciones y requisitos', keys: ['requirements', 'obligations'], fallback: 'Requisitos pendientes de comprobar.' },
     ].map(fact => ({ ...fact, quote: groups.find(group => fact.keys.includes(group.key) && group.quotes.length)?.quotes[0] }));
   });
+
+  private typedDate(kind: string): string | undefined {
+    if (!this.actionable()) return undefined;
+    const dates = this.publication().analysis?.deadlines.filter(date => date.kind === kind) ?? [];
+    return dates.length ? dates.map(date => [date.date, date.description].filter(Boolean).join(' · ')).join('; ') : undefined;
+  }
 
   private firstQuote(keys: string[]): string | undefined {
     const group = (this.review()?.groups ?? []).find(item => keys.includes(item.key) && item.quotes.length);
