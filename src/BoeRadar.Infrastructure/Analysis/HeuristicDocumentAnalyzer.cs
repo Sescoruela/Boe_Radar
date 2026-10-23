@@ -9,7 +9,7 @@ internal sealed class HeuristicDocumentAnalyzer : IDocumentAnalyzer
 
     public string ModelName => "deterministic-rules-v1";
 
-    public string PromptVersion => "radar-v2";
+    public string PromptVersion => "radar-v3";
 
     public Task<RadarAnalysisOutput> AnalyzeAsync(
         AnalysisCandidate candidate,
@@ -26,7 +26,16 @@ internal sealed class HeuristicDocumentAnalyzer : IDocumentAnalyzer
             [],
             [],
             [new RadarEvidence(quote, "relevancia")],
-            0.55m);
+            0.55m, Actionable: new ActionableAnalysis(
+                category switch {
+                    RadarCategory.Grant or RadarCategory.Subsidy => RadarTopic.Grants,
+                    RadarCategory.Tax => RadarTopic.Tax,
+                    RadarCategory.Employment => RadarTopic.Employment,
+                    _ => RadarTopic.Other },
+                ImpactKind.Information, quote, [],
+                ["Comprueba destinatarios, condiciones y fechas en la fuente oficial."],
+                ["Las reglas heurísticas no confirman impacto, destinatarios ni obligaciones."])) with
+            { Evidence = [new RadarEvidence(quote, "whatChanged")] };
 
         return Task.FromResult(output);
     }
@@ -57,7 +66,7 @@ internal sealed class HeuristicDocumentAnalyzer : IDocumentAnalyzer
             return RadarCategory.Employment;
         }
 
-        return RadarCategory.Obligation;
+        return RadarCategory.Other;
     }
 
     private static string ExtractEvidence(string text)

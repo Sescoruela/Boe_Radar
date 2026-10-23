@@ -28,11 +28,20 @@ public sealed record DocumentReference(string ExternalId, string Relation, strin
 public sealed record RadarDeadline(
     string? Date,
     string Description,
-    bool IsExplicit);
+    bool IsExplicit,
+    string Kind = "ApplicationDeadline");
 
 public sealed record RadarEvidence(
     string Quote,
     string Supports);
+
+public sealed record ActionableAnalysis(
+    [property: System.Text.Json.Serialization.JsonRequired] RadarTopic Topic,
+    [property: System.Text.Json.Serialization.JsonRequired] ImpactKind ImpactKind,
+    [property: System.Text.Json.Serialization.JsonRequired] string WhatChanged,
+    [property: System.Text.Json.Serialization.JsonRequired] IReadOnlyList<string> AffectedGroups,
+    [property: System.Text.Json.Serialization.JsonRequired] IReadOnlyList<string> NextSteps,
+    [property: System.Text.Json.Serialization.JsonRequired] IReadOnlyList<string> Uncertainties);
 
 public sealed record RadarAnalysisOutput(
     bool IsRelevant,
@@ -43,7 +52,8 @@ public sealed record RadarAnalysisOutput(
     IReadOnlyList<RadarEvidence> Evidence,
     decimal Confidence,
     int? InputTokens = null,
-    int? OutputTokens = null);
+    int? OutputTokens = null,
+    ActionableAnalysis? Actionable = null);
 
 public sealed record PrefilterDecision(bool IsCandidate, int Score, IReadOnlyList<string> Reasons);
 
@@ -198,6 +208,26 @@ public sealed class AnalysisValidator
             }
         }
 
+        if (output.Actionable is { } action)
+        {
+            if (!Enum.IsDefined(action.Topic) || !Enum.IsDefined(action.ImpactKind) ||
+                string.IsNullOrWhiteSpace(action.WhatChanged) || action.AffectedGroups is null ||
+                action.NextSteps is null || action.Uncertainties is null ||
+                action.AffectedGroups.Concat(action.NextSteps).Concat(action.Uncertainties).Any(string.IsNullOrWhiteSpace))
+                throw new InvalidOperationException("El contrato accionable no es válido.");
+            if (output.IsRelevant && (action.NextSteps.Count == 0 || action.Uncertainties.Count == 0))
+                throw new InvalidOperationException("Un análisis relevante requiere próximos pasos e incertidumbres.");
+            RequireEvidence("whatChanged");
+            for (var i = 0; i < action.AffectedGroups.Count; i++) RequireEvidence($"affectedGroups[{i}]");
+            if (action.ImpactKind != ImpactKind.Information) RequireEvidence("impactKind");
+
+            void RequireEvidence(string field)
+            {
+                if (!output.Evidence.Any(item => item.Supports == field))
+                    throw new InvalidOperationException($"Falta evidencia específica para {field}.");
+            }
+        }
+
         for (var index = 0; index < output.Requirements.Count; index++)
         {
             if (string.IsNullOrWhiteSpace(output.Requirements[index]) ||
@@ -209,6 +239,8 @@ public sealed class AnalysisValidator
         for (var index = 0; index < output.Deadlines.Count; index++)
         {
             var deadline = output.Deadlines[index];
+            if (deadline.Kind is not ("EffectiveDate" or "ApplicationDeadline" or "Other"))
+                throw new InvalidOperationException("Tipo de fecha no válido.");
             var quotes = output.Evidence.Where(item => item.Supports == $"deadlines[{index}]")
                 .Select(item => item.Quote).ToArray();
             if (string.IsNullOrWhiteSpace(deadline.Description) || quotes.Length == 0)
@@ -291,6 +323,8 @@ public sealed class AnalyzeRadarDocuments(
                     }
 
                     var output = await analyzer.AnalyzeAsync(candidate, content, cancellationToken);
+                    if (analyzer.PromptVersion == "radar-v3" && output.Actionable is null)
+                        throw new InvalidOperationException("El análisis radar-v3 requiere el contrato accionable.");
                     validator.Validate(output, content.Text);
                     await store.SaveAsync(
                         candidate.DocumentId,

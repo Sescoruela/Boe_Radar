@@ -15,7 +15,8 @@ internal sealed class GeminiDocumentAnalyzer(
     private const int MaximumSourceCharacters = 40_000;
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter(allowIntegerValues: false) }
     };
 
     private static readonly JsonNode ResponseSchema = JsonNode.Parse("""
@@ -23,10 +24,6 @@ internal sealed class GeminiDocumentAnalyzer(
           "type": "object",
           "properties": {
             "isRelevant": { "type": "boolean" },
-            "category": {
-              "type": "string",
-              "enum": ["Grant", "Subsidy", "Tax", "Obligation", "Employment", "Financing", "Other"]
-            },
             "summary": { "type": "string" },
             "requirements": { "type": "array", "items": { "type": "string" } },
             "deadlines": {
@@ -54,15 +51,35 @@ internal sealed class GeminiDocumentAnalyzer(
             },
             "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
           },
-          "required": ["isRelevant", "category", "summary", "requirements", "deadlines", "evidence", "confidence"]
+          "required": ["isRelevant", "summary", "requirements", "deadlines", "evidence", "confidence"]
         }
         """)!;
+
+    static GeminiDocumentAnalyzer()
+    {
+        var properties = ResponseSchema["properties"]!;
+        properties["actionable"] = JsonNode.Parse("""
+            {"type":"object","properties":{
+              "topic":{"type":"string","enum":["Grants","Tax","Employment","Financing","Regulation","Other"]},
+              "impactKind":{"type":"string","enum":["Obligation","Opportunity","Information"]},
+              "whatChanged":{"type":"string"},
+              "affectedGroups":{"type":"array","items":{"type":"string"}},
+              "nextSteps":{"type":"array","items":{"type":"string"}},
+              "uncertainties":{"type":"array","items":{"type":"string"}}
+            },"required":["topic","impactKind","whatChanged","affectedGroups","nextSteps","uncertainties"]}
+            """);
+        ((JsonArray)ResponseSchema["required"]!).Add("actionable");
+        properties["deadlines"]!["items"]!["properties"]!["kind"] = JsonNode.Parse("""
+            {"type":"string","enum":["EffectiveDate","ApplicationDeadline","Other"]}
+            """);
+        ((JsonArray)properties["deadlines"]!["items"]!["required"]!).Add("kind");
+    }
 
     public string Method => "gemini";
 
     public string ModelName => options.Model;
 
-    public string PromptVersion => "radar-v2";
+    public string PromptVersion => "radar-v3";
 
     public async Task<RadarAnalysisOutput> AnalyzeAsync(
         AnalysisCandidate candidate,
@@ -76,6 +93,15 @@ internal sealed class GeminiDocumentAnalyzer(
             medida laboral o financiación potencialmente accionable.
 
             Reglas:
+            - Separa tema (actionable.topic) de impacto (actionable.impactKind).
+            - Una norma fiscal no implica por sí sola una obligación; una ayuda no implica convocatoria abierta.
+            - Usa Obligation u Opportunity solo con evidencia específica supports=impactKind; en caso de duda Information.
+            - actionable.whatChanged explica el cambio y necesita cita supports=whatChanged.
+            - Cada affectedGroups[i] necesita cita supports=affectedGroups[i]. No inventes destinatarios.
+            - nextSteps son comprobaciones prudentes, no dictámenes ni órdenes; no añadas hechos, requisitos o fechas nuevos.
+            - uncertainties explicita límites, excepciones y lo que falta por verificar; no uses listas vacías en resultados relevantes.
+            - Clasifica cada fecha: EffectiveDate (efectos), ApplicationDeadline (solicitud), Other.
+            - La fecha de publicación viene de metadatos, no se convierte en fecha de efectos o solicitud.
             - No inventes requisitos ni fechas.
             - Usa fechas ISO AAAA-MM-DD solo cuando sean explícitas en el texto.
             - Cada evidencia.quote debe ser una cita literal y continua del texto fuente.
@@ -104,31 +130,44 @@ internal sealed class GeminiDocumentAnalyzer(
             config: new GenerateContentConfig
             {
                 Temperature = 0.1,
-                MaxOutputTokens = 2048,
+                MaxOutputTokens = 4096,
                 ResponseMimeType = "application/json",
                 ResponseJsonSchema = ResponseSchema
             },
             cancellationToken: cancellationToken);
 
-        var payload = JsonSerializer.Deserialize<GeminiPayload>(
-            response.Text ?? throw new InvalidOperationException("Gemini no devolvió texto."),
+        return ParseOutput(response.Text ?? throw new InvalidOperationException("Gemini no devolvió texto."),
+            response.UsageMetadata?.PromptTokenCount, response.UsageMetadata?.CandidatesTokenCount);
+    }
+
+    internal static RadarAnalysisOutput ParseOutput(string json, int? inputTokens = null, int? outputTokens = null)
+    {
+        var payload = JsonSerializer.Deserialize<GeminiPayload>(json,
             JsonOptions) ?? throw new InvalidOperationException("Gemini devolvió JSON vacío.");
 
-        if (!Enum.TryParse<RadarCategory>(payload.Category, true, out var category))
+        var action = payload.Actionable ?? throw new InvalidOperationException("Falta el contrato radar-v3.");
+        // Compatibility only: new consumers use Topic and ImpactKind independently.
+        var category = action.Topic switch
         {
-            throw new InvalidOperationException($"Categoría de Gemini no reconocida: {payload.Category}.");
-        }
+            RadarTopic.Grants => RadarCategory.Grant,
+            RadarTopic.Tax => RadarCategory.Tax,
+            RadarTopic.Employment => RadarCategory.Employment,
+            RadarTopic.Financing => RadarCategory.Financing,
+            RadarTopic.Regulation => RadarCategory.Obligation,
+            _ => RadarCategory.Other
+        };
 
         return new RadarAnalysisOutput(
             payload.IsRelevant,
             category,
             payload.Summary,
             payload.Requirements,
-            payload.Deadlines.Select(item => new RadarDeadline(item.Date, item.Description, item.IsExplicit)).ToArray(),
+            payload.Deadlines.Select(item => new RadarDeadline(item.Date, item.Description, item.IsExplicit, item.Kind)).ToArray(),
             payload.Evidence.Select(item => new RadarEvidence(item.Quote, item.Supports)).ToArray(),
             payload.Confidence,
-            response.UsageMetadata?.PromptTokenCount,
-            response.UsageMetadata?.CandidatesTokenCount);
+            inputTokens,
+            outputTokens,
+            action);
     }
 
     internal static string GetCompleteSource(DocumentText content)
@@ -140,14 +179,14 @@ internal sealed class GeminiDocumentAnalyzer(
 
     private sealed record GeminiPayload(
         bool IsRelevant,
-        string Category,
         string Summary,
         IReadOnlyList<string> Requirements,
         IReadOnlyList<GeminiDeadline> Deadlines,
         IReadOnlyList<GeminiEvidence> Evidence,
-        decimal Confidence);
+        decimal Confidence,
+        ActionableAnalysis? Actionable);
 
-    private sealed record GeminiDeadline(string? Date, string Description, bool IsExplicit);
+    private sealed record GeminiDeadline(string? Date, string Description, bool IsExplicit, string Kind);
 
     private sealed record GeminiEvidence(string Quote, string Supports);
 }

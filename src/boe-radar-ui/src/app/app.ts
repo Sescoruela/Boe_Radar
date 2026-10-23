@@ -17,7 +17,7 @@ import { SubscriptionsApi, SubscriptionView } from './subscriptions';
 import { ProfileMatchComponent } from './profile-match.component';
 import { SourceProfileComponent } from './source-profile.component';
 import { DecisionSummaryComponent } from './decision-summary.component';
-import { briefTitle, categoryLabel, officialSource, publicationCategory } from './publication-presentation';
+import { briefTitle, categoryLabel, impactLabel, officialSource, publicationCategory } from './publication-presentation';
 import { BusinessProfile, businessTypes, activityOptions, territoryOptions,
   isBusinessProfile, loadBusinessProfile, storeBusinessProfile } from './business-profile';
 
@@ -29,6 +29,7 @@ import { BusinessProfile, businessTypes, activityOptions, territoryOptions,
   styleUrl: './app.scss',
 })
 export class App implements OnInit {
+  readonly impactLabel = impactLabel;
   readonly followUp = inject(FollowUpStore);
   private readonly api = inject(PublicationsApi);
   private readonly subscriptions = inject(SubscriptionsApi);
@@ -179,6 +180,11 @@ export class App implements OnInit {
   @HostListener('window:hashchange')
   handleSubscriptionLink(): void {
     const fragment = new URLSearchParams(window.location.hash.slice(1));
+    const publication = fragment.get('publication');
+    if (publication && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(publication)) {
+      this.openDetails(publication);
+      return;
+    }
     const verify = fragment.get('verify');
     const manage = fragment.get('manage');
     const unsubscribe = fragment.get('unsubscribe');

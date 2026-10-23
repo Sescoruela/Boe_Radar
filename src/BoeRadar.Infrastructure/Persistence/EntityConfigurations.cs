@@ -154,6 +154,7 @@ internal sealed class DocumentAnalysisConfiguration : IEntityTypeConfiguration<D
         builder.Property(entity => entity.IsRelevant).HasColumnName("is_relevant");
         builder.Property(entity => entity.Category).HasColumnName("category").HasMaxLength(30).HasConversion<string>();
         builder.Property(entity => entity.Summary).HasColumnName("summary");
+        builder.Property(entity => entity.ActionableJson).HasColumnName("actionable").HasColumnType("jsonb");
         builder.Property(entity => entity.RequirementsJson).HasColumnName("requirements").HasColumnType("jsonb");
         builder.Property(entity => entity.DeadlinesJson).HasColumnName("deadlines").HasColumnType("jsonb");
         builder.Property(entity => entity.EvidenceJson).HasColumnName("evidence").HasColumnType("jsonb");

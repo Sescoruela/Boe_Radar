@@ -39,6 +39,51 @@ public sealed class MailpitFactAttribute : FactAttribute
 public sealed class PersistenceRegressionTests
 {
     [PostgreSqlFact]
+    public async Task V3MigrationPreservesLegacyRowsAndRoundTripsActionableFactsIntoCatalogAndDigest()
+    {
+        await using var fixture = await TestDatabase.CreateAsync("20261004141813_AddSubscriptionBusinessProfile");
+        await using var db = fixture.Open();
+        var clock = new TestClock();
+        await ImportAsync(db, clock, 1);
+        var document = await db.SourceDocuments.SingleAsync();
+        // Insert using the old schema, before the nullable v3 column exists.
+        await db.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO document_analyses (id, document_id, content_hash, is_relevant, category,
+                summary, requirements, deadlines, evidence, confidence, method, model_name, prompt_version, analyzed_at)
+            VALUES ({Guid.NewGuid()}, {document.Id}, 'legacy', true, 'Grant', 'Anterior', '[]'::jsonb,
+                '[]'::jsonb, '[]'::jsonb, 0.8, 'gemini', 'fixture', 'radar-v2', {clock.Now.AddDays(-1)})
+            """);
+        await db.Database.MigrateAsync();
+        var catalog = new EfPublicationCatalog(db, clock);
+        Assert.Null((await catalog.GetAsync(document.Id))!.Analysis!.Actionable);
+        var action = new ActionableAnalysis(RadarTopic.Tax, ImpactKind.Information, "Cambio fiscal informativo",
+            ["Pymes"], ["Comprueba el ámbito"], ["Aplicación individual no confirmada"]);
+        var output = new RadarAnalysisOutput(true, RadarCategory.Tax, "Resumen fiscal", [],
+            [new("2026-10-15", "Entrada en vigor", true, "EffectiveDate")], [], .9m, Actionable: action);
+        await new EfAnalysisCandidateStore(db, clock).SaveAsync(document.Id, "new-hash", output,
+            "gemini", "fixture", "radar-v3");
+        db.ChangeTracker.Clear();
+        var detail = (await catalog.GetAsync(document.Id))!.Analysis!;
+        Assert.Equal(RadarTopic.Tax, detail.Actionable!.Topic);
+        Assert.Equal(ImpactKind.Information, detail.Actionable.ImpactKind);
+        Assert.Equal(action.NextSteps, detail.Actionable.NextSteps);
+        Assert.Equal("EffectiveDate", Assert.Single(detail.Deadlines).Kind);
+        Assert.Equal("new-hash", detail.ContentHash);
+        var list = await catalog.SearchAsync(new(null, null, null, null));
+        Assert.Equal(ImpactKind.Information, Assert.Single(list.Items).Analysis!.Actionable!.ImpactKind);
+        var store = new EfSubscriptionStore(db, clock);
+        await store.RegisterAsync("v3@example.invalid", new([], []), "verify-v3", "https://example.invalid/verify", clock.Now, default);
+        await store.VerifyAsync("verify-v3", "manage-v3", "https://example.invalid/manage", clock.Now, default);
+        Assert.Equal(1, (await store.QueueDigestsAsync(new(2026, 10, 1), new("https://example.invalid"), false, clock.Now, default)).DigestsQueued);
+        var body = (await db.OutboxMessages.AsNoTracking().SingleAsync(item => item.Kind == "digest")).Body;
+        Assert.Contains("Cambio fiscal informativo", body);
+        Assert.Contains("Comprueba el ámbito", body);
+        Assert.Contains("Aplicación individual no confirmada", body);
+        Assert.Contains("Efectos: 2026-10-15", body);
+        Assert.DoesNotContain("Plazo: 2026-10-15", body);
+    }
+
+    [PostgreSqlFact]
     public async Task IntentFilteringRunsBeforeCountPaginationAndPersonalizedRanking()
     {
         await using var fixture = await TestDatabase.CreateAsync();

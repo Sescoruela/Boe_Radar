@@ -1,5 +1,12 @@
 import { PublicationListItem } from './publications';
 
+export function impactLabel(kind?: string | null): string {
+  const labels: Record<string, string> = {
+    Obligation: 'Posible obligación', Opportunity: 'Oportunidad', Information: 'Información',
+  };
+  return labels[kind ?? ''] ?? 'Impacto pendiente de clasificar';
+}
+
 export function categoryLabel(category: string): string {
   return ({ Grant: 'Ayudas', Subsidy: 'Subvenciones', Tax: 'Fiscalidad',
     Obligation: 'Obligaciones', Employment: 'Laboral', Financing: 'Financiación',
@@ -17,7 +24,10 @@ export function briefTitle(title: string): string {
 }
 
 export function publicationCategory(item: PublicationListItem): string {
-  return item.analysis?.isRelevant ? categoryLabel(item.analysis.category) : 'Pendiente de analizar';
+  const topic = item.analysis?.actionable?.topic;
+  return topic ? ({ Grants: 'Ayudas', Tax: 'Fiscalidad', Employment: 'Laboral', Financing: 'Financiación',
+    Regulation: 'Regulación', Other: 'Otros temas' } as Record<string, string>)[topic]
+    : item.analysis?.isRelevant ? categoryLabel(item.analysis.category) : 'Pendiente de analizar';
 }
 
 export function officialSource(item: PublicationListItem | null): string | null {

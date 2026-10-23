@@ -1,10 +1,10 @@
 # BOE Radar IA
 
-BOE Radar IA explora publicaciones oficiales potencialmente relevantes para
-autónomos y pymes. Muestra enlaces a la fuente y, al abrir una ficha, localiza
-fragmentos del texto oficial para revisar destinatarios, requisitos, cuantías y
-plazos. La selección y los fragmentos son automáticos y no verifican la
-aplicabilidad a un negocio concreto.
+BOE Radar IA ayuda a autónomos y pequeñas empresas a descubrir qué cambia en el
+BOE, a quién puede afectar y qué conviene revisar. El contrato `radar-v3` separa
+tema e impacto y aporta próximos pasos, incertidumbres, fechas tipadas y citas
+de la fuente oficial. La selección y las interpretaciones son automáticas y no
+confirman la aplicabilidad a un negocio concreto.
 
 ## Estado
 
@@ -40,6 +40,7 @@ proveedor de correo real y sus rebotes queda pendiente. La documentación base e
 - [Mi seguimiento: persistencia local](docs/24-seguimiento-local.md)
 - [Personalización explicable por dimensiones](docs/25-personalizacion-explicable.md)
 - [Validación y publicación de los hitos 3 y 4](docs/26-validacion-hitos-3-4.md)
+- [Radar v3: producto accionable, compatibilidad y validación](docs/27-radar-v3-producto-accionable.md)
 - [ADR-001: monolito modular](docs/adr/001-monolito-modular.md)
 
 ## Propuesta de valor
