@@ -208,7 +208,10 @@
               <p class="department">{{ item.department }}</p>
               <h3 [title]="item.title">{{ briefTitle(item.title) }}</h3>
               @if (item.analysis?.isRelevant) {
-                <p class="radar-summary">Posible impacto · interpretación automática: {{ item.analysis!.summary }}</p>
+                <p class="radar-summary">{{ impactLabel(item.analysis!.actionable?.impactKind) }} · interpretación automática: {{ item.analysis!.actionable?.whatChanged ?? item.analysis!.summary }}</p>
+                @if (item.analysis!.actionable?.nextSteps?.[0]; as step) {
+                  <p class="radar-summary"><strong>Revisa ahora:</strong> {{ step }}</p>
+                }
               } @else {
                 <p class="radar-summary">Impacto pendiente de analizar. Abre la ficha para comprobar destinatarios, condiciones y fechas.</p>
               }

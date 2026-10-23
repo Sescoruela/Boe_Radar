@@ -1,5 +1,12 @@
 import { PublicationListItem } from './publications';
 
+export function impactLabel(kind?: string | null): string {
+  const labels: Record<string, string> = {
+    Obligation: 'Posible obligación', Opportunity: 'Oportunidad', Information: 'Información',
+  };
+  return labels[kind ?? ''] ?? 'Impacto pendiente de clasificar';
+}
+
 export function categoryLabel(category: string): string {
   return ({ Grant: 'Ayudas', Subsidy: 'Subvenciones', Tax: 'Fiscalidad',
     Obligation: 'Obligaciones', Employment: 'Laboral', Financing: 'Financiación',
